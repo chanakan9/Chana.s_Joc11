@@ -15,6 +15,10 @@ button { background:#00B900; color:#fff; border:none; font-weight:bold; cursor:p
 button:hover { background:#009900;}
 #qr-reader { margin-top:20px; border:1px dashed #ccc; border-radius:8px;}
 .message { margin-top:15px; font-weight:bold; color:#555;}
+/* Modal */
+.modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; overflow:auto; background: rgba(0,0,0,0.5); }
+.modal-content { background:white; margin:15% auto; padding:20px; border-radius:12px; width:90%; max-width:400px; text-align:left; }
+.modal button { width:auto; margin:5px 5px 0 0; padding:10px 20px;}
 </style>
 </head>
 <body>
@@ -23,6 +27,7 @@ button:hover { background:#009900;}
 <img src="https://drive.google.com/thumbnail?id=1biw0LeK_X0ntKPdH4-8XaPUcl1yGDl59" alt="Logo"/>
 </header>
 
+<!-- เบอร์โทร -->
 <section id="form-section">
 <h1>ระบบลงเวลาเข้าเรียน</h1>
 <p>ณ สศท.สปท.</p>
@@ -33,6 +38,7 @@ button:hover { background:#009900;}
 </form>
 </section>
 
+<!-- สแกน QR -->
 <section id="qr-section" class="hidden">
 <h1>แสกน QR Code เพื่อประทับเวลา</h1>
 <div id="qr-reader"></div>
@@ -40,16 +46,30 @@ button:hover { background:#009900;}
 <button id="retryScanButton" class="hidden">สแกนใหม่อีกครั้ง</button>
 </section>
 
+<!-- ผลลัพธ์สำเร็จ -->
 <section id="success-section" class="hidden">
 <h1>รายงานการลงเวลา</h1>
 <p class="message" id="successMessage"></p>
 </section>
+
+<!-- Modal สรุปข้อมูลก่อนส่ง -->
+<div id="scanSummaryModal" class="modal">
+  <div class="modal-content">
+    <h3>ตรวจสอบข้อมูลก่อนส่ง</h3>
+    <p id="summaryText"></p>
+    <button id="confirmScanButton">ยืนยันส่ง</button>
+    <button id="cancelScanButton">สแกนใหม่</button>
+  </div>
+</div>
 
 <script>
 const scriptURL = 'https://script.google.com/macros/s/AKfycby8iE0HQ4V_8rgjHNalxp1bM4VFxxz5JBXkUc0qpqkLxcYxM1iE5vmhQO0wCoNG1eIfCg/exec';
 
 let formData = {};
 let qrReaderInstance = null;
+const scanSummaryModal = document.getElementById('scanSummaryModal');
+const responseMessage = document.getElementById('responseMessage');
+const retryScanButton = document.getElementById('retryScanButton');
 
 /* =========================================================
    ฟังก์ชันสุ่มพิกัดใหม่ในระยะ 5–10 เมตร จากจุดหลัก
@@ -57,27 +77,17 @@ let qrReaderInstance = null;
 function randomLocation() {
   const baseLat = 13.77922;
   const baseLng = 100.55861;
-
-  // 1° latitude ≈ 111,111 meters
   const meterToDeg = 1 / 111111;
-
-  const min = 5;   // 5 meters
-  const max = 10;  // 10 meters
+  const min = 5;
+  const max = 10;
   const distance = Math.random() * (max - min) + min;
-
   const angle = Math.random() * 2 * Math.PI;
-
   const dLat = (distance * Math.cos(angle)) * meterToDeg;
   const dLng = (distance * Math.sin(angle)) * (meterToDeg / Math.cos(baseLat * Math.PI / 180));
-
-  return {
-    latitude: baseLat + dLat,
-    longitude: baseLng + dLng
-  };
+  return { latitude: baseLat + dLat, longitude: baseLng + dLng };
 }
 
 /* ========================================================= */
-
 function showSection(id) {
   document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
@@ -98,18 +108,19 @@ async function callApi(action, params) {
   });
 }
 
+/* =========================================================
+   สรุปและยืนยันข้อมูลก่อนส่ง
+========================================================= */
 async function handleQrScan(decodedText){
-
   if(qrReaderInstance){ await qrReaderInstance.stop().catch(()=>{}); qrReaderInstance=null;}
-
   if(!decodedText || !decodedText.trim()){
-    document.getElementById('responseMessage').innerText='QR code ไม่ถูกต้อง';
+    responseMessage.innerText='QR code ไม่ถูกต้อง';
     startQRScanner();
     return;
   }
 
   const phone = document.getElementById('phone').value.trim();
-  const mockPos = randomLocation();   // ★ ใช้พิกัดสุ่มของจริง
+  const mockPos = randomLocation();
 
   formData = {
     Phone: phone,
@@ -118,7 +129,21 @@ async function handleQrScan(decodedText){
     Longitude: mockPos.longitude
   };
 
-  document.getElementById('responseMessage').innerText='กำลังส่งข้อมูล...';
+  // แสดง modal สรุปข้อมูล
+  const now = new Date();
+  const thaiDate = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+  const thaiTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('summaryText').innerText =
+    `📌 วันที่: ${thaiDate}\n⏱ เวลา: ${thaiTime}\n🔢 QR: ${decodedText.trim()}`;
+  scanSummaryModal.style.display = "flex";
+}
+
+/* =========================================================
+   ส่งข้อมูลหลังยืนยัน
+========================================================= */
+document.getElementById('confirmScanButton').addEventListener('click', async ()=>{
+  scanSummaryModal.style.display = "none";
+  responseMessage.innerText='กำลังส่งข้อมูล...';
 
   try{
     const result = await callApi('add', {text: JSON.stringify(formData)});
@@ -127,28 +152,36 @@ async function handleQrScan(decodedText){
       showSection('success-section');
     } else throw result;
   } catch(e){
-    document.getElementById('responseMessage').innerText='เกิดข้อผิดพลาดในการส่งข้อมูล';
-    document.getElementById('retryScanButton').classList.remove('hidden');
+    responseMessage.innerText='เกิดข้อผิดพลาดในการส่งข้อมูล';
+    retryScanButton.classList.remove('hidden');
   }
-}
+});
 
+document.getElementById('cancelScanButton').addEventListener('click', ()=>{
+  scanSummaryModal.style.display = "none";
+  startQRScanner();
+});
+
+/* =========================================================
+   เปิดกล้องสแกน QR
+========================================================= */
 async function startQRScanner(){
-  document.getElementById('responseMessage').innerText='';
-  document.getElementById('retryScanButton').classList.add('hidden');
+  responseMessage.innerText='';
+  retryScanButton.classList.add('hidden');
   showSection('qr-section');
   document.getElementById('qr-reader').innerHTML='';
   qrReaderInstance = new Html5Qrcode('qr-reader');
-
   qrReaderInstance.start(
     {facingMode:'environment'},
     {fps:10, qrbox:{width:250,height:250}},
     handleQrScan,
     ()=>{}
-  ).catch(()=>{
-    document.getElementById('responseMessage').innerText='ไม่สามารถเปิดกล้องได้';
-  });
+  ).catch(()=>{responseMessage.innerText='ไม่สามารถเปิดกล้องได้';});
 }
 
+/* =========================================================
+   เริ่มขั้นตอน
+========================================================= */
 document.getElementById('nextButton').addEventListener('click',()=>{
   const phoneInput = document.getElementById('phone');
   if(!phoneInput.checkValidity()){
@@ -158,7 +191,14 @@ document.getElementById('nextButton').addEventListener('click',()=>{
   startQRScanner();
 });
 
-document.getElementById('retryScanButton').addEventListener('click', startQRScanner);
+retryScanButton.addEventListener('click', startQRScanner);
+
+/* =========================================================
+   ปิด modal เมื่อคลิกนอก
+========================================================= */
+window.onclick = function(event){
+  if(event.target === scanSummaryModal) scanSummaryModal.style.display='none';
+};
 </script>
 </body>
 </html>
