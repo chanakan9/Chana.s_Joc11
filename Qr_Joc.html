@@ -3,132 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Code Check-In (Mock GPS)</title>
-<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+<title>QR Code Check-In</title>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
 <style>
-body { font-family: 'Kanit', sans-serif; padding:20px; text-align:center; background:#f4f4f9; color:#333;}
-.hidden { display:none; }
-section { background:white; padding:25px; border-radius:12px; max-width:500px; margin:auto; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-input, button { width:100%; padding:12px; margin-bottom:20px; font-size:16px; border-radius:8px; border:1px solid #ccc;}
-button { background:#00B900; color:#fff; border:none; cursor:pointer; font-weight:bold;}
-button:hover { background:#009900; }
+body { font-family: 'Kanit', sans-serif; margin: 0; padding: 20px; text-align:center; background:#f4f4f9;}
+.hidden { display: none; }
+header img { width:80px; margin-bottom:20px;}
+section { background:white; padding:25px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:500px; margin:0 auto;}
+input, button { width:100%; padding:12px; margin-bottom:20px; border-radius:8px; font-size:16px;}
+button { background:#00B900; color:#fff; border:none; font-weight:bold; cursor:pointer;}
+button:hover { background:#009900;}
 #qr-reader { margin-top:20px; border:1px dashed #ccc; border-radius:8px;}
+.message { margin-top:15px; font-weight:bold; color:#555;}
 </style>
 </head>
 <body>
 
-<section id="form-section" class="hidden">
+<header>
+<img src="https://drive.google.com/thumbnail?id=1biw0LeK_X0ntKPdH4-8XaPUcl1yGDl59" alt="Logo"/>
+</header>
+
+<section id="form-section">
 <h1>ระบบลงเวลาเข้าเรียน</h1>
+<p>ณ สศท.สปท.</p>
 <form id="dataForm">
 <label for="phone">โปรดกรอกหมายเลขโทรศัพท์</label>
-<input type="tel" id="phone" name="Phone" required pattern="^0[689]\d{8}$" title="กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก"/>
+<input type="tel" id="phone" name="Phone" required pattern="^0[689]\d{8}$" title="กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก">
 <button type="button" id="nextButton">ขั้นตอนถัดไป</button>
 </form>
 </section>
 
 <section id="qr-section" class="hidden">
-<h1>สแกน QR Code เพื่อประทับเวลา</h1>
+<h1>แสกน QR Code เพื่อประทับเวลา</h1>
 <div id="qr-reader"></div>
-<div id="responseMessage" style="font-weight:bold;margin-top:15px;"></div>
+<div class="message" id="responseMessage"></div>
+<button id="retryScanButton" class="hidden">สแกนใหม่อีกครั้ง</button>
 </section>
 
 <section id="success-section" class="hidden">
 <h1>รายงานการลงเวลา</h1>
-<p id="successMessage" class="message"></p>
+<p class="message" id="successMessage"></p>
 </section>
 
 <script>
-const liffId = "2006142476-expQgry9"; // ❗ ใส่ LIFF ID ของคุณ
+const scriptURL = 'https://script.google.com/macros/s/AKfycby8iE0HQ4V_8rgjHNalxp1bM4VFxxz5JBXkUc0qpqkLxcYxM1iE5vmhQO0wCoNG1eIfCg/exec';
+
 let formData = {};
 let qrReaderInstance = null;
 
-function getMockLocation() {
-    // พิกัดหลัก: 13.77922, 100.55862
-    const baseLat = 13.77922;
-    const baseLng = 100.55862;
-    // สุ่ม ±0.0005
-    const lat = baseLat + (Math.random()-0.5)*0.001;
-    const lng = baseLng + (Math.random()-0.5)*0.001;
-    return { coords: { latitude: lat, longitude: lng }};
+/* =========================================================
+   ฟังก์ชันสุ่มพิกัดใหม่ในระยะ 5–10 เมตร จากจุดหลัก
+========================================================= */
+function randomLocation() {
+  const baseLat = 13.77922;
+  const baseLng = 100.55861;
+
+  // 1° latitude ≈ 111,111 meters
+  const meterToDeg = 1 / 111111;
+
+  const min = 5;   // 5 meters
+  const max = 10;  // 10 meters
+  const distance = Math.random() * (max - min) + min;
+
+  const angle = Math.random() * 2 * Math.PI;
+
+  const dLat = (distance * Math.cos(angle)) * meterToDeg;
+  const dLng = (distance * Math.sin(angle)) * (meterToDeg / Math.cos(baseLat * Math.PI / 180));
+
+  return {
+    latitude: baseLat + dLat,
+    longitude: baseLng + dLng
+  };
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    try { await liff.init({liffId}); }
-    catch(e){ alert("LIFF Init Failed: "+e.message); return; }
+/* ========================================================= */
 
-    if(!liff.isLoggedIn()) liff.login();
-    else document.getElementById('form-section').classList.remove('hidden');
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
 
-    document.getElementById('nextButton').addEventListener('click', async ()=>{
-        const phoneInput = document.getElementById('phone');
-        if(!phoneInput.checkValidity()){ alert(phoneInput.title); return; }
-
-        // mock location
-        const position = getMockLocation();
-
-        const profile = await liff.getProfile().catch(()=>({userId:'no-liff', displayName:'Unknown'}));
-        formData = {
-            Phone: phoneInput.value.trim(),
-            UUID: profile.userId,
-            Name: profile.displayName,
-            Latitude: position.coords.latitude,
-            Longitude: position.coords.longitude
-        };
-
-        document.getElementById('form-section').classList.add('hidden');
-        startQRScanner();
-    });
-});
-
-async function startQRScanner(){
-    document.getElementById('qr-section').classList.remove('hidden');
-    document.getElementById('responseMessage').innerText = 'กำลังเปิดกล้อง...';
-
-    if(liff.isInClient() && liff.isApiAvailable('scanCodeV2')){
-        try{
-            const result = await liff.scanCodeV2();
-            if(result.value) await handleQrScan(result.value);
-        }catch(err){
-            if(err.code==="USER_CANCEL") location.reload();
-            else alert('เกิดข้อผิดพลาดในการใช้กล้อง LINE');
-        }
-    }else{
-        qrReaderInstance = new Html5Qrcode('qr-reader');
-        qrReaderInstance.start(
-            { facingMode: 'environment' }, 
-            { fps:10, qrbox:{width:250,height:250} },
-            async decodedText => await handleQrScan(decodedText),
-            ()=>{}
-        ).catch(()=> document.getElementById('responseMessage').innerText='ไม่สามารถเปิดกล้องได้');
-    }
+async function callApi(action, params) {
+  const callbackName = `jsonpCallback_${Date.now()}`;
+  return new Promise((resolve,reject)=>{
+    window[callbackName] = (res)=>{delete window[callbackName]; document.body.removeChild(scriptEl); resolve(res);};
+    const url = new URL(scriptURL);
+    url.searchParams.append('action', action);
+    for(const k in params) url.searchParams.append(k, params[k]);
+    url.searchParams.append('callback', callbackName);
+    const scriptEl = document.createElement('script');
+    scriptEl.src = url.toString();
+    scriptEl.onerror = ()=>{delete window[callbackName]; document.body.removeChild(scriptEl); reject("API call failed");};
+    document.body.appendChild(scriptEl);
+  });
 }
 
 async function handleQrScan(decodedText){
-    if(qrReaderInstance){ await qrReaderInstance.stop().catch(()=>{}); qrReaderInstance=null; }
-    if(!decodedText||!decodedText.trim()){
-        document.getElementById('responseMessage').innerText='QR code ไม่ถูกต้อง';
-        setTimeout(startQRScanner,2500); return;
-    }
-    formData.Secrete = decodedText.trim();
 
-    // สรุปผล
-    const now = new Date();
-    const thaiDate = `${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}`;
-    const thaiTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    const summaryMessage = `ลงเวลาสำเร็จ\nคุณ: ${formData.Name}\nเบอร์โทร: ${formData.Phone}\nวันที่: ${thaiDate}\nเวลา: ${thaiTime} น.`;
+  if(qrReaderInstance){ await qrReaderInstance.stop().catch(()=>{}); qrReaderInstance=null;}
 
-    document.getElementById('qr-section').classList.add('hidden');
-    document.getElementById('success-section').classList.remove('hidden');
-    document.getElementById('successMessage').innerText = summaryMessage;
+  if(!decodedText || !decodedText.trim()){
+    document.getElementById('responseMessage').innerText='QR code ไม่ถูกต้อง';
+    startQRScanner();
+    return;
+  }
 
-    if(liff.isInClient()){
-        await liff.sendMessages([{ type:'text', text:summaryMessage }]).catch(e=>{
-            console.error('Send message failed', e);
-        });
-        setTimeout(()=>liff.closeWindow(),1500);
-    }
+  const phone = document.getElementById('phone').value.trim();
+  const mockPos = randomLocation();   // ★ ใช้พิกัดสุ่มของจริง
+
+  formData = {
+    Phone: phone,
+    Secrete: decodedText.trim(),
+    Latitude: mockPos.latitude,
+    Longitude: mockPos.longitude
+  };
+
+  document.getElementById('responseMessage').innerText='กำลังส่งข้อมูล...';
+
+  try{
+    const result = await callApi('add', {text: JSON.stringify(formData)});
+    if(result.status==='added'){
+      document.getElementById('successMessage').innerText='ส่งข้อมูลสำเร็จ! ระบบ LINE OA เดิมจะได้รับข้อความยืนยัน';
+      showSection('success-section');
+    } else throw result;
+  } catch(e){
+    document.getElementById('responseMessage').innerText='เกิดข้อผิดพลาดในการส่งข้อมูล';
+    document.getElementById('retryScanButton').classList.remove('hidden');
+  }
 }
+
+async function startQRScanner(){
+  document.getElementById('responseMessage').innerText='';
+  document.getElementById('retryScanButton').classList.add('hidden');
+  showSection('qr-section');
+  document.getElementById('qr-reader').innerHTML='';
+  qrReaderInstance = new Html5Qrcode('qr-reader');
+
+  qrReaderInstance.start(
+    {facingMode:'environment'},
+    {fps:10, qrbox:{width:250,height:250}},
+    handleQrScan,
+    ()=>{}
+  ).catch(()=>{
+    document.getElementById('responseMessage').innerText='ไม่สามารถเปิดกล้องได้';
+  });
+}
+
+document.getElementById('nextButton').addEventListener('click',()=>{
+  const phoneInput = document.getElementById('phone');
+  if(!phoneInput.checkValidity()){
+    alert(phoneInput.title);
+    return;
+  }
+  startQRScanner();
+});
+
+document.getElementById('retryScanButton').addEventListener('click', startQRScanner);
 </script>
 </body>
 </html>
