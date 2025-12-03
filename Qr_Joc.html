@@ -282,7 +282,7 @@ async function qrSuccessCallback(decodedText) {
   const now = new Date();
   const { date, time } = formatThaiDateTime(now);
   const summaryText = `
-ลงเวลาพร้อมส่ง
+ลงเวลาสำเร็จ
 --------------------
 คุณ: ${payload.Name}
 เบอร์โทร: ${payload.Phone || 'N/A'}
@@ -433,3 +433,4 @@ showSection('form');
 </script>
 </body>
 </html>
+
