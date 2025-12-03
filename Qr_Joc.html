@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QR Code Check-In (No LIFF)</title>
 
 <!-- html5-qrcode (camera scanner) -->
@@ -23,7 +23,7 @@
   button.danger{background:var(--red)}
   .message{margin-top:10px;font-weight:600;color:#333}
   #qr-reader{margin-top:14px;border:1px dashed #ccc;border-radius:8px;min-height:260px}
-  .hidden{display:none}
+  .hidden{display:none !important}
   .modal{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:flex;align-items:flex-end;justify-content:center;padding:18px;z-index:999}
   .modal .card{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:540px;box-sizing:border-box}
   .modal h2{margin:0 0 12px;font-size:20px;text-align:center}
@@ -32,6 +32,10 @@
   .progress-bar > div{height:100%;width:0%;background:var(--green);transition:width .4s}
   pre.debug{background:#f7f7f7;padding:10px;border-radius:8px;white-space:pre-wrap;word-break:break-word;margin-top:12px}
   .small-note{font-size:12px;color:#666;margin-top:8px}
+  .btn-row{display:flex;gap:12px}
+  .btn-row button{flex:1}
+  /* make modal not focus-trap when hidden */
+  .modal[aria-hidden="true"]{display:none}
 </style>
 </head>
 <body>
@@ -46,38 +50,38 @@
   <p class="lead">ณ สศท.สปท.</p>
 
   <label for="nameInput">ชื่อ (ระบุชื่อ/รหัส)</label>
-  <input id="nameInput" type="text" placeholder="เช่น B105 Chana.s" />
+  <input id="nameInput" type="text" placeholder="เช่น B105 Chana.s" autocomplete="name" />
 
   <label for="phoneInput">หมายเลขโทรศัพท์</label>
   <input id="phoneInput" type="tel" placeholder="08xxxxxxxx" pattern="^0[689]\d{8}$" />
 
-  <div style="display:flex;gap:12px">
-    <button id="startScanBtn" style="flex:1">เริ่มสแกน QR</button>
-    <button id="demoPosBtn" class="secondary" style="flex:1">สุ่มตำแหน่ง</button>
+  <div class="btn-row" style="margin-top:12px">
+    <button id="startScanBtn">เริ่มสแกน QR</button>
+    <button id="stopAllBtn" class="secondary" type="button">ยกเลิก</button>
   </div>
 
-  <div class="small-note">ตำแหน่งจะถูกสุ่มภายใน 5–10 เมตรจากตำแหน่งฐาน (13.77922,100.55861)</div>
+  <div class="small-note">ตำแหน่งจะถูกสุ่มภายใน 5–10 เมตรจากตำแหน่งฐาน (13.77922,100.55861) **เมื่อสแกนเสร็จและก่อนส่งข้อมูล**</div>
 </section>
 
 <!-- Scanner section -->
 <section id="qr-section" class="hidden">
   <h1>แสกน QR Code เพื่อประทับเวลา</h1>
-  <div id="qr-reader"></div>
+  <div id="qr-reader" aria-label="QR camera area"></div>
   <div id="responseMessage" class="message"></div>
 
-  <div style="display:flex;gap:12px;margin-top:12px">
-    <button id="stopScanBtn" class="danger" style="flex:1">หยุดสแกน</button>
-    <button id="retryScanBtn" style="flex:1" class="hidden">สแกนใหม่</button>
+  <div class="btn-row" style="margin-top:12px">
+    <button id="stopScanBtn" class="danger">หยุดสแกน</button>
+    <button id="retryScanBtn" class="hidden">สแกนใหม่</button>
   </div>
 </section>
 
 <!-- Modal: summary & confirm -->
-<div id="summaryModal" class="modal hidden" aria-hidden="true">
-  <div class="card">
-    <h2>สรุปผลการสแกน</h2>
+<div id="summaryModal" class="modal" aria-hidden="true">
+  <div class="card" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+    <h2 id="summaryTitle">สรุปผลการสแกน</h2>
     <div id="summaryBody" style="line-height:1.6;color:#222"></div>
 
-    <div class="grid">
+    <div class="grid" style="margin-top:12px">
       <button id="scanAgainBtn" class="danger">สแกนใหม่</button>
       <button id="confirmSendBtn">ยืนยันและส่งข้อมูล</button>
     </div>
@@ -97,21 +101,20 @@
 
 <script>
 /*
-  Non-LIFF QR check-in client
-  - auto random GPS (5–10 m)
-  - scan QR using html5-qrcode
-  - send JSONP requests to GAS (scriptURL)
-  - display modal & progress like original
+  Fixed & improved version:
+  - Randomize mock GPS only after successful scan (before sending)
+  - Removed visible "สุ่มตำแหน่ง" button from UI
+  - Modal hidden by aria-hidden & class; only shows when needed
+  - Buttons disabled during send
 */
 
-/* ================== CONFIG ================== */
 const scriptURL = 'https://script.google.com/macros/s/AKfycby8iE0HQ4V_8rgjHNalxp1bM4VFxxz5JBXkUc0qpqkLxcYxM1iE5vmhQO0wCoNG1eIfCg/exec';
 const baseLat = 13.77922;
 const baseLng = 100.55861;
 
-/* ================== helpers ================== */
+/* ========== helpers ========== */
 function randomLocationMeters(minMeters = 5, maxMeters = 10) {
-  const meterToDeg = 1 / 111111; // approx
+  const meterToDeg = 1 / 111111;
   const distance = Math.random() * (maxMeters - minMeters) + minMeters;
   const angle = Math.random() * 2 * Math.PI;
   const dLat = (distance * Math.cos(angle)) * meterToDeg;
@@ -122,7 +125,7 @@ function randomLocationMeters(minMeters = 5, maxMeters = 10) {
 function formatThaiDateTime(d = new Date()) {
   const day = String(d.getDate()).padStart(2,'0');
   const month = String(d.getMonth()+1).padStart(2,'0');
-  const year = d.getFullYear(); // keep Gregorian like original examples
+  const year = d.getFullYear();
   const hh = String(d.getHours()).padStart(2,'0');
   const mm = String(d.getMinutes()).padStart(2,'0');
   return { date:`${day}-${month}-${year}`, time:`${hh}:${mm}` };
@@ -154,11 +157,10 @@ function callApi(action, params={}) {
   });
 }
 
-/* ================== DOM ================== */
+/* ========== DOM ========== */
 const nameInput = document.getElementById('nameInput');
 const phoneInput = document.getElementById('phoneInput');
 const startScanBtn = document.getElementById('startScanBtn');
-const demoPosBtn = document.getElementById('demoPosBtn');
 
 const formSection = document.getElementById('form-section');
 const qrSection = document.getElementById('qr-section');
@@ -181,12 +183,14 @@ const debugBox = document.getElementById('debugBox');
 const successMessage = document.getElementById('successMessage');
 const newEntryBtn = document.getElementById('newEntryBtn');
 
-/* ================== state ================== */
+const stopAllBtn = document.getElementById('stopAllBtn');
+
+/* ========== state ========== */
 let html5QrScanner = null;
-let lastFormData = null; // object to send
+let lastFormData = null; // object to send (not yet randomized pos)
 let lastMockPos = null;
 
-/* ================== UI helpers ================== */
+/* ========== UI helpers ========== */
 function showSection(id) {
   formSection.classList.toggle('hidden', id !== 'form');
   qrSection.classList.toggle('hidden', id !== 'qr');
@@ -194,8 +198,10 @@ function showSection(id) {
 }
 
 function showSummaryModal(show=true) {
-  summaryModal.classList.toggle('hidden', !show);
   summaryModal.setAttribute('aria-hidden', show? 'false' : 'true');
+  summaryModal.classList.toggle('hidden', !show);
+  // prevent body scroll when modal open
+  document.body.style.overflow = show ? 'hidden' : '';
 }
 
 function setProgress(pct) {
@@ -203,7 +209,7 @@ function setProgress(pct) {
   progressInner.style.width = `${pct}%`;
 }
 
-/* ================== scanner control ================== */
+/* ========== scanner control ========== */
 async function startQRScanner() {
   responseMessage.innerText = '';
   retryScanBtn.classList.add('hidden');
@@ -221,7 +227,7 @@ async function startQRScanner() {
       config,
       qrSuccessCallback,
       (err) => {
-        // optional error callback during scanning
+        // optional per-frame error callback (ignored)
       }
     );
   } catch (err) {
@@ -233,81 +239,86 @@ async function startQRScanner() {
 async function stopQRScanner() {
   if (html5QrScanner) {
     try { await html5QrScanner.stop(); } catch(e){}
-    html5QrScanner.clear(); // remove video element
+    try { html5QrScanner.clear(); } catch(e){}
     html5QrScanner = null;
   }
 }
 
-/* ================== scan result handler ================== */
+/* ========== scan result handler ========== */
 async function qrSuccessCallback(decodedText) {
-  // Stop scanning
+  // Stop scanning immediately to avoid duplicate scans
   await stopQRScanner();
 
-  // Basic validation
   if (!decodedText || !decodedText.trim()) {
     responseMessage.innerText = 'QR code ไม่ถูกต้อง โปรดสแกนอีกครั้ง';
     retryScanBtn.classList.remove('hidden');
     return;
   }
 
-  // Prepare form data (phone/name validated by user)
+  // collect form fields
   const nameVal = nameInput.value.trim() || 'ไม่ระบุ';
   const phoneVal = phoneInput.value.trim() || '';
 
-  // ensure phone matches basic pattern (but we won't block if empty)
+  // basic phone validation (allow empty)
   if (phoneVal && !/^0[689]\d{8}$/.test(phoneVal)) {
-    // allow user to correct before sending
     responseMessage.innerText = 'หมายเลขโทรศัพท์ไม่ถูกต้อง (รูปแบบ 0x...)';
     retryScanBtn.classList.remove('hidden');
     return;
   }
 
-  const now = new Date();
-  const { date, time } = formatThaiDateTime(now);
-
-  // Use precomputed mock pos if available; else compute new
-  const mockPos = lastMockPos || randomLocationMeters();
-  lastMockPos = mockPos;
-
+  // prepare payload WITHOUT position yet
   const payload = {
     Name: nameVal,
     Phone: phoneVal,
     Secrete: decodedText.trim(),
-    Latitude: mockPos.latitude,
-    Longitude: mockPos.longitude,
+    Latitude: null,
+    Longitude: null,
     UUID: `no-liff-${cryptoRandomId()}`
   };
 
   lastFormData = payload;
 
-  // build summary shown in modal like original
+  // Build and show summary modal (position will be randomized when Confirm pressed)
+  const now = new Date();
+  const { date, time } = formatThaiDateTime(now);
   const summaryText = `
-ลงเวลาสำเร็จ
+ลงเวลาพร้อมส่ง
 --------------------
 คุณ: ${payload.Name}
 เบอร์โทร: ${payload.Phone || 'N/A'}
 วันที่: ${date}
 เวลา: ${time} น.
+(ตำแหน่งจะถูกสุ่มก่อนส่งข้อมูล)
   `.trim();
 
   summaryBody.innerText = summaryText;
   showSummaryModal(true);
 }
 
-/* ================== confirm & send ================== */
+/* ========== confirm & send ========== */
 scanAgainBtn.addEventListener('click', async ()=> {
   showSummaryModal(false);
+  lastMockPos = null;
+  lastFormData = null;
+  responseMessage.innerText = '';
   await startQRScanner();
 });
 
 confirmSendBtn.addEventListener('click', async ()=> {
   if (!lastFormData) return;
-  showSummaryModal(true);
-  progressContainer.classList.remove('hidden');
-  debugBox.classList.add('hidden');
+  // disable buttons while sending
+  confirmSendBtn.disabled = true;
+  scanAgainBtn.disabled = true;
   setProgress(5);
+  debugBox.classList.add('hidden');
+  progressContainer.classList.remove('hidden');
 
   try {
+    // Before sending, randomize position (only now)
+    lastMockPos = randomLocationMeters();
+    lastFormData.Latitude = lastMockPos.latitude;
+    lastFormData.Longitude = lastMockPos.longitude;
+
     // Step 1: add
     summaryBody.innerText = 'ขั้นตอน 1/3: กำลังส่งข้อมูลเพื่อบันทึก...';
     const addRes = await callApi('add', { text: JSON.stringify(lastFormData) });
@@ -317,9 +328,9 @@ confirmSendBtn.addEventListener('click', async ()=> {
       throw addRes || new Error('add failed');
     }
 
-    // Step 2: wait/processing
+    // Step 2: short processing wait (server-side)
     summaryBody.innerText = 'ขั้นตอน 2/3: บันทึกสำเร็จ! กำลังรอเพื่อตรวจสอบ...';
-    await new Promise(r => setTimeout(r, 900)); // short wait
+    await new Promise(r => setTimeout(r, 900));
     setProgress(60);
 
     // Step 3: check
@@ -333,14 +344,13 @@ confirmSendBtn.addEventListener('click', async ()=> {
     setProgress(100);
 
     if (checkRes && checkRes.status === 'found') {
-      // success - GAS is expected to send LINE OA message on server side
+      // success - hide modal and show success section
       summaryBody.innerText = '✅ ตรวจสอบข้อมูลถูกต้อง! ส่งข้อมูลสำเร็จแล้ว';
       showSummaryModal(false);
 
       successMessage.innerText = `ลงเวลาสำเร็จ!\nคุณ: ${lastFormData.Name}\nเบอร์โทร: ${lastFormData.Phone || 'N/A'}\nเวลา: ${formatThaiDateTime().time} น.`;
       showSection('success');
     } else {
-      // not found or mismatch
       const errMsg = (checkRes && checkRes.message) ? (checkRes.message) : 'การตรวจสอบไม่พบข้อมูล';
       showSummaryModal(false);
       responseMessage.innerText = `ตรวจสอบข้อมูลล้มเหลว: ${errMsg}`;
@@ -356,28 +366,23 @@ confirmSendBtn.addEventListener('click', async ()=> {
     debugBox.classList.remove('hidden');
     debugBox.innerText = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
   } finally {
+    confirmSendBtn.disabled = false;
+    scanAgainBtn.disabled = false;
     progressInner.style.width = '0%';
     progressContainer.classList.add('hidden');
+    setProgress(0);
   }
 });
 
-/* ================== UI events ================== */
+/* ========== UI events ========== */
 startScanBtn.addEventListener('click', async () => {
-  // validate name and phone minimally
   const nameVal = nameInput.value.trim();
   if (!nameVal) {
     if (!confirm('คุณยังไม่ได้กรอกชื่อ จะดำเนินการต่อโดยใช้ชื่อ "ไม่ระบุ" หรือไม่?')) return;
   }
-  // reset previous messages
   responseMessage.innerText = '';
-  lastMockPos = randomLocationMeters();
+  lastMockPos = null; // ensure randomization happens later
   await startQRScanner();
-});
-
-demoPosBtn.addEventListener('click', ()=> {
-  lastMockPos = randomLocationMeters();
-  const p = lastMockPos;
-  alert(`ตำแหน่งสุ่มแล้ว\nlat: ${p.latitude.toFixed(6)}\nlng: ${p.longitude.toFixed(6)}`);
 });
 
 stopScanBtn.addEventListener('click', async () => {
@@ -388,6 +393,8 @@ stopScanBtn.addEventListener('click', async () => {
 retryScanBtn.addEventListener('click', async () => {
   responseMessage.innerText = '';
   retryScanBtn.classList.add('hidden');
+  lastFormData = null;
+  lastMockPos = null;
   await startQRScanner();
 });
 
@@ -395,6 +402,15 @@ newEntryBtn.addEventListener('click', () => {
   // reset for new usage
   nameInput.value = '';
   phoneInput.value = '';
+  lastFormData = null;
+  lastMockPos = null;
+  responseMessage.innerText = '';
+  showSection('form');
+});
+
+stopAllBtn.addEventListener('click', async () => {
+  // a simple cancel button on form (not required)
+  await stopQRScanner();
   lastFormData = null;
   lastMockPos = null;
   responseMessage.innerText = '';
@@ -412,7 +428,7 @@ function cryptoRandomId() {
   }
 }
 
-/* ================== start state ================== */
+/* init */
 showSection('form');
 </script>
 </body>
