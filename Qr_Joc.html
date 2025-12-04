@@ -5,432 +5,302 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QR Code Check-In (No LIFF)</title>
 
-<!-- html5-qrcode (camera scanner) -->
+<!-- html5-qrcode -->
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  :root{--green:#00B900;--red:#f44336}
-  body{font-family:'Kanit',sans-serif;margin:0;padding:20px;background:#f4f4f9;color:#222;display:flex;flex-direction:column;align-items:center}
-  header img{width:80px;margin-bottom:14px}
-  section{background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);width:100%;max-width:540px;box-sizing:border-box;margin-bottom:16px}
-  h1{margin:0 0 8px;font-size:20px}
-  p.lead{margin:0 0 14px;color:#666}
-  label{display:block;margin-bottom:8px;font-weight:600}
-  input,button,select{width:100%;padding:12px;border-radius:8px;border:1px solid #dcdcdc;box-sizing:border-box;font-size:16px}
-  button{background:var(--green);color:#fff;border:none;cursor:pointer;font-weight:700}
-  button.secondary{background:#fff;color:var(--green);border:2px solid var(--green)}
-  button.danger{background:var(--red)}
-  .message{margin-top:10px;font-weight:600;color:#333}
-  #qr-reader{margin-top:14px;border:1px dashed #ccc;border-radius:8px;min-height:260px}
-  .hidden{display:none !important}
-  .modal{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:flex;align-items:flex-end;justify-content:center;padding:18px;z-index:999}
-  .modal .card{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:540px;box-sizing:border-box}
-  .modal h2{margin:0 0 12px;font-size:20px;text-align:center}
-  .modal .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-  .progress-bar{height:14px;background:#e9e9e9;border-radius:8px;overflow:hidden}
-  .progress-bar > div{height:100%;width:0%;background:var(--green);transition:width .4s}
-  pre.debug{background:#f7f7f7;padding:10px;border-radius:8px;white-space:pre-wrap;word-break:break-word;margin-top:12px}
-  .small-note{font-size:12px;color:#666;margin-top:8px}
-  .btn-row{display:flex;gap:12px}
-  .btn-row button{flex:1}
-  /* make modal not focus-trap when hidden */
-  .modal[aria-hidden="true"]{display:none}
+  body { font-family:'Kanit',sans-serif; margin:0; padding:20px; background:#f4f4f9; color:#222; display:flex; justify-content:center; }
+  .container { width:100%; max-width:540px; }
+  header { text-align:center; margin-bottom:18px; }
+  header img { width:84px; }
+  .card { background:#fff; border-radius:14px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+  h1 { margin:0 0 8px 0; font-size:20px; }
+  p.sub { margin:0 0 18px 0; color:#666; }
+  label { display:block; font-weight:700; margin-bottom:8px; }
+  input[type="text"], input[type="tel"], select { width:100%; padding:12px; border-radius:10px; border:1px solid #d9d9d9; margin-bottom:16px; font-size:16px; box-sizing:border-box; }
+  button { width:100%; padding:12px; border-radius:10px; border:0; background:#00B900; color:#fff; font-weight:700; font-size:16px; cursor:pointer; }
+  button.secondary { background:#f44336; }
+  .hidden { display:none; }
+  #qr-reader { margin-top:14px; border:1px dashed #ccc; border-radius:10px; min-height:280px; }
+  .message { margin-top:12px; font-weight:600; color:#333; }
+  .modal { position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:flex-end; justify-content:center; z-index:999; pointer-events:none; }
+  .modal .sheet { width:100%; max-width:540px; background:#fff; border-radius:14px 14px 0 0; padding:18px; box-shadow:0 -6px 20px rgba(0,0,0,0.15); pointer-events:auto; }
+  .sheet h2 { margin:0 0 8px 0; font-size:18px; text-align:center; }
+  .sheet .summary { font-size:16px; color:#222; line-height:1.6; margin:12px 0; }
+  .sheet .buttons { display:flex; gap:12px; margin-top:12px; }
+  .sheet .buttons button { flex:1; }
+  .note { margin-top:12px; color:#666; font-size:14px; text-align:center; }
 </style>
 </head>
 <body>
+<div class="container">
+  <header>
+    <img src="https://drive.google.com/thumbnail?id=1biw0LeK_X0ntKPdH4-8XaPUcl1yGDl59" alt="Logo">
+  </header>
 
-<header>
-  <img src="https://drive.google.com/thumbnail?id=1biw0LeK_X0ntKPdH4-8XaPUcl1yGDl59" alt="Logo">
-</header>
+  <div class="card" id="formCard">
+    <h1>ระบบลงเวลาเข้าเรียน</h1>
+    <p class="sub">ณ สศท.สปท.</p>
 
-<!-- Form -->
-<section id="form-section">
-  <h1>ระบบลงเวลาเข้าเรียน</h1>
-  <p class="lead">ณ สศท.สปท.</p>
+    <label for="inputName">ชื่อ (ระบุชื่อ/รหัส)</label>
+    <input id="inputName" type="text" placeholder="เช่น B105 Chana.s" />
 
-  <label for="nameInput">ชื่อ (ระบุชื่อ/รหัส)</label>
-  <input id="nameInput" type="text" placeholder="เช่น B105 Chana.s" autocomplete="name" />
+    <label for="inputPhone">หมายเลขโทรศัพท์</label>
+    <input id="inputPhone" type="tel" placeholder="0xxxxxxxxx" pattern="^0[689]\d{8}$" />
 
-  <label for="phoneInput">หมายเลขโทรศัพท์</label>
-  <input id="phoneInput" type="tel" placeholder="08xxxxxxxx" pattern="^0[689]\d{8}$" />
-
-  <div class="btn-row" style="margin-top:12px">
     <button id="startScanBtn">เริ่มสแกน QR</button>
-    <button id="stopAllBtn" class="secondary" type="button">ยกเลิก</button>
+    <div class="note">เมื่อกดปุ่ม ระบบจะขออนุญาตใช้กล้อง เพื่อสแกน QR Code</div>
   </div>
 
-  <div class="small-note">ตำแหน่งจะถูกสุ่มภายใน 5–10 เมตรจากตำแหน่งฐาน (13.77922,100.55861) **เมื่อสแกนเสร็จและก่อนส่งข้อมูล**</div>
-</section>
-
-<!-- Scanner section -->
-<section id="qr-section" class="hidden">
-  <h1>แสกน QR Code เพื่อประทับเวลา</h1>
-  <div id="qr-reader" aria-label="QR camera area"></div>
-  <div id="responseMessage" class="message"></div>
-
-  <div class="btn-row" style="margin-top:12px">
-    <button id="stopScanBtn" class="danger">หยุดสแกน</button>
-    <button id="retryScanBtn" class="hidden">สแกนใหม่</button>
+  <div class="card hidden" id="scannerCard" style="margin-top:18px;">
+    <h1>แสกน QR Code เพื่อประทับเวลา</h1>
+    <div id="qr-reader"></div>
+    <div id="scanInfo" class="message"></div>
+    <button id="stopScanBtn" class="secondary" style="margin-top:12px;">หยุดสแกน</button>
   </div>
-</section>
 
-<!-- Modal: summary & confirm -->
-<div id="summaryModal" class="modal" aria-hidden="true">
-  <div class="card" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
-    <h2 id="summaryTitle">สรุปผลการสแกน</h2>
-    <div id="summaryBody" style="line-height:1.6;color:#222"></div>
-
-    <div class="grid" style="margin-top:12px">
-      <button id="scanAgainBtn" class="danger">สแกนใหม่</button>
-      <button id="confirmSendBtn">ยืนยันและส่งข้อมูล</button>
-    </div>
-
-    <div class="progress-bar hidden" id="progressContainer" style="margin-top:14px"><div id="progressBarInner"></div></div>
-    <pre class="debug hidden" id="debugBox"></pre>
-    <div style="height:8px"></div>
+  <div class="card hidden" id="successCard" style="margin-top:18px;">
+    <h1>รายงานการลงเวลา</h1>
+    <div id="successText" class="message"></div>
+    <button id="newScanBtn" style="margin-top:14px;">ลงเวลาใหม่</button>
   </div>
 </div>
 
-<!-- Success section -->
-<section id="success-section" class="hidden">
-  <h1>รายงานการลงเวลา</h1>
-  <p id="successMessage" class="message"></p>
-  <button id="newEntryBtn" style="margin-top:10px">ลงเวลาใหม่</button>
-</section>
+<!-- confirmation modal (bottom sheet style) -->
+<div id="confirmModal" class="modal hidden" aria-hidden="true">
+  <div class="sheet">
+    <h2>สรุปผลการสแกน</h2>
+    <div id="summaryText" class="summary"></div>
+    <div class="buttons">
+      <button id="rescanBtn" class="secondary">สแกนใหม่</button>
+      <button id="confirmSendBtn">ยืนยันและส่งข้อมูล</button>
+    </div>
+    <div class="note">ข้อมูลจะถูกส่งไปยังระบบเดิมและ LINE OA ของหน่วยงาน</div>
+  </div>
+</div>
 
 <script>
 /*
-  Fixed & improved version:
-  - Randomize mock GPS only after successful scan (before sending)
-  - Removed visible "สุ่มตำแหน่ง" button from UI
-  - Modal hidden by aria-hidden & class; only shows when needed
-  - Buttons disabled during send
+  Single-page HTML:
+  - No LIFF
+  - Randomize location 5–10 meters from base
+  - Use html5-qrcode scanner
+  - Send data to provided GAS via JSONP (callback)
 */
 
-const scriptURL = 'https://script.google.com/macros/s/AKfycby8iE0HQ4V_8rgjHNalxp1bM4VFxxz5JBXkUc0qpqkLxcYxM1iE5vmhQO0wCoNG1eIfCg/exec';
-const baseLat = 13.77922;
-const baseLng = 100.55861;
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby8iE0HQ4V_8rgjHNalxp1bM4VFxxz5JBXkUc0qpqkLxcYxM1iE5vmhQO0wCoNG1eIfCg/exec';
 
-/* ========== helpers ========== */
-function randomLocationMeters(minMeters = 5, maxMeters = 10) {
-  const meterToDeg = 1 / 111111;
+let html5QrcodeScanner = null;
+let currentForm = {}; // { Name, Phone, Secrete, Latitude, Longitude, Date, Time }
+const BASE_LAT = 13.77922;
+const BASE_LNG = 100.55861;
+
+// Utility: random location within min–max meters from base
+function randomLocation(minMeters = 5, maxMeters = 10) {
+  const metersToDeg = 1 / 111111; // approx for lat
   const distance = Math.random() * (maxMeters - minMeters) + minMeters;
-  const angle = Math.random() * 2 * Math.PI;
-  const dLat = (distance * Math.cos(angle)) * meterToDeg;
-  const dLng = (distance * Math.sin(angle)) * (meterToDeg / Math.cos(baseLat * Math.PI / 180));
-  return { latitude: baseLat + dLat, longitude: baseLng + dLng };
+  const angle = Math.random() * Math.PI * 2;
+  const dLat = Math.cos(angle) * distance * metersToDeg;
+  const dLng = Math.sin(angle) * distance * metersToDeg / Math.cos(BASE_LAT * Math.PI / 180);
+  return { latitude: BASE_LAT + dLat, longitude: BASE_LNG + dLng };
 }
 
-function formatThaiDateTime(d = new Date()) {
-  const day = String(d.getDate()).padStart(2,'0');
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const year = d.getFullYear();
+function formatDateTime(d = new Date()) {
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yyyy = d.getFullYear();
   const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  return { date:`${day}-${month}-${year}`, time:`${hh}:${mm}` };
+  const min = String(d.getMinutes()).padStart(2,'0');
+  return { date:`${dd}-${mm}-${yyyy}`, time:`${hh}:${min}` };
 }
 
-/* JSONP call to GAS (returns Promise) */
-function callApi(action, params={}) {
+function show(el){ el.classList.remove('hidden'); el.setAttribute('aria-hidden','false'); }
+function hide(el){ el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); }
+
+// JSONP call helper (for GAS that supports callback)
+function callGAS(action, params = {}) {
   return new Promise((resolve, reject) => {
-    const callbackName = `jsonp_cb_${Date.now()}_${Math.floor(Math.random()*9999)}`;
-    window[callbackName] = (res) => {
-      delete window[callbackName];
-      script.remove();
-      resolve(res);
+    const cbName = 'jsonp_cb_' + Date.now() + Math.floor(Math.random()*1000);
+    window[cbName] = function(result){
+      try { delete window[cbName]; script.remove(); } catch(e){}
+      resolve(result);
     };
-    const url = new URL(scriptURL);
+    const url = new URL(GAS_URL);
     url.searchParams.append('action', action);
-    for (const k in params) {
-      url.searchParams.append(k, params[k]);
-    }
-    url.searchParams.append('callback', callbackName);
+    for (const k in params) url.searchParams.append(k, params[k]);
+    url.searchParams.append('callback', cbName);
     const script = document.createElement('script');
     script.src = url.toString();
     script.onerror = () => {
-      delete window[callbackName];
-      script.remove();
-      reject(new Error('API network/script load error'));
+      try { delete window[cbName]; script.remove(); } catch(e){}
+      reject(new Error('Network / JSONP load error'));
     };
     document.body.appendChild(script);
   });
 }
 
-/* ========== DOM ========== */
-const nameInput = document.getElementById('nameInput');
-const phoneInput = document.getElementById('phoneInput');
+/* UI elements */
 const startScanBtn = document.getElementById('startScanBtn');
-
-const formSection = document.getElementById('form-section');
-const qrSection = document.getElementById('qr-section');
-const successSection = document.getElementById('success-section');
-
-const qrReaderElem = document.getElementById('qr-reader');
-const responseMessage = document.getElementById('responseMessage');
 const stopScanBtn = document.getElementById('stopScanBtn');
-const retryScanBtn = document.getElementById('retryScanBtn');
-
-const summaryModal = document.getElementById('summaryModal');
-const summaryBody = document.getElementById('summaryBody');
-const scanAgainBtn = document.getElementById('scanAgainBtn');
+const rescanBtn = document.getElementById('rescanBtn');
 const confirmSendBtn = document.getElementById('confirmSendBtn');
+const newScanBtn = document.getElementById('newScanBtn');
 
-const progressContainer = document.getElementById('progressContainer');
-const progressInner = document.getElementById('progressBarInner');
-const debugBox = document.getElementById('debugBox');
+const formCard = document.getElementById('formCard');
+const scannerCard = document.getElementById('scannerCard');
+const successCard = document.getElementById('successCard');
+const confirmModal = document.getElementById('confirmModal');
 
-const successMessage = document.getElementById('successMessage');
-const newEntryBtn = document.getElementById('newEntryBtn');
+const inputName = document.getElementById('inputName');
+const inputPhone = document.getElementById('inputPhone');
+const qrReaderDiv = document.getElementById('qr-reader');
+const scanInfo = document.getElementById('scanInfo');
+const summaryText = document.getElementById('summaryText');
+const successText = document.getElementById('successText');
 
-const stopAllBtn = document.getElementById('stopAllBtn');
+/* start scanning flow */
+startScanBtn.addEventListener('click', async () => {
+  const name = inputName.value.trim();
+  const phone = inputPhone.value.trim();
+  if (!name) { alert('กรุณากรอกชื่อ'); return; }
+  if (!phone || !/^0[689]\d{8}$/.test(phone)) { alert('กรุณากรอกเบอร์มือถือให้ถูกต้อง'); return; }
 
-/* ========== state ========== */
-let html5QrScanner = null;
-let lastFormData = null; // object to send (not yet randomized pos)
-let lastMockPos = null;
-
-/* ========== UI helpers ========== */
-function showSection(id) {
-  formSection.classList.toggle('hidden', id !== 'form');
-  qrSection.classList.toggle('hidden', id !== 'qr');
-  successSection.classList.toggle('hidden', id !== 'success');
-}
-
-function showSummaryModal(show=true) {
-  summaryModal.setAttribute('aria-hidden', show? 'false' : 'true');
-  summaryModal.classList.toggle('hidden', !show);
-  // prevent body scroll when modal open
-  document.body.style.overflow = show ? 'hidden' : '';
-}
-
-function setProgress(pct) {
-  progressContainer.classList.remove('hidden');
-  progressInner.style.width = `${pct}%`;
-}
-
-/* ========== scanner control ========== */
-async function startQRScanner() {
-  responseMessage.innerText = '';
-  retryScanBtn.classList.add('hidden');
-  showSection('qr');
-
-  // clear qr-reader content
-  qrReaderElem.innerHTML = '';
-
-  html5QrScanner = new Html5Qrcode(/* element id */ "qr-reader", /* verbose= */ false);
-  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-  try {
-    await html5QrScanner.start(
-      { facingMode: "environment" },
-      config,
-      qrSuccessCallback,
-      (err) => {
-        // optional per-frame error callback (ignored)
-      }
-    );
-  } catch (err) {
-    responseMessage.innerText = 'ไม่สามารถเปิดกล้องได้ หรืออุปกรณ์ไม่รองรับ';
-    retryScanBtn.classList.remove('hidden');
-  }
-}
-
-async function stopQRScanner() {
-  if (html5QrScanner) {
-    try { await html5QrScanner.stop(); } catch(e){}
-    try { html5QrScanner.clear(); } catch(e){}
-    html5QrScanner = null;
-  }
-}
-
-/* ========== scan result handler ========== */
-async function qrSuccessCallback(decodedText) {
-  // Stop scanning immediately to avoid duplicate scans
-  await stopQRScanner();
-
-  if (!decodedText || !decodedText.trim()) {
-    responseMessage.innerText = 'QR code ไม่ถูกต้อง โปรดสแกนอีกครั้ง';
-    retryScanBtn.classList.remove('hidden');
-    return;
-  }
-
-  // collect form fields
-  const nameVal = nameInput.value.trim() || 'ไม่ระบุ';
-  const phoneVal = phoneInput.value.trim() || '';
-
-  // basic phone validation (allow empty)
-  if (phoneVal && !/^0[689]\d{8}$/.test(phoneVal)) {
-    responseMessage.innerText = 'หมายเลขโทรศัพท์ไม่ถูกต้อง (รูปแบบ 0x...)';
-    retryScanBtn.classList.remove('hidden');
-    return;
-  }
-
-  // prepare payload WITHOUT position yet
-  const payload = {
-    Name: nameVal,
-    Phone: phoneVal,
-    Secrete: decodedText.trim(),
-    Latitude: null,
-    Longitude: null,
-    UUID: `no-liff-${cryptoRandomId()}`
+  // prepare randomized location & base form fields
+  const loc = randomLocation(5,10);
+  const dt = formatDateTime(new Date());
+  currentForm = {
+    Name: name,
+    Phone: phone,
+    Latitude: loc.latitude,
+    Longitude: loc.longitude,
+    Date: dt.date,
+    Time: dt.time,
+    Secrete: '' // filled by QR
   };
 
-  lastFormData = payload;
-
-  // Build and show summary modal (position will be randomized when Confirm pressed)
-  const now = new Date();
-  const { date, time } = formatThaiDateTime(now);
-  const summaryText = `
-ลงเวลาสำเร็จ
---------------------
-คุณ: ${payload.Name}
-เบอร์โทร: ${payload.Phone || 'N/A'}
-วันที่: ${date}
-เวลา: ${time} น.
-(ตำแหน่งจะถูกสุ่มก่อนส่งข้อมูล)
-  `.trim();
-
-  summaryBody.innerText = summaryText;
-  showSummaryModal(true);
-}
-
-/* ========== confirm & send ========== */
-scanAgainBtn.addEventListener('click', async ()=> {
-  showSummaryModal(false);
-  lastMockPos = null;
-  lastFormData = null;
-  responseMessage.innerText = '';
-  await startQRScanner();
+  // show scanner UI
+  hide(formCard);
+  show(scannerCard);
+  scanInfo.innerText = 'กำลังรอการสแกน QR...';
+  startScanner();
 });
 
-confirmSendBtn.addEventListener('click', async ()=> {
-  if (!lastFormData) return;
-  // disable buttons while sending
-  confirmSendBtn.disabled = true;
-  scanAgainBtn.disabled = true;
-  setProgress(5);
-  debugBox.classList.add('hidden');
-  progressContainer.classList.remove('hidden');
+stopScanBtn.addEventListener('click', () => {
+  stopScanner();
+  hide(scannerCard);
+  show(formCard);
+});
+
+/* start html5-qrcode */
+function startScanner() {
+  // ensure previous stopped
+  if (html5QrcodeScanner) {
+    html5QrcodeScanner.clear().catch(()=>{});
+    html5QrcodeScanner = null;
+  }
+  html5QrcodeScanner = new Html5Qrcode(/* element id */ "qr-reader", { verbose: false });
+  const config = { fps: 10, qrbox: { width: 280, height: 280 } };
+  html5QrcodeScanner.start(
+    { facingMode: "environment" },
+    config,
+    qrSuccessCallback,
+    qrErrorCallback
+  ).catch(err => {
+    console.error('start error', err);
+    scanInfo.innerText = 'ไม่สามารถเปิดกล้องได้: ' + (err.message || err);
+  });
+}
+
+function stopScanner() {
+  if (html5QrcodeScanner) {
+    html5QrcodeScanner.stop().then(() => {
+      html5QrcodeScanner.clear().catch(()=>{});
+      html5QrcodeScanner = null;
+    }).catch(()=>{ html5QrcodeScanner = null; });
+  }
+}
+
+/* callbacks */
+function qrSuccessCallback(decodedText, decodedResult) {
+  // stop scanning and show confirmation modal
+  stopScanner();
+  currentForm.Secrete = decodedText ? decodedText.trim() : '';
+  const summary = `ลงเวลาสำเร็จ\n--------------------\nคุณ: ${currentForm.Name}\nเบอร์โทร: ${currentForm.Phone}\nวันที่: ${currentForm.Date}\nเวลา: ${currentForm.Time} น.`;
+  summaryText.innerText = summary;
+  show(confirmModal);
+}
+
+function qrErrorCallback(err) {
+  // scan errors are frequent — don't spam UI, only update minimal
+  console.debug('QR error', err);
+}
+
+/* modal buttons */
+rescanBtn.addEventListener('click', () => {
+  hide(confirmModal);
+  show(scannerCard);
+  scanInfo.innerText = 'กลับไปสแกนใหม่...';
+  startScanner();
+});
+
+confirmSendBtn.addEventListener('click', async () => {
+  // send to GAS via JSONP (action=add). The original system expects a 'text' param JSON string.
+  hide(confirmModal);
+  scanInfo.innerText = 'กำลังส่งข้อมูล...';
+  show(scannerCard);
+
+  // Build payload (match original 'text' JSON structure)
+  const payload = {
+    Name: currentForm.Name,
+    Phone: currentForm.Phone,
+    Date: currentForm.Date,
+    Time: currentForm.Time,
+    Latitude: currentForm.Latitude,
+    Longitude: currentForm.Longitude,
+    Secrete: currentForm.Secrete
+  };
 
   try {
-    // Before sending, randomize position (only now)
-    lastMockPos = randomLocationMeters();
-    lastFormData.Latitude = lastMockPos.latitude;
-    lastFormData.Longitude = lastMockPos.longitude;
-
-    // Step 1: add
-    summaryBody.innerText = 'ขั้นตอน 1/3: กำลังส่งข้อมูลเพื่อบันทึก...';
-    const addRes = await callApi('add', { text: JSON.stringify(lastFormData) });
-    setProgress(35);
-
-    if (!addRes || addRes.status !== 'added') {
-      throw addRes || new Error('add failed');
-    }
-
-    // Step 2: short processing wait (server-side)
-    summaryBody.innerText = 'ขั้นตอน 2/3: บันทึกสำเร็จ! กำลังรอเพื่อตรวจสอบ...';
-    await new Promise(r => setTimeout(r, 900));
-    setProgress(60);
-
-    // Step 3: check
-    summaryBody.innerText = 'ขั้นตอน 3/3: กำลังดึงข้อมูลมาเปรียบเทียบ...';
-    const checkParams = {
-      name: addRes.nameForCheck || lastFormData.Name || '',
-      date: addRes.dateForCheck || '',
-      secrete: addRes.secreteForCheck || lastFormData.Secrete || ''
-    };
-    const checkRes = await callApi('check', checkParams);
-    setProgress(100);
-
-    if (checkRes && checkRes.status === 'found') {
-      // success - hide modal and show success section
-      summaryBody.innerText = '✅ ตรวจสอบข้อมูลถูกต้อง! ส่งข้อมูลสำเร็จแล้ว';
-      showSummaryModal(false);
-
-      successMessage.innerText = `ลงเวลาสำเร็จ!\nคุณ: ${lastFormData.Name}\nเบอร์โทร: ${lastFormData.Phone || 'N/A'}\nเวลา: ${formatThaiDateTime().time} น.`;
-      showSection('success');
+    // Many existing GAS endpoints expect "action=add" and text=JSON.stringify(form)
+    const res = await callGAS('add', { text: JSON.stringify(payload) });
+    // The original GAS normally returns { status: 'added', ... } on success
+    if (res && (res.status === 'added' || res.status === 'ok' || res.result === 'added')) {
+      // show success screen (UI only) — GAS will push message to LINE OA if it's wired to do so
+      successText.innerText = `ลงเวลาสำเร็จ!\n\nคุณ: ${currentForm.Name}\nเบอร์โทร: ${currentForm.Phone}\nวันที่: ${currentForm.Date}\nเวลา: ${currentForm.Time} น.\n\nระบบเดิมจะส่งข้อความยืนยันใน LINE OA ของหน่วยงาน (หากการตั้งค่า GAS เชื่อมต่อถูกต้อง)`;
+      hide(scannerCard);
+      show(successCard);
     } else {
-      const errMsg = (checkRes && checkRes.message) ? (checkRes.message) : 'การตรวจสอบไม่พบข้อมูล';
-      showSummaryModal(false);
-      responseMessage.innerText = `ตรวจสอบข้อมูลล้มเหลว: ${errMsg}`;
-      retryScanBtn.classList.remove('hidden');
-      debugBox.classList.remove('hidden');
-      debugBox.innerText = JSON.stringify({ addRes, checkRes }, null, 2);
+      // show error details if provided
+      const errMsg = (res && res.message) ? res.message : JSON.stringify(res);
+      scanInfo.innerText = 'การส่งข้อมูลไม่สำเร็จ: ' + errMsg;
+      // keep scannerCard visible so user can retry
     }
   } catch (err) {
-    console.error('send error', err);
-    showSummaryModal(false);
-    responseMessage.innerText = `เกิดข้อผิดพลาดในการส่ง: ${err && err.message ? err.message : JSON.stringify(err)}`;
-    retryScanBtn.classList.remove('hidden');
-    debugBox.classList.remove('hidden');
-    debugBox.innerText = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
-  } finally {
-    confirmSendBtn.disabled = false;
-    scanAgainBtn.disabled = false;
-    progressInner.style.width = '0%';
-    progressContainer.classList.add('hidden');
-    setProgress(0);
+    console.error(err);
+    scanInfo.innerText = 'เกิดข้อผิดพลาดในการส่งข้อมูล: ' + (err.message || err);
   }
 });
 
-/* ========== UI events ========== */
-startScanBtn.addEventListener('click', async () => {
-  const nameVal = nameInput.value.trim();
-  if (!nameVal) {
-    if (!confirm('คุณยังไม่ได้กรอกชื่อ จะดำเนินการต่อโดยใช้ชื่อ "ไม่ระบุ" หรือไม่?')) return;
+/* new scan button */
+newScanBtn.addEventListener('click', () => {
+  // reset and return to form
+  hide(successCard);
+  show(formCard);
+  // keep previous name/phone for convenience
+});
+
+/* helpful: close modal if user taps outside (bottom sheet) */
+confirmModal.addEventListener('click', (ev) => {
+  if (ev.target === confirmModal) {
+    // do nothing: force user to choose
   }
-  responseMessage.innerText = '';
-  lastMockPos = null; // ensure randomization happens later
-  await startQRScanner();
 });
 
-stopScanBtn.addEventListener('click', async () => {
-  await stopQRScanner();
-  showSection('form');
+/* On page unload stop camera */
+window.addEventListener('beforeunload', () => {
+  stopScanner();
 });
-
-retryScanBtn.addEventListener('click', async () => {
-  responseMessage.innerText = '';
-  retryScanBtn.classList.add('hidden');
-  lastFormData = null;
-  lastMockPos = null;
-  await startQRScanner();
-});
-
-newEntryBtn.addEventListener('click', () => {
-  // reset for new usage
-  nameInput.value = '';
-  phoneInput.value = '';
-  lastFormData = null;
-  lastMockPos = null;
-  responseMessage.innerText = '';
-  showSection('form');
-});
-
-stopAllBtn.addEventListener('click', async () => {
-  // a simple cancel button on form (not required)
-  await stopQRScanner();
-  lastFormData = null;
-  lastMockPos = null;
-  responseMessage.innerText = '';
-  showSection('form');
-});
-
-/* small util: crypto id */
-function cryptoRandomId() {
-  if (window.crypto && crypto.getRandomValues) {
-    const a = new Uint32Array(4);
-    crypto.getRandomValues(a);
-    return Array.from(a, n => n.toString(16)).join('-');
-  } else {
-    return Math.random().toString(36).slice(2);
-  }
-}
-
-/* init */
-showSection('form');
 </script>
 </body>
 </html>
-
