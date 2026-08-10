@@ -1,89 +1,3 @@
-<?php
-// ตรวจสอบว่าเป็นการ request แบบ AJAX (จาก jQuery) หรือไม่
-// หรือตรวจสอบ parameter พิเศษ เพื่อแยกว่าจะส่ง HTML หรือ JSON
-if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
-    header('Content-Type: application/json');
-    date_default_timezone_set('Asia/Bangkok');
-
-    // ========================================================
-    // CONFIGURATION
-    // MAC Address ที่คุณยืนยันแล้ว (จากกล่อง Android Box)
-    // ========================================================
-    $target_mac_address = "04:82:00:82:72:EA"; 
-
-    // --------------------------------------------------------
-    // ส่วนฟังก์ชันเข้ารหัส (ถอดแบบจาก Java 100%)
-    // --------------------------------------------------------
-    function stringXorEncode($dataStr, $keyStr) {
-        $dataBytes = array_values(unpack('C*', $dataStr));
-        $keyBytes = array_values(unpack('C*', $keyStr));
-        
-        $dataLen = count($dataBytes);
-        $keyLen = count($keyBytes);
-        $resultBytes = [];
-
-        for ($i = 0; $i < $dataLen; $i++) {
-            $d = $dataBytes[$i];
-            $k = $keyBytes[$i % $keyLen];
-            $resultBytes[] = $d ^ $k;
-        }
-        
-        $binaryString = call_user_func_array("pack", array_merge(array("C*"), $resultBytes));
-        return base64_encode($binaryString);
-    }
-
-    function hexToBin4($hexChar) {
-        $dec = hexdec($hexChar);
-        return sprintf("%04d", decbin($dec));
-    }
-
-    function charToBinString($char) {
-        return decbin(ord($char));
-    }
-
-    // 1. สร้าง KEY (sb2)
-    $dateStr = date('Ymd'); 
-    $sb2 = "";
-    for ($i = 0; $i < strlen($dateStr); $i++) {
-        $sb2 .= charToBinString($dateStr[$i]);
-    }
-    $sb2 .= "111111111111"; 
-
-    // 2. สร้าง DATA ส่วนที่ 1: วินาที (sb4)
-    $secStr = date('s');
-    $sb4 = "";
-    for ($i = 0; $i < strlen($secStr); $i++) {
-        $sb4 .= charToBinString($secStr[$i]);
-    }
-
-    // 3. สร้าง DATA ส่วนที่ 2: MAC Address (sb5)
-    $cleanMac = str_replace(":", "", strtoupper($target_mac_address));
-    $sb5 = "";
-    for ($i = 0; $i < strlen($cleanMac); $i++) {
-        $char = $cleanMac[$i];
-        $sb5 .= hexToBin4($char);
-    }
-
-    // 4. รวมร่างและเข้ารหัส (Encode)
-    $inputData = $sb4 . $sb5;
-    $encodedSuffix = stringXorEncode($inputData, $sb2);
-
-    // 5. สร้างลิงก์ URL สุดท้าย
-    $prefix = date('YmdHi'); 
-    $finalUrl = "https://app.rtarf.mi.th/Qrcode/?qrcode=6" . $prefix . $encodedSuffix;
-
-    // 6. ส่งผลลัพธ์กลับเป็น JSON
-    echo json_encode([
-        'show' => true,
-        'text' => $finalUrl
-    ], JSON_UNESCAPED_SLASHES);
-    
-    // จบการทำงานของ PHP ทันที ไม่ให้ไปโหลด HTML ด้านล่าง
-    exit;
-}
-
-// ถ้าไม่ใช่การขอ JSON (คือการเปิดหน้าเว็บปกติ) ให้แสดง HTML ด้านล่าง
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,49 +7,28 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
             background-color: #121212;
-            color: #00ffcc; /* สีเขียวมิ้นต์ */
+            color: #00ffcc;
             margin: 0;
             padding: 0;
             position: relative;
             text-align: center;
-            background-image: url('nakom.jpg'); /* เปลี่ยนเป็น URL ของรูปที่ต้องการ */
+            background-image: url('nakom.jpg');
             background-size: cover;
             background-repeat: no-repeat;
-            background-position: 270px center; 
+            background-position: 270px center;
             height: 120vh;
             
             /* ป้องกันการคลุมดำ */
             -webkit-user-select: none;
             -ms-user-select: none;
             user-select: none;
-        }
-
-        .top-right {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .top-right a {
-            color: #bb86fc;
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        .top-right a:hover {
-            color: #ffffff;
         }
 
         #message {
@@ -161,51 +54,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
             height: 300px;
         }
 
-        h1, h3, p {
-            color: #00ffcc;
-        }
+        h1, h3, p, #timeDisplay { color: #00ffcc; }
+        .hidden { display: none; }
 
-        #timeDisplay {
-            color: #00ffcc;
-        }
-
-        a {
-            color: #bb86fc;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* ปรับพื้นหลังตามขนาดจอ */
-        @media (min-width: 1200px) {
-            body { background-position: calc(50% + 200px) center; }
-        }
-        @media (max-width: 1199px) and (min-width: 768px) {
-            body { background-position: center; }
-        }
-        @media (max-width: 767px) {
-            body { background-position: center; }
-        }
+        @media (min-width: 1200px) { body { background-position: calc(50% + 200px) center; } }
+        @media (max-width: 1199px) and (min-width: 768px) { body { background-position: center; } }
+        @media (max-width: 767px) { body { background-position: center; } }
     </style>
 </head>
 <body>
     <h1>QR Code Generator</h1>
-    <h3>โรงเรียนกรมแผนที่ทหารจุดที่</h3>
+    <h3>โรงเรียนกรมแผนที่ทหาร</h3>
     <h2>Donate: 0846795069</h2>
     <h4>Develop By: Chana.s</h4>
     <div id="timeDisplay"></div>
     <div id="qrcodeContainer">
         <div id="qrcode"></div>
-        <div id="message" class="hidden">แสดง QR Code ตั้งแต่ <br> 06:00 - 09:00 <br>วันจันทร์ - วันศุกร์ <br> หรือ refresh อีกครั้ง <br></div>
+        <div id="message" class="hidden">ระบบปิดให้บริการ</div>
     </div>
 
-    <!-- แสดงข้อมูล IP ซ่อนไว้ หรือแสดงตามความต้องการ -->
+    <!-- ข้อมูลแสดงบนจอ -->
     <p id="ip"></p>
     <p id="region"></p>
     <p id="city"></p>
@@ -214,106 +82,114 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
     <p id="browser-info"></p>
 
     <script>
-        // ป้องกันการคลิกขวา
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        // ========================================================
+        // CONFIGURATION: ใส่ MAC Address เครื่องที่คุณยืนยันแล้ว
+        // ========================================================
+        const TARGET_MAC_ADDRESS = "04:82:00:82:72:EA";
 
-        // ป้องกันการกด F12 และปุ่ม Developer Tools อื่นๆ
+        // ป้องกันการคลิกขวาและ F12
+        document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = function(e) {
-            if (event.keyCode == 123) { return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+            if (event.keyCode == 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         }
 
+        // อัพเดทเวลาหน้าจอ
         function updateTime() {
             const now = new Date();
-            const options = {
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit'
-            };
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
             document.getElementById('timeDisplay').innerText = now.toLocaleDateString('th-TH', options);
         }
         updateTime();
         setInterval(updateTime, 1000);
 
-        function fetchDaytime() {
-            // ดึงข้อมูลเวลาจากไฟล์ get_daytime.php (สมมติว่าไฟล์นี้ยังแยกไว้อยู่)
-            // หรือถ้าต้องการย้าย logic มารวมในหน้านี้ ก็ทำแบบเดียวกับ get_qrcode
-            return $.ajax({
-                url: 'get_daytime.php',
-                method: 'GET',
-                dataType: 'json'
-            });
+        // --------------------------------------------------------
+        // ฟังก์ชันเข้ารหัสที่จำลองมาจาก Java (JS ล้วน)
+        // --------------------------------------------------------
+        function stringXorEncode(dataStr, keyStr) {
+            let resultBytes = [];
+            let keyLen = keyStr.length;
+            for (let i = 0; i < dataStr.length; i++) {
+                let d = dataStr.charCodeAt(i);
+                let k = keyStr.charCodeAt(i % keyLen);
+                resultBytes.push(d ^ k);
+            }
+            let binaryString = "";
+            for(let i = 0; i < resultBytes.length; i++) {
+                binaryString += String.fromCharCode(resultBytes[i]);
+            }
+            return btoa(binaryString);
         }
 
-        function fetchQRCode() {
-            $.when(fetchDaytime()).done(function(daytime) {
-                if (daytime.error) {
-                    console.error(daytime.error);
-                    return;
-                }
+        function hexToBin4(hexChar) {
+            return parseInt(hexChar, 16).toString(2).padStart(4, '0');
+        }
 
-                // สังเกตการเรียก AJAX ตอนนี้เราเรียกไฟล์ตัวเอง (สมมติชื่อไฟล์นี้คือ index.php)
-                // โดยส่ง parameter action=get_qrcode ไปด้วย
-                $.ajax({
-                    url: '?action=get_qrcode', // <--- เรียกไฟล์นี้ซ้ำ แต่ขอดูเฉพาะส่วน JSON
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        const now = new Date();
-                        const day = now.getDay();
-                        const hour = now.getHours();
+        function charToBinString(char) {
+            return char.charCodeAt(0).toString(2);
+        }
 
-                        const dayStart = parseInt(daytime.day_start);
-                        const dayStop = parseInt(daytime.day_stop);
-                        const timeStart = parseInt(daytime.time_start);
-                        const timeStop = parseInt(daytime.time_stop);
+        // ฟังก์ชันสร้างลิงก์ QR Code 
+        function generateQRCodeUrl() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const sec = String(now.getSeconds()).padStart(2, '0');
 
-                        if (day >= dayStart && day <= dayStop && hour >= timeStart && hour < timeStop) {
-                            if (response.show) {
-                                $('#qrcode').show();
-                                $('#message').hide();
-                                $('#qrcode').empty();
-                                new QRCode(document.getElementById('qrcode'), {
-                                    text: response.text,
-                                    width: 300,
-                                    height: 300
-                                });
-                            } else {
-                                $('#qrcode').hide();
-                                $('#message').show();
-                            }
-                        } else {
-                            $('#qrcode').hide();
-                            $('#message').show();
-                        }
-                    },
-                    error: function() {
-                        console.error('Error fetching QR code data.');
-                    }
-                });
-            }).fail(function() {
-                console.error('Error fetching daytime data.');
+            const dateStr = `${year}${month}${day}`;
+            let sb2 = "";
+            for (let i = 0; i < dateStr.length; i++) {
+                sb2 += charToBinString(dateStr[i]);
+            }
+            sb2 += "111111111111";
+
+            const secStr = sec;
+            let sb4 = "";
+            for (let i = 0; i < secStr.length; i++) {
+                sb4 += charToBinString(secStr[i]);
+            }
+
+            const cleanMac = TARGET_MAC_ADDRESS.replace(/:/g, '').toUpperCase();
+            let sb5 = "";
+            for (let i = 0; i < cleanMac.length; i++) {
+                sb5 += hexToBin4(cleanMac[i]);
+            }
+
+            const inputData = sb4 + sb5;
+            const encodedSuffix = stringXorEncode(inputData, sb2);
+            const prefix = `${year}${month}${day}${hour}${min}`;
+            
+            return "https://app.rtarf.mi.th/Qrcode/?qrcode=6" + prefix + encodedSuffix;
+        }
+
+        // สร้าง QR Code (แสดงตลอดเวลา)
+        function drawQRCode() {
+            $('#qrcode').show();
+            $('#message').hide();
+            $('#qrcode').empty();
+            
+            const finalUrl = generateQRCodeUrl();
+            new QRCode(document.getElementById('qrcode'), {
+                text: finalUrl,
+                width: 300,
+                height: 300
             });
         }
 
         $(document).ready(function() {
-            fetchQRCode();
-            setInterval(fetchQRCode, 10000);
+            drawQRCode();
+            setInterval(drawQRCode, 5000); // อัพเดท QR Code ทุกๆ 5 วินาที
         });
     </script>
 
+    <!-- Script สำหรับดึงข้อมูล Client IP / Device -->
     <script>
-        let city = '';
-
         fetch('https://ipinfo.io?token=ac65b6ea4beb43')
             .then(response => response.json())
             .then(data => {
@@ -321,87 +197,41 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
                 document.getElementById('region').innerText = 'Region: ' + data.region;
                 document.getElementById('city').innerText = 'City: ' + data.city;
                 document.getElementById('country').innerText = 'Country: ' + data.country;
-                city = data.city;
             })
-            .catch(error => {
-                console.error('Error fetching IP information:', error);
-            });
+            .catch(error => console.error('Error fetching IP:', error));
 
         function getOS() {
-            let userAgent = window.navigator.userAgent;
-            let platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
-            let os = null;
-
-            if (/Windows NT 10.0/.test(userAgent)) os = "Windows 10";
-            else if (/Windows NT 6.3/.test(userAgent)) os = "Windows 8.1";
-            else if (/Windows NT 6.2/.test(userAgent)) os = "Windows 8";
-            else if (/Windows NT 6.1/.test(userAgent)) os = "Windows 7";
-            else if (/Windows NT 6.0/.test(userAgent)) os = "Windows Vista";
-            else if (/Windows NT 5.1/.test(userAgent)) os = "Windows XP";
-            else if (/Mac/.test(platform)) os = "macOS";
-            else if (/Linux/.test(platform)) os = "Linux";
-            else if (/Android/.test(userAgent)) {
-                let match = userAgent.match(/Android (\d+(\.\d+)?)/);
-                os = match ? `Android ${match[1]}` : "Android";
-            } else if (/like Mac/.test(userAgent)) {
-                let match = userAgent.match(/OS (\d+(_\d+)?)/);
-                os = match ? `iOS ${match[1].replace('_', '.')}` : "iOS";
-            } else os = "Unknown";
-            return os;
-        }
-        
-        function isMobile() {
-            return /Mobile|Android|iP(hone|od|ad)|IEMobile|BlackBerry/i.test(navigator.userAgent);
-        }
-
-        if (isMobile()) {
-            document.body.insertAdjacentHTML('beforeend', '<p><center>คุณกำลังเข้าถึงเว็บไซต์จากอุปกรณ์มือถือ</center></p>');
+            let ua = window.navigator.userAgent;
+            let pf = window.navigator?.userAgentData?.platform || window.navigator.platform;
+            if (/Windows NT 10.0/.test(ua)) return "Windows 10";
+            if (/Windows NT 6.3/.test(ua)) return "Windows 8.1";
+            if (/Windows NT 6.2/.test(ua)) return "Windows 8";
+            if (/Windows NT 6.1/.test(ua)) return "Windows 7";
+            if (/Mac/.test(pf)) return "macOS";
+            if (/Android/.test(ua)) return "Android";
+            if (/like Mac/.test(ua)) return "iOS";
+            return "Unknown";
         }
 
         function getBrowserInfo() {
-            let userAgent = window.navigator.userAgent;
-            let browser = null;
-
-            if (/Edge/.test(userAgent)) browser = "Microsoft Edge";
-            else if (/Edg/.test(userAgent)) browser = "Chromium Edge";
-            else if (/Chrome/.test(userAgent)) browser = "Google Chrome";
-            else if (/Safari/.test(userAgent)) browser = "Safari";
-            else if (/Firefox/.test(userAgent)) browser = "Mozilla Firefox";
-            else if (/MSIE/.test(userAgent) || /Trident/.test(userAgent)) browser = "Internet Explorer";
-            else browser = "Unknown";
-
-            let versionMatch = userAgent.match(/(?:Chrome|Firefox|Safari|Edg|Trident|MSIE)\/(\d+(\.\d+)?)/);
-            let version = versionMatch ? versionMatch[1] : "Unknown";
-
+            let ua = window.navigator.userAgent;
+            let browser = "Unknown";
+            if (/Edge|Edg/.test(ua)) browser = "Edge";
+            else if (/Chrome/.test(ua)) browser = "Google Chrome";
+            else if (/Safari/.test(ua)) browser = "Safari";
+            else if (/Firefox/.test(ua)) browser = "Mozilla Firefox";
+            
+            let match = ua.match(/(?:Chrome|Firefox|Safari|Edg)\/(\d+(\.\d+)?)/);
+            let version = match ? match[1] : "";
             return `${browser} ${version}`;
         }
         
         document.getElementById('os-info').innerText = 'OS : ' + getOS();
         document.getElementById('browser-info').innerText = 'Browser : ' + getBrowserInfo();
-    </script>
 
-    <script>
-        function logUserInfo() {
-            let ip = document.getElementById('ip').innerText.replace('IP Address: ', '');
-            let region = document.getElementById('region').innerText.replace('Region: ', '');
-            let city = document.getElementById('city').innerText.replace('City: ', '');
-            let country = document.getElementById('country').innerText.replace('Country: ', '');
-            let os = getOS();
-            let browser = getBrowserInfo();
-            let timestamp = new Date().toLocaleString('th-TH');
-
-            $.ajax({
-                url: 'log_info.php', // สมมติว่าไฟล์เก็บ log ยังแยกไว้อยู่
-                type: 'POST',
-                data: {
-                    ip: ip, region: region, city: city, country: country,
-                    os: os, browser: browser, timestamp: timestamp
-                },
-                success: function() { console.log("ข้อมูลถูกส่งไปยัง log_info.php"); },
-                error: function() { console.log("เกิดข้อผิดพลาดในการส่งข้อมูล"); }
-            });
+        if (/Mobile|Android|iP(hone|od|ad)/i.test(navigator.userAgent)) {
+            document.body.insertAdjacentHTML('beforeend', '<p><center>คุณกำลังเข้าถึงเว็บไซต์จากอุปกรณ์มือถือ</center></p>');
         }
-        setTimeout(logUserInfo, 2000);
     </script>
 </body>
 </html>
