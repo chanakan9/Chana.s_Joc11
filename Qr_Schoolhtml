@@ -196,7 +196,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_qrcode') {
 </head>
 <body>
     <h1>QR Code Generator</h1>
-    <h3>กรมแผนที่ทหารจุดที่ 1</h3>
+    <h3>โรงเรียนกรมแผนที่ทหารจุดที่</h3>
     <h2>Donate: 0846795069</h2>
     <h4>Develop By: Chana.s</h4>
     <div id="timeDisplay"></div>
