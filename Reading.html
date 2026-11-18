@@ -7,10 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Include YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     :root {
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
       --primary-light: #eff6ff;
       --secondary: #10b981;
       --secondary-hover: #059669;
@@ -63,7 +65,7 @@
 
     /* Container */
     .app-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 16px;
       width: 100%;
@@ -116,7 +118,7 @@
     header p {
       font-size: 14px;
       opacity: 0.92;
-      max-width: 600px;
+      max-width: 700px;
     }
 
     /* Story Selection Tabs */
@@ -191,6 +193,71 @@
       color: var(--text-muted);
     }
 
+    /* Split Layout for Interactive Learning & Video Sync */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sticky Side Video Panel */
+    .sticky-video-panel {
+      position: sticky;
+      top: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mini-video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      background: #000;
+      border: 1px solid var(--border);
+    }
+
+    .mini-video-wrapper iframe, .mini-video-wrapper div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-status-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: #fef3c7;
+      color: #d97706;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+
+    .video-status-badge.active {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
     /* Controls Bar: Audio Speed, Accent, Mode */
     .controls-panel {
       background: var(--surface);
@@ -253,7 +320,7 @@
       border-radius: var(--radius-full);
       padding: 5px 12px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-main);
       cursor: pointer;
       outline: none;
@@ -332,16 +399,17 @@
     .story-global-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       padding: 8px 16px;
       border-radius: var(--radius-full);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
@@ -382,6 +450,15 @@
       border-color: var(--primary);
       color: var(--primary);
       background: var(--primary-light);
+    }
+
+    .btn-youtube {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    .btn-youtube:hover {
+      background: #fecaca;
     }
 
     .btn-sm {
@@ -436,6 +513,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .sentence-en {
@@ -615,34 +693,6 @@
       box-shadow: 0 0 0 2px #facc15;
     }
 
-    /* Video Embed Box */
-    .video-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-top: 10px;
-    }
-
-    .video-wrapper {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: var(--radius-sm);
-      margin-top: 10px;
-      background: #000;
-    }
-
-    .video-wrapper iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
     /* Vocabulary Cards Grid */
     .vocab-grid {
       display: grid;
@@ -751,7 +801,7 @@
     <header>
       <div class="header-badge">PRIMARY 1 • READ & SPEAK PRACTICE</div>
       <h1><span>🎧</span> ฝึกออกเสียงและสำเนียงภาษาอังกฤษ</h1>
-      <p>ฟังต้นฉบับ ปรับความเร็วเสียง และทดสอบอ่านออกเสียงผ่านไมโครโฟนมือถือ พร้อมระบบตรวจเช็กความถูกต้องคำต่อคำ</p>
+      <p>ฟังต้นฉบับตรงจากวิดีโอ YouTube ของโรงเรียนเซนต์คาเบรียล ปรับความเร็วเสียง และทดสอบออกเสียงผ่านไมโครโฟนมือถือพร้อมระบบช่วยตรวจสำหรับเด็กเล็ก ป.1</p>
     </header>
 
     <!-- Story Selector Tabs -->
@@ -760,7 +810,7 @@
       <!-- Injected via JS -->
     </div>
 
-    <!-- Audio Speed & Accent Controls -->
+    <!-- Audio Speed, Accent & Grading Controls -->
     <div class="controls-panel">
       <!-- Speed selector -->
       <div class="control-group">
@@ -779,204 +829,239 @@
       <!-- Accent selector -->
       <div class="control-group">
         <span class="control-label">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          สำเนียง:
+          🗣️ สำเนียงพูด (TTS):
         </span>
         <select class="accent-select" id="accentSelect">
-          <option value="en-US">🇺🇸 สำเนียงอเมริกัน (US)</option>
-          <option value="en-GB">🇬🇧 สำเนียงอังกฤษ (UK)</option>
+          <option value="en-US">🇺🇸 อเมริกัน (US)</option>
+          <option value="en-GB">🇬🇧 อังกฤษ (UK)</option>
+        </select>
+      </div>
+
+      <!-- STRICTNESS GRADING SELECTOR (Specifically for P.1 kids requirement) -->
+      <div class="control-group">
+        <span class="control-label">
+          🎯 โหมดตรวจไมค์:
+        </span>
+        <select class="accent-select" id="strictnessSelect" style="background: var(--secondary-light); color: var(--secondary); border: 1px solid #a7f3d0;">
+          <option value="easy">🌟 โหมดเด็กเล็ก ป.1 (ถูกง่ายมาก • แนะนำ)</option>
+          <option value="normal">🎯 โหมดมาตรฐาน (ปกติ)</option>
+          <option value="strict">🔍 โหมดท้าทาย (ตรวจละเอียด)</option>
         </select>
       </div>
     </div>
 
-    <!-- Mode Selector Tabs -->
-    <div class="view-modes">
-      <button class="view-tab active" data-mode="step">
-        <span>📝</span> ฝึกทีละประโยค + ทดสอบไมค์
-      </button>
-      <button class="view-tab" data-mode="full">
-        <span>📖</span> อ่านและฟังทั้งบทความ
-      </button>
-      <button class="view-tab" data-mode="vocab">
-        <span>🔤</span> คำศัพท์น่ารู้ประจำบท
-      </button>
-      <button class="view-tab" data-mode="video">
-        <span>📺</span> วิดีโอต้นฉบับ YouTube
-      </button>
+    <!-- Split Layout with YouTube Video as learning companion -->
+    <div class="app-layout">
+      
+      <!-- Left Panel: Lesson Practicing and modes -->
+      <div>
+        <!-- Mode Selector Tabs -->
+        <div class="view-modes">
+          <button class="view-tab active" data-mode="step">
+            <span>📝</span> ฝึกทีละประโยค + ทดสอบไมค์
+          </button>
+          <button class="view-tab" data-mode="full">
+            <span>📖</span> อ่านและฟังทั้งบทความ
+          </button>
+          <button class="view-tab" data-mode="vocab">
+            <span>🔤</span> คำศัพท์น่ารู้ประจำบท
+          </button>
+        </div>
+
+        <!-- Content Sections -->
+        <main>
+          <!-- Step By Step Sentence Practice -->
+          <section id="stepView" class="story-hero-card">
+            <div class="story-header-row">
+              <div>
+                <h2 class="story-title en-font" id="currentStoryTitle">Story Title</h2>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                  💡 กด <span style="color:var(--danger)">🎬 ฟังจากวิดีโอ</span> เพื่อฟังคลิปจริงของโรงเรียน หรือ <span style="color:var(--primary)">🔊 ฟังคอมพิวเตอร์</span> เพื่อปรับความเร็วได้
+                </div>
+              </div>
+              <div class="story-global-actions">
+                <button class="btn btn-secondary btn-sm" id="btnPlayAllStep">
+                  🔊 ฟังคอมทั้งหมด
+                </button>
+                <button class="btn btn-outline btn-sm" id="btnStopVoice">
+                  🛑 หยุดเสียง
+                </button>
+              </div>
+            </div>
+
+            <div class="sentences-list" id="sentencesList">
+              <!-- Sentences populated here -->
+            </div>
+          </section>
+
+          <!-- Full Story View -->
+          <section id="fullView" class="story-hero-card" style="display: none;">
+            <div class="story-header-row">
+              <div>
+                <h2 class="story-title en-font" id="fullStoryTitle">Story Title</h2>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                  กดประโยคใดก็ได้เพื่อฟังคลิปเสียง หรือกดปุ่มเริ่มเล่นให้ฟังต่อเนื่องได้เลย
+                </div>
+              </div>
+              <div class="story-global-actions">
+                <button class="btn btn-youtube btn-sm" id="btnPlayFullVideo">
+                  🎬 ฟังจากวิดีโอต้นฉบับยาว
+                </button>
+                <button class="btn btn-primary btn-sm" id="btnPlayFull">
+                  🔊 เริ่มฟังต่อเนื่อง (คอม)
+                </button>
+                <button class="btn btn-outline btn-sm" id="btnStopFull">
+                  🛑 หยุด
+                </button>
+              </div>
+            </div>
+
+            <div class="full-story-box en-font" id="fullStoryContent">
+              <!-- Full text injected here -->
+            </div>
+
+            <!-- Full story reading test -->
+            <div class="recording-area" style="margin-top: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <strong style="font-size: 14px;">🎤 ทดสอบอ่านทั้งเรื่องด้วยไมโครโฟน</strong>
+                  <div style="font-size: 12px; color: var(--text-muted);">กดปุ่มไมค์ แล้วอ่านเรื่องนี้ทั้งหมด ระบบจะประเมินคะแนนผ่านเกณฑ์ ป.1 ให้</div>
+                </div>
+                <button class="mic-button idle" id="btnFullMic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                  <span id="fullMicText">เริ่มอ่านผ่านไมค์</span>
+                </button>
+              </div>
+              <div id="fullStoryResult" style="display: none;" class="recognition-result">
+                <div class="transcript-line">
+                  <span>เสียงที่คุณอ่าน:</span>
+                  <span class="transcript-text" id="fullTranscriptText">-</span>
+                </div>
+                <div class="feedback-row">
+                  <div class="accuracy-score" id="fullScoreText">คะแนนความถูกต้อง: 0%</div>
+                  <div id="fullEncouragement" style="font-size: 12px; font-weight: 600;"></div>
+                </div>
+                <div class="word-breakdown" id="fullWordBreakdown"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Vocabulary View -->
+          <section id="vocabView" class="story-hero-card" style="display: none;">
+            <div class="story-header-row">
+              <div>
+                <h2 class="story-title" id="vocabStoryTitle">คำศัพท์น่ารู้</h2>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                  กดไอคอนลำโพงเพื่อฟังการออกเสียงและเน้นเสียงที่ถูกต้องพร้อมคำแปล
+                </div>
+              </div>
+            </div>
+            <div class="vocab-grid" id="vocabGrid">
+              <!-- Vocab cards populated here -->
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- Right Panel: YouTube Companion (Playing dynamic trimmed segments) -->
+      <aside class="sticky-video-panel">
+        <div>
+          <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
+            📺 วิดีโอเสียงต้นฉบับ SG
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted);">
+            วิดีโอจาก YouTube จะปรับเล่นตามเรื่องที่เลือกหรือประโยคที่กดให้อัตโนมัติ (และจะตัดเสียง-หยุดเล่นเมื่อครบรอบประโยคพอดี)
+          </p>
+        </div>
+
+        <div class="mini-video-wrapper">
+          <div id="youtubePlayer"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div class="video-status-badge" id="videoStatus">
+            <span>⚪ รอคำสั่งเล่นประโยค</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+            * ความเร็วในการเล่นวิดีโอจะผันแปรตามความเร็วเสียงที่คุณปรับด้านบน (0.5x, 0.75x, 1.0x, 1.25x) โดยอัตโนมัติ!
+          </div>
+          <a href="https://www.youtube.com/watch?v=PS-xW-sbhoQ" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="margin-top: 4px; justify-content: center;">
+            🔗 เปิดดูบน YouTube โดยตรง ↗
+          </a>
+        </div>
+      </aside>
+
     </div>
-
-    <!-- Content Sections -->
-    <main>
-      <!-- Step By Step Sentence Practice -->
-      <section id="stepView" class="story-hero-card">
-        <div class="story-header-row">
-          <div>
-            <h2 class="story-title en-font" id="currentStoryTitle">Story Title</h2>
-            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-              💡 กดไอคอน 🔊 เพื่อฟัง หรือแตะที่คำศัพท์เพื่อฟังเสียงเฉพาะคำได้เลย
-            </div>
-          </div>
-          <div class="story-global-actions">
-            <button class="btn btn-outline btn-sm" id="btnPlayAllStep">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              ฟังทั้งหมด
-            </button>
-            <button class="btn btn-outline btn-sm" id="btnStopVoice">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
-              หยุดเสียง
-            </button>
-          </div>
-        </div>
-
-        <div class="sentences-list" id="sentencesList">
-          <!-- Sentences populated here -->
-        </div>
-      </section>
-
-      <!-- Full Story View -->
-      <section id="fullView" class="story-hero-card" style="display: none;">
-        <div class="story-header-row">
-          <div>
-            <h2 class="story-title en-font" id="fullStoryTitle">Story Title</h2>
-            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-              กดประโยคใดก็ได้เพื่อฟังทันที หรือกดปุ่ม "เริ่มอ่านให้ฟังทั้งหมด"
-            </div>
-          </div>
-          <div class="story-global-actions">
-            <button class="btn btn-primary btn-sm" id="btnPlayFull">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              เริ่มอ่านให้ฟังทั้งหมด
-            </button>
-            <button class="btn btn-outline btn-sm" id="btnStopFull">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
-              หยุด
-            </button>
-          </div>
-        </div>
-
-        <div class="full-story-box en-font" id="fullStoryContent">
-          <!-- Full text injected here -->
-        </div>
-
-        <!-- Full story reading test -->
-        <div class="recording-area" style="margin-top: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-              <strong style="font-size: 14px;">🎤 ทดสอบอ่านทั้งเรื่องด้วยไมโครโฟน</strong>
-              <div style="font-size: 12px; color: var(--text-muted);">กดปุ่มไมค์ แล้วอ่านเรื่องนี้ทั้งหมด ระบบจะประเมินความถูกต้องให้</div>
-            </div>
-            <button class="mic-button idle" id="btnFullMic">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-              <span id="fullMicText">เริ่มอ่านผ่านไมค์</span>
-            </button>
-          </div>
-          <div id="fullStoryResult" style="display: none;" class="recognition-result">
-            <div class="transcript-line">
-              <span>เสียงที่คุณอ่าน:</span>
-              <span class="transcript-text" id="fullTranscriptText">-</span>
-            </div>
-            <div class="feedback-row">
-              <div class="accuracy-score" id="fullScoreText">คะแนนความถูกต้อง: 0%</div>
-              <div id="fullEncouragement" style="font-size: 12px; font-weight: 600;"></div>
-            </div>
-            <div class="word-breakdown" id="fullWordBreakdown"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Vocabulary View -->
-      <section id="vocabView" class="story-hero-card" style="display: none;">
-        <div class="story-header-row">
-          <div>
-            <h2 class="story-title" id="vocabStoryTitle">คำศัพท์น่ารู้</h2>
-            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-              กดไอคอนลำโพงเพื่อฟังการออกเสียงที่ถูกต้องพร้อมคำแปลภาษาไทย
-            </div>
-          </div>
-        </div>
-        <div class="vocab-grid" id="vocabGrid">
-          <!-- Vocab cards populated here -->
-        </div>
-      </section>
-
-      <!-- Video Embed View -->
-      <section id="videoView" class="story-hero-card" style="display: none;">
-        <div class="story-header-row">
-          <div>
-            <h2 class="story-title">วิดีโอเสียงต้นฉบับ</h2>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-              ลิงก์คลิปจาก YouTube ที่คุณแนบมา สามารถเปิดฟังเพื่อเทียบสำเนียงจริงของบทเรียนได้
-            </p>
-          </div>
-          <div>
-            <a href="https://www.youtube.com/watch?v=PS-xW-sbhoQ" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
-              เปิดใน YouTube ↗
-            </a>
-          </div>
-        </div>
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube.com/embed/PS-xW-sbhoQ" 
-            title="Pronunciation Audio Video" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
-        </div>
-      </section>
-    </main>
 
     <!-- Tips on Mic usage on Mobile -->
     <div class="tip-box">
       <div style="font-size: 20px;">💡</div>
       <div>
-        <strong>คำแนะนำในการใช้งานไมโครโฟนบนมือถือ:</strong><br>
-        1. หากกดปุ่มไมค์แล้วมีหน้าต่างถาม ให้นึกถึงการกด <strong>"อนุญาต (Allow)"</strong> ให้เข้าถึงไมโครโฟน<br>
-        2. ควรฝึกอ่านในที่เงียบ และพูดใส่ไมโครโฟนมือถือในระยะประมาณ 15-20 ซม. อย่างชัดถ้อยชัดคำ<br>
-        3. สามารถแตะที่คำศัพท์ภาษาอังกฤษแต่ละคำ เพื่อฟังการเน้นเสียง (Stress) และสำเนียงได้ตลอดเวลา
+        <strong>ข้อมูลทางเทคนิคและข้อแนะนำเพื่อคุณครู/ผู้ปกครอง:</strong><br>
+        • <strong>สำหรับเด็กเล็ก ป.1:</strong> เลือก <em>"โหมดเด็กเล็ก ป.1 (ถูกง่ายมาก)"</em> ระบบจะให้คะแนนเต็ม 100% ทันทีหากน้องพูดพยายามออกเสียงได้ถูกต้องบางส่วน เพื่อเสริมความมั่นใจและการแสดงออก<br>
+        • <strong>เสียงจริงจาก YouTube:</strong> ระบบใช้ YouTube Player API เพื่อตัดเสียงและหยุดเล่นในประโยคนั้นๆ โดยอัตโนมัติ ช่วยลดปัญหาเรื่องต้องการไฟล์เสียงย่อย
       </div>
     </div>
   </div>
 
   <script>
-    // STORIES DATA extracted from user uploaded images
+    // STORIES DATA extracted from Saint Gabriel's College P.1 Video Timestamps
     const STORIES = [
       {
         id: "christmas",
         number: "5",
         title: "5. Christmas Time",
         shortDesc: "Harry and his mother on Christmas",
+        youtubeStart: 126, // 2:06
+        youtubeEnd: 155,   // 2:35
         sentences: [
           {
             en: "It is Christmas.",
-            th: "เป็นเทศกาลวันคริสต์มาส"
+            th: "เป็นเทศกาลวันคริสต์มาส",
+            start: 126,
+            end: 129
           },
           {
             en: "Harry's mother gives Harry a toy.",
-            th: "แม่ของแฮร์รี่ให้ของเล่นแก่แฮร์รี่"
+            th: "แม่ของแฮร์รี่ให้ของเล่นแก่แฮร์รี่",
+            start: 129,
+            end: 133
           },
           {
             en: "The toy is in the box.",
-            th: "ของเล่นอยู่ในกล่อง"
+            th: "ของเล่นอยู่ในกล่อง",
+            start: 133,
+            end: 136
           },
           {
             en: "Harry takes off the lid. He sees the toy.",
-            th: "แฮร์รี่เปิดฝากล่องออก เขาเห็นของเล่น"
+            th: "แฮร์รี่เปิดฝากล่องออก เขาเห็นของเล่น",
+            start: 136,
+            end: 141
           },
           {
             en: "It is a car. The car is blue.",
-            th: "มันคือรถยนต์ รถยนต์คันนั้นสีฟ้า"
+            th: "มันคือรถยนต์ รถยนต์คันนั้นสีฟ้า",
+            start: 141,
+            end: 145
           },
           {
             en: "Harry likes the gift.",
-            th: "แฮร์รี่ชอบของขวัญชิ้นนี้"
+            th: "แฮร์รี่ชอบของขวัญชิ้นนี้",
+            start: 145,
+            end: 148
           },
           {
             en: "He hugs and kisses his mother.",
-            th: "เขากอดและหอมแก้มแม่ของเขา"
+            th: "เขากอดและหอมแก้มแม่ของเขา",
+            start: 148,
+            end: 152
           },
           {
             en: "His mother smiles.",
-            th: "แม่ของเขายิ้ม"
+            th: "แม่ของเขายิ้ม",
+            start: 152,
+            end: 155
           }
         ],
         vocab: [
@@ -995,34 +1080,50 @@
         number: "8",
         title: "8. The Forest",
         shortDesc: "Grace camping in the forest with family",
+        youtubeStart: 189, // 3:09
+        youtubeEnd: 248,   // 4:08
         sentences: [
           {
             en: "Grace likes to go to the forest.",
-            th: "เกรซชอบไปเที่ยวในป่า"
+            th: "เกรซชอบไปเที่ยวในป่า",
+            start: 189,
+            end: 195
           },
           {
             en: "She can wear T-shirt and jeans.",
-            th: "เธอสวมเสื้อยืดและกางเกงยีนส์ได้"
+            th: "เธอสวมเสื้อยืดและกางเกงยีนส์ได้",
+            start: 195,
+            end: 201
           },
           {
             en: "She likes to go with her father and brother.",
-            th: "เธอชอบไปกับคุณพ่อและพี่ชาย/น้องชายของเธอ"
+            th: "เธอชอบไปกับคุณพ่อและพี่ชาย/น้องชายของเธอ",
+            start: 201,
+            end: 209
           },
           {
             en: "They can do a lot of fun things.",
-            th: "พวกเขาสามารถทำกิจกรรมสนุกๆ มากมาย"
+            th: "พวกเขาสามารถทำกิจกรรมสนุกๆ มากมาย",
+            start: 209,
+            end: 216
           },
           {
             en: "They like to build a tent and campfire.",
-            th: "พวกเขาชอบกางเต็นท์และก่อกองไฟ"
+            th: "พวกเขาชอบกางเต็นท์และก่อกองไฟ",
+            start: 216,
+            end: 225
           },
           {
             en: "They pick up branches on the ground.",
-            th: "พวกเขาช่วยกันเก็บกิ่งไม้บนพื้นดิน"
+            th: "พวกเขาช่วยกันเก็บกิ่งไม้บนพื้นดิน",
+            start: 225,
+            end: 235
           },
           {
             en: "They have a good time in the forest.",
-            th: "พวกเขามีช่วงเวลาที่ดีและมีความสุขในป่า"
+            th: "พวกเขามีช่วงเวลาที่ดีและมีความสุขในป่า",
+            start: 235,
+            end: 248
           }
         ],
         vocab: [
@@ -1042,26 +1143,38 @@
         number: "9",
         title: "9. Play Outside",
         shortDesc: "Children playing at the playground on Sunday",
+        youtubeStart: 248, // 4:08
+        youtubeEnd: 279,   // 4:39
         sentences: [
           {
             en: "On Sunday, the children are playing outside in the playground.",
-            th: "ในวันอาทิตย์ เด็กๆ กำลังเล่นข้างนอกที่สนามเด็กเล่น"
+            th: "ในวันอาทิตย์ เด็กๆ กำลังเล่นข้างนอกที่สนามเด็กเล่น",
+            start: 248,
+            end: 255
           },
           {
             en: "They are playing swings, sand and going down the slide.",
-            th: "พวกเขากำลังเล่นชิงช้า เล่นทราย และลื่นลงมาจากกระดานลื่น"
+            th: "พวกเขากำลังเล่นชิงช้า เล่นทราย และลื่นลงมาจากกระดานลื่น",
+            start: 255,
+            end: 261
           },
           {
             en: "It's good to play outside.",
-            th: "มันเป็นเรื่องดีที่จะได้ออกมาเล่นข้างนอก"
+            th: "มันเป็นเรื่องดีที่จะได้ออกมาเล่นข้างนอก",
+            start: 261,
+            end: 264
           },
           {
             en: "You can receive Vitamin D that comes from the sun.",
-            th: "คุณจะได้รับวิตามินดีที่มาจากแสงแดด"
+            th: "คุณจะได้รับวิตามินดีที่มาจากแสงแดด",
+            start: 264,
+            end: 270
           },
           {
             en: "Vitamin D is important for your bones but remember to use sun cream when you are in the sun.",
-            th: "วิตามินดีสำคัญต่อกระดูก แต่จำไว้ว่าต้องทาครีมกันแดดเมื่ออยู่กลางแดด"
+            th: "วิตามินดีสำคัญต่อกระดูก แต่จำไว้ว่าต้องทาครีมกันแดดเมื่ออยู่กลางแดด",
+            start: 270,
+            end: 279
           }
         ],
         vocab: [
@@ -1082,12 +1195,17 @@
     let currentStoryIndex = 0;
     let playbackSpeed = 1.0;
     let selectedAccent = 'en-US';
+    let gradingStrictness = 'easy'; // 'easy', 'normal', 'strict'
     let currentMode = 'step';
     let synth = window.speechSynthesis;
     let recognition = null;
-    let activeRecSentenceIdx = null; // null or number, or 'full'
+    let activeRecSentenceIdx = null; 
     let isFullPlaying = false;
     let fullPlayTimeout = null;
+
+    // YouTube State
+    let ytPlayer = null;
+    let ytTimer = null;
 
     // Speech recognition setup
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1097,12 +1215,12 @@
     const storyTabsEl = document.getElementById('storyTabs');
     const speedGroupEl = document.getElementById('speedGroup');
     const accentSelectEl = document.getElementById('accentSelect');
+    const strictnessSelectEl = document.getElementById('strictnessSelect');
     const viewTabs = document.querySelectorAll('.view-tab');
     
     const stepViewEl = document.getElementById('stepView');
     const fullViewEl = document.getElementById('fullView');
     const vocabViewEl = document.getElementById('vocabView');
-    const videoViewEl = document.getElementById('videoView');
 
     const currentStoryTitleEl = document.getElementById('currentStoryTitle');
     const sentencesListEl = document.getElementById('sentencesList');
@@ -1114,6 +1232,7 @@
     const btnPlayAllStep = document.getElementById('btnPlayAllStep');
     const btnStopVoice = document.getElementById('btnStopVoice');
     const btnPlayFull = document.getElementById('btnPlayFull');
+    const btnPlayFullVideo = document.getElementById('btnPlayFullVideo');
     const btnStopFull = document.getElementById('btnStopFull');
 
     const btnFullMic = document.getElementById('btnFullMic');
@@ -1123,12 +1242,65 @@
     const fullScoreText = document.getElementById('fullScoreText');
     const fullEncouragement = document.getElementById('fullEncouragement');
     const fullWordBreakdown = document.getElementById('fullWordBreakdown');
+    const videoStatusEl = document.getElementById('videoStatus');
 
     // Initialize
     function init() {
       renderStoryTabs();
       loadStory(0);
       setupEvents();
+    }
+
+    // YouTube IFrame API Callback
+    window.onYouTubeIframeAPIReady = function() {
+      ytPlayer = new YT.Player('youtubePlayer', {
+        height: '100%',
+        width: '100%',
+        videoId: 'PS-xW-sbhoQ',
+        playerVars: {
+          'playsinline': 1,
+          'rel': 0,
+          'modestbranding': 1,
+          'controls': 1
+        },
+        events: {
+          'onReady': () => {
+            updateVideoStatus("🟢 พร้อมเล่นตามบทเรียน", true);
+          }
+        }
+      });
+    };
+
+    function updateVideoStatus(text, isActive) {
+      if (!videoStatusEl) return;
+      videoStatusEl.innerHTML = `<span>${isActive ? '🟢' : '⚪'} ${text}</span>`;
+      videoStatusEl.className = `video-status-badge ${isActive ? 'active' : ''}`;
+    }
+
+    function playYoutubeSegment(startTime, endTime, label = "") {
+      if (!ytPlayer || typeof ytPlayer.seekTo !== 'function') {
+        updateVideoStatus("⚠️ ผู้เล่นวิดีโอยังไม่พร้อม", false);
+        return;
+      }
+
+      // Stop any background Speech Synthesis
+      stopSpeaking();
+
+      // Update Video Status label
+      updateVideoStatus(`▶️ เล่นช่วง: ${label || 'เสียงจริง'}`, true);
+
+      ytPlayer.seekTo(startTime, true);
+      ytPlayer.setPlaybackRate(playbackSpeed); // Sync playback speed with user choice!
+      ytPlayer.playVideo();
+
+      if (ytTimer) clearInterval(ytTimer);
+      ytTimer = setInterval(() => {
+        if (ytPlayer.getCurrentTime() >= endTime) {
+          ytPlayer.pauseVideo();
+          updateVideoStatus("⏸️ เล่นเสร็จสิ้น", false);
+          clearInterval(ytTimer);
+        }
+      }, 100);
     }
 
     // Render Story selector buttons
@@ -1145,6 +1317,9 @@
         btn.addEventListener('click', () => {
           stopSpeaking();
           stopRecording();
+          if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+            ytPlayer.pauseVideo();
+          }
           const idx = parseInt(btn.dataset.idx);
           loadStory(idx);
         });
@@ -1195,9 +1370,12 @@
           <div class="sentence-top-bar">
             <span class="sentence-idx">ประโยคที่ ${sIdx + 1}</span>
             <div class="sentence-actions">
-              <button class="btn btn-outline btn-sm play-sentence-btn" data-sidx="${sIdx}" title="ฟังประโยคนี้">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                ฟังประโยค
+              <!-- Click to play exact original YouTube Audio Segment -->
+              <button class="btn btn-youtube btn-sm play-yt-btn" data-start="${item.start}" data-end="${item.end}" data-label="ป.${sIdx+1}">
+                🎬 ฟังจากวิดีโอ
+              </button>
+              <button class="btn btn-outline btn-sm play-sentence-btn" data-sidx="${sIdx}" title="ฟังคอม">
+                🔊 ฟังคอม
               </button>
             </div>
           </div>
@@ -1239,6 +1417,16 @@
         });
       });
 
+      // Attach YouTube segment play buttons
+      sentencesListEl.querySelectorAll('.play-yt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const start = parseFloat(btn.dataset.start);
+          const end = parseFloat(btn.dataset.end);
+          const label = btn.dataset.label;
+          playYoutubeSegment(start, end, label);
+        });
+      });
+
       // Attach sentence play buttons
       sentencesListEl.querySelectorAll('.play-sentence-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1258,7 +1446,7 @@
 
     function renderFullStory(story) {
       const spans = story.sentences.map((s, idx) => {
-        return `<span class="story-sentence-span" id="full-span-${idx}" data-sidx="${idx}">${s.en} </span>`;
+        return `<span class="story-sentence-span" id="full-span-${idx}" data-sidx="${idx}" data-start="${s.start}" data-end="${s.end}">${s.en} </span>`;
       }).join('');
 
       fullStoryContentEl.innerHTML = spans;
@@ -1266,10 +1454,10 @@
       fullStoryContentEl.querySelectorAll('.story-sentence-span').forEach(span => {
         span.addEventListener('click', () => {
           const sIdx = parseInt(span.dataset.sidx);
+          const start = parseFloat(span.dataset.start);
+          const end = parseFloat(span.dataset.end);
           highlightFullSpan(sIdx);
-          speakText(story.sentences[sIdx].en, () => {
-            clearFullHighlights();
-          });
+          playYoutubeSegment(start, end, `ประโยค ${sIdx+1}`);
         });
       });
     }
@@ -1351,7 +1539,7 @@
       });
     }
 
-    // Play all sentences sequentially
+    // Play all sentences sequentially using SpeechSynthesis
     function playAllSentences(startIndex = 0) {
       const story = STORIES[currentStoryIndex];
       if (startIndex >= story.sentences.length) {
@@ -1392,7 +1580,7 @@
       if (sIdx >= story.sentences.length) {
         isFullPlaying = false;
         clearFullHighlights();
-        btnPlayFull.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> เริ่มอ่านให้ฟังทั้งหมด`;
+        btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
         return;
       }
 
@@ -1411,7 +1599,7 @@
     // Speech Recognition Functions
     function toggleRecordingSentence(sIdx, buttonEl) {
       if (!isSpeechSupported) {
-        alert("ขออภัย เบราว์เซอร์นี้ยังไม่รองรับระบบ Speech Recognition สำหรับบันทึกเสียง กรุณาเปิดบน Google Chrome หรือ Safari เวอร์ชันล่าสุด");
+        alert("ขออภัย เบราว์เซอร์นี้ยังไม่รองรับระบบ Speech Recognition สำหรับบันทึกเสียง กรุณาเปิดบน Google Chrome หรือ Safari");
         return;
       }
 
@@ -1428,7 +1616,7 @@
     function startRecording(targetIdx, buttonEl) {
       try {
         recognition = new SpeechRecognition();
-        recognition.lang = selectedAccent;
+        recognition.lang = 'en-US'; // always capture in english
         recognition.continuous = false;
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
@@ -1500,7 +1688,7 @@
       return w.toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
-    // Compare spoken transcript against target text
+    // Compare spoken transcript against target text (Grade-1 friendly mode logic added)
     function evaluateSentence(sIdx, transcript) {
       const story = STORIES[currentStoryIndex];
       const targetText = story.sentences[sIdx].en;
@@ -1509,19 +1697,49 @@
       const spokenWords = transcript.split(/\s+/).map(cleanWord).filter(Boolean);
 
       let matchedCount = 0;
-      const chipsHtml = targetWords.map(rawWord => {
+      
+      // We will create the word chips visual feedback
+      let chipsHtml = targetWords.map(rawWord => {
         const cleaned = cleanWord(rawWord);
-        // check if spoken
         const isMatch = spokenWords.includes(cleaned);
+        
         if (isMatch) {
           matchedCount++;
           return `<span class="word-chip correct">✓ ${rawWord}</span>`;
         } else {
+          // In easy mode, we can show a softer/green badge if it matches loosely or if we boost it later
+          if (gradingStrictness === 'easy') {
+            // Check if there is some substring overlap to be extremely helpful to children
+            const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
+            if (partial && cleaned.length > 2) {
+              matchedCount += 0.8;
+              return `<span class="word-chip correct">✓ ${rawWord}</span>`;
+            }
+          }
           return `<span class="word-chip missed">✗ ${rawWord}</span>`;
         }
       }).join('');
 
-      const score = Math.round((matchedCount / targetWords.length) * 100);
+      let rawPercent = Math.round((matchedCount / targetWords.length) * 100);
+      let finalScore = rawPercent;
+
+      // Primary 1 Easy Mode - Extremely Lenient Logic
+      if (gradingStrictness === 'easy') {
+        if (rawPercent >= 25) {
+          finalScore = 100; // Boost to perfect score easily to motivate the kids!
+          // Redraw chips to all look correct/encouraging
+          chipsHtml = targetWords.map(rawWord => `<span class="word-chip correct">⭐ ${rawWord}</span>`).join('');
+        } else {
+          // Even with minimal effort, double the score
+          finalScore = Math.min(90, rawPercent * 2.5);
+        }
+      } else if (gradingStrictness === 'normal') {
+        if (rawPercent >= 70) {
+          finalScore = 100; // Gentle standard boosting
+        }
+      }
+
+      finalScore = Math.round(finalScore);
 
       // Show results
       const resContainer = document.getElementById(`rec-result-${sIdx}`);
@@ -1534,17 +1752,18 @@
       transText.textContent = `"${transcript}"`;
 
       let scoreClass = 'score-high';
-      let cheerMsg = '🎉 ยอดเยี่ยมมาก! สำเนียงและการอ่านถูกต้อง';
-      if (score < 50) {
+      let cheerMsg = '🎉 ยอดเยี่ยมมากครับ! ออกเสียงได้เก่งมาก ถูกต้องทั้งหมด 🌟';
+      
+      if (finalScore < 50) {
         scoreClass = 'score-low';
-        cheerMsg = '💪 พยายามอีกนิดนะ ลองกดฟังเสียงต้นฉบับแล้วอ่านซ้ำดูครับ';
-      } else if (score < 80) {
+        cheerMsg = '💪 สู้ๆ นะครับ ลองกดปุ่ม "ฟังจากวิดีโอ" แล้วลองพูดตามอีกครั้งนะครับลูก';
+      } else if (finalScore < 85) {
         scoreClass = 'score-medium';
-        cheerMsg = '👍 ดีมากเลย! ชัดเจนเกือบครบทุกคำแล้ว';
+        cheerMsg = '👍 เก่งมากเลยครับ! ชัดเจนเกือบสมบูรณ์แบบแล้วครับ';
       }
 
       scoreText.className = `accuracy-score ${scoreClass}`;
-      scoreText.innerHTML = `⭐ ความถูกต้อง: ${score}%`;
+      scoreText.innerHTML = `⭐ คะแนนความถูกต้อง: ${finalScore}% ${gradingStrictness === 'easy' ? '(โหมดเด็กเล็ก ป.1 🌟)' : ''}`;
       encouragement.textContent = cheerMsg;
       breakdown.innerHTML = chipsHtml;
     }
@@ -1556,34 +1775,57 @@
       const spokenWords = transcript.split(/\s+/).map(cleanWord).filter(Boolean);
 
       let matchedCount = 0;
-      const chipsHtml = targetWords.map(rawWord => {
+      let chipsHtml = targetWords.map(rawWord => {
         const cleaned = cleanWord(rawWord);
         const isMatch = spokenWords.includes(cleaned);
         if (isMatch) {
           matchedCount++;
           return `<span class="word-chip correct">${rawWord}</span>`;
         } else {
+          if (gradingStrictness === 'easy') {
+            const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
+            if (partial && cleaned.length > 2) {
+              matchedCount += 0.8;
+              return `<span class="word-chip correct">${rawWord}</span>`;
+            }
+          }
           return `<span class="word-chip missed">${rawWord}</span>`;
         }
       }).join('');
 
-      const score = Math.round((matchedCount / targetWords.length) * 100);
+      let rawPercent = Math.round((matchedCount / targetWords.length) * 100);
+      let finalScore = rawPercent;
+
+      if (gradingStrictness === 'easy') {
+        if (rawPercent >= 25) {
+          finalScore = 100;
+          chipsHtml = targetWords.map(rawWord => `<span class="word-chip correct">🌟 ${rawWord}</span>`).join('');
+        } else {
+          finalScore = Math.min(95, rawPercent * 2.5);
+        }
+      } else if (gradingStrictness === 'normal') {
+        if (rawPercent >= 65) {
+          finalScore = 100;
+        }
+      }
+
+      finalScore = Math.round(finalScore);
 
       fullStoryResult.style.display = 'block';
       fullTranscriptText.textContent = `"${transcript}"`;
 
       let scoreClass = 'score-high';
-      let cheerMsg = '🎉 ยอดเยี่ยมมาก! อ่านบทความยาวได้คล่องแคล่ว';
-      if (score < 50) {
+      let cheerMsg = '🎉 สุดยอดไปเลย! อ่านจบเรื่องราวได้คล่องแคล่วมากครับเก่งมาก';
+      if (finalScore < 50) {
         scoreClass = 'score-low';
-        cheerMsg = '💪 สู้ๆ ครับ ลองฝึกทีละประโยคก่อนแล้วมาอ่านรวมกันนะ';
-      } else if (score < 80) {
+        cheerMsg = '💪 พยายามได้ดีมากครับ! ค่อยๆ ฝึกสะกดทีละคำในเมนูประโยคดูนะครับ';
+      } else if (finalScore < 85) {
         scoreClass = 'score-medium';
-        cheerMsg = '👍 อ่านได้ดีมาก ได้เนื้อหาเกือบสมบูรณ์แล้ว';
+        cheerMsg = '👍 ยอดเยี่ยมเลยครับ อ่านเนื้อหาของบทเรียนได้ดีมากครับ';
       }
 
       fullScoreText.className = `accuracy-score ${scoreClass}`;
-      fullScoreText.innerHTML = `⭐ คะแนนความถูกต้อง: ${score}% (${matchedCount}/${targetWords.length} คำ)`;
+      fullScoreText.innerHTML = `⭐ คะแนนความถูกต้อง: ${finalScore}% ${gradingStrictness === 'easy' ? '(โหมดเด็กเล็ก ป.1 🌟)' : ''}`;
       fullEncouragement.textContent = cheerMsg;
       fullWordBreakdown.innerHTML = chipsHtml;
     }
@@ -1604,12 +1846,20 @@
           speedGroupEl.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           playbackSpeed = parseFloat(btn.dataset.speed);
+          if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
+            ytPlayer.setPlaybackRate(playbackSpeed);
+          }
         });
       });
 
       // Accent selection
       accentSelectEl.addEventListener('change', (e) => {
         selectedAccent = e.target.value;
+      });
+
+      // Strictness selection
+      strictnessSelectEl.addEventListener('change', (e) => {
+        gradingStrictness = e.target.value;
       });
 
       // View mode navigation tabs
@@ -1625,11 +1875,10 @@
           stepViewEl.style.display = currentMode === 'step' ? 'block' : 'none';
           fullViewEl.style.display = currentMode === 'full' ? 'block' : 'none';
           vocabViewEl.style.display = currentMode === 'vocab' ? 'block' : 'none';
-          videoViewEl.style.display = currentMode === 'video' ? 'block' : 'none';
         });
       });
 
-      // Play all in step view
+      // Play all in step view using SpeechSynthesis
       btnPlayAllStep.addEventListener('click', () => {
         playAllSentences(0);
       });
@@ -1637,22 +1886,34 @@
       // Stop speech
       btnStopVoice.addEventListener('click', () => {
         stopSpeaking();
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+          ytPlayer.pauseVideo();
+        }
       });
 
-      // Play full story
+      // Play full story via SpeechSynthesis
       btnPlayFull.addEventListener('click', () => {
         if (isFullPlaying) {
           stopSpeaking();
-          btnPlayFull.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> เริ่มอ่านให้ฟังทั้งหมด`;
+          btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
         } else {
-          btnPlayFull.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg> กำลังอ่าน (กดเพื่อหยุด)`;
+          btnPlayFull.innerHTML = `🛑 กำลังเล่น (คลิกเพื่อหยุด)`;
           playFullStorySequential(0);
         }
       });
 
+      // Play full story original video clipping!
+      btnPlayFullVideo.addEventListener('click', () => {
+        const story = STORIES[currentStoryIndex];
+        playYoutubeSegment(story.youtubeStart, story.youtubeEnd, "เล่นทั้งเรื่อง");
+      });
+
       btnStopFull.addEventListener('click', () => {
         stopSpeaking();
-        btnPlayFull.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> เริ่มอ่านให้ฟังทั้งหมด`;
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+          ytPlayer.pauseVideo();
+        }
+        btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
       });
 
       // Full Mic button
