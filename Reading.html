@@ -589,7 +589,7 @@
     /* Mode Navigation Segmented Bar */
     .view-modes {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       background: var(--surface);
       padding: 6px;
@@ -597,6 +597,12 @@
       border: 1px solid var(--border);
       margin-bottom: 16px;
       box-shadow: var(--shadow-xs);
+    }
+
+    @media (min-width: 560px) {
+      .view-modes {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
     }
 
     .view-tab {
@@ -1096,8 +1102,71 @@
         gap: 6px;
       }
     }
+
+    /* Q&A Section Styles */
+    .qa-hint {
+      margin-bottom: 14px;
+      background: var(--surface-muted);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    .qa-hint summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary);
+      user-select: none;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qa-hint summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .qa-hint-body {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .qa-model-en {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .qa-listen-ans-btn {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .qa-listen-ans-btn:hover {
+      background: #dbeafe;
+    }
   </style>
-<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
+</head>
 <body>
 
   <div class="app-container">
@@ -1214,6 +1283,10 @@
             <span>🔤</span>
             <span>คำศัพท์น่ารู้</span>
           </button>
+          <button type="button" class="view-tab" data-mode="qa">
+            <span>❓</span>
+            <span>ตอบคำถาม (3 ข้อ)</span>
+          </button>
         </nav>
 
         <main>
@@ -1304,6 +1377,30 @@
               <!-- Populated via JS -->
             </div>
           </section>
+
+          <!-- Mode 4: Story Comprehension Q&A (3 Randomized Non-Repeating English Questions + Spoken English Answer) -->
+          <section id="qaView" class="practice-card" style="display: none;">
+            <div class="practice-header">
+              <div>
+                <h2 class="story-title" id="qaStoryTitle">❓ คำถามจากเนื้อเรื่อง (3 ข้อ)</h2>
+                <p class="story-hint">
+                  💡 ระบบสุ่มคำถามภาษาอังกฤษ 3 ข้อจากเนื้อเรื่อง กด <strong>🔊 ฟังคำถาม</strong> แล้วกด <strong>🎤 พูดตอบเป็นภาษาอังกฤษ</strong> (เมื่อกดถามรอบใหม่ คำถามจะไม่ซ้ำกับรอบก่อนหน้า)
+                </p>
+              </div>
+              <div class="global-actions">
+                <button type="button" class="btn btn-primary" id="btnNewQuestions">
+                  🎲 ถามรอบใหม่ (ไม่ซ้ำเดิม)
+                </button>
+                <button type="button" class="btn btn-outline" id="btnStopQaVoice">
+                  ⏹️ หยุดเสียง
+                </button>
+              </div>
+            </div>
+
+            <div class="sentences-list" id="qaList">
+              <!-- Populated via JS -->
+            </div>
+          </section>
         </main>
       </div>
     </div>
@@ -1355,6 +1452,17 @@
           { en: "hugs", phonetic: "/hʌɡz/", th: "กอด" },
           { en: "kisses", phonetic: "/ˈkɪs.ɪz/", th: "จูบ / หอมแก้ม" },
           { en: "smiles", phonetic: "/smaɪlz/", th: "ยิ้ม" }
+        ],
+        questions: [
+          { id: 'c1', q: "What special day is it in the story?", th: "ในเนื้อเรื่องเป็นเทศกาลวันอะไร?", answerEn: "It is Christmas.", keywords: ["christmas", "xmas"] },
+          { id: 'c2', q: "Who gives Harry a toy?", th: "ใครเป็นคนให้ของเล่นแก่แฮร์รี่?", answerEn: "Harry's mother gives Harry a toy.", keywords: ["mother", "mom", "mum", "mommy"] },
+          { id: 'c3', q: "What does Harry's mother give Harry?", th: "แม่ของแฮร์รี่ให้อะไรแก่แฮร์รี่?", answerEn: "She gives Harry a toy.", keywords: ["toy", "car", "gift"] },
+          { id: 'c4', q: "Where is the toy?", th: "ของเล่นอยู่ในไหน?", answerEn: "The toy is in the box.", keywords: ["box"] },
+          { id: 'c5', q: "What does Harry take off to see the toy?", th: "แฮร์รี่เปิดอะไรออกเพื่อดูของเล่น?", answerEn: "Harry takes off the lid.", keywords: ["lid"] },
+          { id: 'c6', q: "What toy is inside the box?", th: "ของเล่นในกล่องคืออะไร?", answerEn: "It is a car.", keywords: ["car"] },
+          { id: 'c7', q: "What color is the car?", th: "รถยนต์คันนั้นมีสีอะไร?", answerEn: "The car is blue.", keywords: ["blue", "blew"] },
+          { id: 'c8', q: "Does Harry like the gift?", th: "แฮร์รี่ชอบของขวัญชิ้นนี้ไหม?", answerEn: "Yes, Harry likes the gift.", keywords: ["yes", "yeah", "like", "likes"] },
+          { id: 'c9', q: "What does Harry do to his mother?", th: "แฮร์รี่ทำอะไรกับคุณแม่ของเขา?", answerEn: "He hugs and kisses his mother.", keywords: ["hug", "hugs", "kiss", "kisses"] }
         ]
       },
       {
@@ -1385,6 +1493,17 @@
           { en: "campfire", phonetic: "/ˈkæmp.faɪ.ər/", th: "กองไฟแคมป์" },
           { en: "branches", phonetic: "/ˈbrɑːn.tʃɪz/", th: "กิ่งไม้" },
           { en: "ground", phonetic: "/ɡraʊnd/", th: "พื้นดิน" }
+        ],
+        questions: [
+          { id: 'f1', q: "Who likes to go to the forest?", th: "ใครชอบไปเที่ยวในป่า?", answerEn: "Grace likes to go to the forest.", keywords: ["grace"] },
+          { id: 'f2', q: "Where does Grace like to go?", th: "เกรซชอบไปเที่ยวที่ไหน?", answerEn: "She likes to go to the forest.", keywords: ["forest"] },
+          { id: 'f3', q: "What clothes can Grace wear?", th: "เกรซสามารถสวมเสื้อผ้าอะไรได้?", answerEn: "She can wear a T-shirt and jeans.", keywords: ["tshirt", "shirt", "jeans", "jean"] },
+          { id: 'f4', q: "Who does Grace like to go with?", th: "เกรซชอบไปเที่ยวกับใคร?", answerEn: "She likes to go with her father and brother.", keywords: ["father", "dad", "brother"] },
+          { id: 'f5', q: "What can they do in the forest?", th: "พวกเขาทำกิจกรรมแบบไหนได้ในป่า?", answerEn: "They can do a lot of fun things.", keywords: ["fun", "tent", "campfire", "branches"] },
+          { id: 'f6', q: "What do they like to build?", th: "พวกเขาชอบกางและก่ออะไรในป่า?", answerEn: "They like to build a tent and campfire.", keywords: ["tent", "campfire", "camp", "fire"] },
+          { id: 'f7', q: "What do they pick up on the ground?", th: "พวกเขาช่วยกันเก็บอะไรบนพื้นดิน?", answerEn: "They pick up branches on the ground.", keywords: ["branch", "branches"] },
+          { id: 'f8', q: "Where do they pick up the branches?", th: "พวกเขาเก็บกิ่งไม้จากตรงไหน?", answerEn: "On the ground.", keywords: ["ground"] },
+          { id: 'f9', q: "Do they have a good time in the forest?", th: "พวกเขามีช่วงเวลาที่ดีในป่าไหม?", answerEn: "Yes, they have a good time in the forest.", keywords: ["yes", "yeah", "good"] }
         ]
       },
       {
@@ -1413,6 +1532,17 @@
           { en: "Vitamin D", phonetic: "/ˈvɪt.ə.mɪn diː/", th: "วิตามินดี" },
           { en: "bones", phonetic: "/bəʊnz/", th: "กระดูก" },
           { en: "sun cream", phonetic: "/ˈsʌn ˌkriːm/", th: "ครีมกันแดด" }
+        ],
+        questions: [
+          { id: 'p1', q: "On what day are the children playing outside?", th: "เด็กๆ ออกมาเล่นข้างนอกในวันอะไร?", answerEn: "On Sunday.", keywords: ["sunday"] },
+          { id: 'p2', q: "Who is playing in the playground?", th: "ใครกำลังเล่นอยู่ที่สนามเด็กเล่น?", answerEn: "The children are playing in the playground.", keywords: ["children", "child", "kids", "kid"] },
+          { id: 'p3', q: "Where are the children playing outside?", th: "เด็กๆ กำลังเล่นข้างนอกอยู่ที่ไหน?", answerEn: "In the playground.", keywords: ["playground"] },
+          { id: 'p4', q: "What are the children playing in the playground?", th: "เด็กๆ กำลังเล่นอะไรบ้างในสนามเด็กเล่น?", answerEn: "They are playing swings, sand and going down the slide.", keywords: ["swing", "swings", "sand", "slide"] },
+          { id: 'p5', q: "Is it good to play outside?", th: "การออกมาเล่นข้างนอกเป็นเรื่องดีไหม?", answerEn: "Yes, it is good to play outside.", keywords: ["yes", "yeah", "good"] },
+          { id: 'p6', q: "What vitamin can you receive from the sun?", th: "คุณจะได้รับวิตามินอะไรจากแสงแดด?", answerEn: "You can receive Vitamin D.", keywords: ["vitamin", "vitamind"] },
+          { id: 'p7', q: "Where does Vitamin D come from?", th: "วิตามินดีมาจากอะไร?", answerEn: "It comes from the sun.", keywords: ["sun"] },
+          { id: 'p8', q: "What is Vitamin D important for?", th: "วิตามินดีสำคัญต่อส่วนใดของร่างกาย?", answerEn: "Vitamin D is important for your bones.", keywords: ["bone", "bones"] },
+          { id: 'p9', q: "What should you remember to use when you are in the sun?", th: "เมื่ออยู่กลางแดดควรจำไว้ว่าต้องใช้อะไร?", answerEn: "Remember to use sun cream.", keywords: ["cream", "suncream", "sunscreen"] }
         ]
       }
     ];
@@ -1424,6 +1554,11 @@
     let gradingStrictness = 'easy';
     let currentMode = 'step';
     let isVideoCollapsed = false;
+    let ytPlayToggle = false;
+
+    // Non-repeating Q&A deck state per story
+    const qaDeckState = STORIES.map(() => ({ queue: [], lastRoundIds: [] }));
+    let currentQuestions = [];
 
     const synth = window.speechSynthesis || null;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1453,6 +1588,7 @@
     const stepViewEl = document.getElementById('stepView');
     const fullViewEl = document.getElementById('fullView');
     const vocabViewEl = document.getElementById('vocabView');
+    const qaViewEl = document.getElementById('qaView');
 
     const currentStoryTitleEl = document.getElementById('currentStoryTitle');
     const sentencesListEl = document.getElementById('sentencesList');
@@ -1460,6 +1596,10 @@
     const fullStoryContentEl = document.getElementById('fullStoryContent');
     const vocabStoryTitleEl = document.getElementById('vocabStoryTitle');
     const vocabGridEl = document.getElementById('vocabGrid');
+    const qaStoryTitleEl = document.getElementById('qaStoryTitle');
+    const qaListEl = document.getElementById('qaList');
+    const btnNewQuestions = document.getElementById('btnNewQuestions');
+    const btnStopQaVoice = document.getElementById('btnStopQaVoice');
 
     const btnPlayAllStep = document.getElementById('btnPlayAllStep');
     const btnStopVoice = document.getElementById('btnStopVoice');
@@ -1481,8 +1621,8 @@
       setupEvents();
     }
 
-    // Build exact YouTube embed URL with start & end baked directly into URL (100% reliable in sandboxed iframes & all mobile browsers)
-    function buildYoutubeEmbedUrl(story, autoplay) {
+    // Build exact YouTube embed URL with start & end baked directly into URL
+    function buildYoutubeEmbedUrl(story, autoplay, toggleParam = false) {
       const params = [
         `start=${story.youtubeStart}`,
         `end=${story.youtubeEnd}`,
@@ -1492,6 +1632,9 @@
       ];
       if (autoplay) {
         params.push('autoplay=1');
+        if (toggleParam) {
+          params.push('cc_load_policy=0');
+        }
       }
       return `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?${params.join('&')}`;
     }
@@ -1502,19 +1645,13 @@
       videoChapterBadgeEl.textContent = `${story.emoji} ${story.title} (${story.timeLabel})`;
       videoDescTextEl.innerHTML = `ตัดเฉพาะช่วงของเรื่อง <strong>${story.title}</strong> (นาทีที่ ${story.timeLabel}) กดปุ่มเล่นในคลิปหรือปุ่มด้านล่างเพื่อฟังเสียงต้นฉบับได้เลย`;
 
-      const targetUrl = buildYoutubeEmbedUrl(story, autoplay);
       if (autoplay) {
         stopSpeaking();
-        // Force clean reload if URL already matches so clicking Play restarts from story.youtubeStart every time
-        if (youtubeIframeEl.src === targetUrl) {
-          youtubeIframeEl.src='about:invalid#zPythonSafez';
-          requestAnimationFrame(() => {
-            youtubeIframeEl.src = targetUrl;
-          });
-          return;
-        }
+        ytPlayToggle = !ytPlayToggle;
+        youtubeIframeEl.src = buildYoutubeEmbedUrl(story, true, ytPlayToggle);
+        return;
       }
-      youtubeIframeEl.src = targetUrl;
+      youtubeIframeEl.src = buildYoutubeEmbedUrl(story, false, false);
     }
 
     function renderStoryTabs() {
@@ -1558,10 +1695,12 @@
       currentStoryTitleEl.textContent = `${story.emoji} ${story.title}`;
       fullStoryTitleEl.textContent = `${story.emoji} ${story.title}`;
       vocabStoryTitleEl.textContent = `${story.emoji} คำศัพท์น่ารู้: ${story.shortName}`;
+      qaStoryTitleEl.textContent = `${story.emoji} คำถามจากเรื่อง: ${story.shortName}`;
 
       renderSentences(story);
       renderFullStory(story);
       renderVocab(story);
+      renderNewQuestionRound(idx);
       resetFullRecordingUI();
 
       // Directly update YouTube iframe to this story's exact start & end segment
@@ -1697,6 +1836,153 @@
       });
     }
 
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Draw 3 random questions from the story pool, strictly guaranteed NOT to repeat any question from the previous round
+    function drawNextThreeQuestions(storyIdx) {
+      const pool = STORIES[storyIdx].questions || [];
+      const state = qaDeckState[storyIdx];
+
+      if (state.queue.length < 3) {
+        const carryOver = [...state.queue];
+        const needed = 3 - carryOver.length;
+        const eligibleFresh = shuffleArray(
+          pool.filter(q => !state.lastRoundIds.includes(q.id) && !carryOver.some(c => c.id === q.id))
+        );
+        const picked = shuffleArray([...carryOver, ...eligibleFresh.slice(0, needed)]);
+        const remainingFresh = eligibleFresh.slice(needed);
+        const prevRoundItems = shuffleArray(pool.filter(q => state.lastRoundIds.includes(q.id)));
+        state.queue = [...remainingFresh, ...prevRoundItems];
+        state.lastRoundIds = picked.map(q => q.id);
+        return picked;
+      }
+
+      const picked = state.queue.splice(0, 3);
+      state.lastRoundIds = picked.map(q => q.id);
+      return picked;
+    }
+
+    function renderNewQuestionRound(storyIdx) {
+      currentQuestions = drawNextThreeQuestions(storyIdx);
+      qaListEl.innerHTML = '';
+
+      currentQuestions.forEach((qItem, qIdx) => {
+        const wordsHtml = qItem.q.split(' ').map(w => {
+          const clean = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, '');
+          return `<span class="clickable-word" role="button" tabindex="0" data-word="${clean}" title="แตะเพื่อฟังคำว่า ${clean}">${w}</span>`;
+        }).join(' ');
+
+        const card = document.createElement('div');
+        card.className = 'sentence-card';
+        card.id = `qa-card-${qIdx}`;
+        card.innerHTML = `
+          <div class="sentence-top-row">
+            <span class="sentence-step-pill">คำถามข้อที่ ${qIdx + 1} จาก 3</span>
+          </div>
+          <div class="sentence-en en-font">${wordsHtml}</div>
+          <div class="sentence-th">${qItem.th}</div>
+
+          <details class="qa-hint">
+            <summary>💡 ดูแนวคำตอบภาษาอังกฤษ (กดเพื่อเปิด/ปิด)</summary>
+            <div class="qa-hint-body">
+              <span class="qa-model-en en-font">${qItem.answerEn}</span>
+              <button type="button" class="qa-listen-ans-btn" data-ans="${qItem.answerEn}">
+                🔊 ฟังแนวคำตอบ
+              </button>
+            </div>
+          </details>
+
+          <div class="sentence-action-bar">
+            <button type="button" class="btn btn-primary play-qa-btn" data-qidx="${qIdx}">
+              🔊 ฟังคำถาม (English)
+            </button>
+            <button type="button" class="mic-button idle qa-mic-btn" data-qidx="${qIdx}">
+              <span>🎤</span>
+              <span>พูดตอบเป็นภาษาอังกฤษ</span>
+            </button>
+          </div>
+
+          <div class="mic-notice" id="qa-mic-notice-${qIdx}"></div>
+
+          <div class="recognition-result" id="qa-result-${qIdx}" style="display: none;">
+            <div class="transcript-line">
+              <span>คำตอบที่คุณพูด:</span>
+              <span class="transcript-text" id="qa-trans-${qIdx}">-</span>
+            </div>
+            <div class="feedback-row">
+              <div class="accuracy-score" id="qa-score-${qIdx}">ผลลัพธ์: -</div>
+              <div id="qa-encouragement-${qIdx}" style="font-size: 13px; font-weight: 600;"></div>
+            </div>
+            <div style="margin-top: 8px; font-size: 13px; color: var(--ink-sub);">
+              แนวคำตอบจากเนื้อเรื่อง: <strong class="en-font">${qItem.answerEn}</strong>
+            </div>
+          </div>
+        `;
+        qaListEl.appendChild(card);
+      });
+
+      // Clickable words inside questions
+      qaListEl.querySelectorAll('.clickable-word').forEach(wordEl => {
+        const speakWord = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.clickable-word.word-speaking').forEach(el => el.classList.remove('word-speaking'));
+          wordEl.classList.add('word-speaking');
+          speakText(wordEl.dataset.word, () => {
+            wordEl.classList.remove('word-speaking');
+          });
+        };
+        wordEl.addEventListener('click', speakWord);
+        wordEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            speakWord(e);
+          }
+        });
+      });
+
+      // Play English Question TTS
+      qaListEl.querySelectorAll('.play-qa-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const qIdx = parseInt(btn.dataset.qidx, 10);
+          playQuestion(qIdx);
+        });
+      });
+
+      // Play Model Answer TTS
+      qaListEl.querySelectorAll('.qa-listen-ans-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          stopSpeaking();
+          speakText(btn.dataset.ans);
+        });
+      });
+
+      // Speak English Answer via Mic
+      qaListEl.querySelectorAll('.qa-mic-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const qIdx = parseInt(btn.dataset.qidx, 10);
+          toggleRecordingSentence(`qa-${qIdx}`, btn);
+        });
+      });
+    }
+
+    function playQuestion(qIdx) {
+      stopSpeaking();
+      const qItem = currentQuestions[qIdx];
+      if (!qItem) return;
+      const card = document.getElementById(`qa-card-${qIdx}`);
+      if (card) card.classList.add('is-playing');
+      speakText(qItem.q, () => {
+        if (card) card.classList.remove('is-playing');
+      });
+    }
+
     // Speech Synthesis (TTS)
     function speakText(text, onEndCallback = null) {
       if (!synth) {
@@ -1817,9 +2103,15 @@
     }
 
     function showMicNotice(targetIdx, message) {
-      const el = targetIdx === 'full'
-        ? fullMicNotice
-        : document.getElementById(`mic-notice-${targetIdx}`);
+      let el = null;
+      if (targetIdx === 'full') {
+        el = fullMicNotice;
+      } else if (typeof targetIdx === 'string' && targetIdx.startsWith('qa-')) {
+        const qIdx = targetIdx.split('-')[1];
+        el = document.getElementById(`qa-mic-notice-${qIdx}`);
+      } else {
+        el = document.getElementById(`mic-notice-${targetIdx}`);
+      }
       if (!el) return;
       if (!message) {
         el.style.display = 'none';
@@ -1865,6 +2157,9 @@
         if (targetIdx === 'full') {
           buttonEl.className = 'mic-button recording';
           fullMicText.textContent = 'กำลังฟัง... พูดได้เลย (แตะเพื่อหยุด)';
+        } else if (typeof targetIdx === 'string' && targetIdx.startsWith('qa-')) {
+          buttonEl.className = 'mic-button recording qa-mic-btn';
+          buttonEl.innerHTML = '<span>🔴</span><span>กำลังฟังคำตอบ (English)...</span>';
         } else {
           buttonEl.className = 'mic-button recording mic-sentence-btn';
           buttonEl.innerHTML = '<span>🔴</span><span>กำลังฟัง... พูดได้เลย</span>';
@@ -1874,6 +2169,9 @@
           const transcript = event.results[0][0].transcript;
           if (targetIdx === 'full') {
             evaluateFullStory(transcript);
+          } else if (typeof targetIdx === 'string' && targetIdx.startsWith('qa-')) {
+            const qIdx = parseInt(targetIdx.split('-')[1], 10);
+            evaluateQaAnswer(qIdx, transcript);
           } else {
             evaluateSentence(targetIdx, transcript);
           }
@@ -1916,9 +2214,64 @@
         btn.innerHTML = '<span>🎤</span><span>พูดใส่ไมค์เพื่อตรวจ</span>';
       });
 
+      document.querySelectorAll('.qa-mic-btn').forEach(btn => {
+        btn.className = 'mic-button idle qa-mic-btn';
+        btn.innerHTML = '<span>🎤</span><span>พูดตอบเป็นภาษาอังกฤษ</span>';
+      });
+
       btnFullMic.className = 'mic-button idle';
       fullMicText.textContent = 'เริ่มอ่านทั้งเรื่องผ่านไมค์';
       activeRecSentenceIdx = null;
+    }
+
+    function evaluateQaAnswer(qIdx, transcript) {
+      const qItem = currentQuestions[qIdx];
+      if (!qItem) return;
+
+      const spokenWords = transcript.split(/\s+/).map(cleanWord).filter(Boolean);
+      const spokenJoined = spokenWords.join('');
+      const modelWords = qItem.answerEn.split(/\s+/).map(cleanWord).filter(Boolean);
+
+      const keywordMatched = qItem.keywords.some(kw => {
+        const cleanKw = cleanWord(kw);
+        if (spokenWords.includes(cleanKw) || spokenJoined.includes(cleanKw)) {
+          return true;
+        }
+        if (gradingStrictness === 'easy' && cleanKw.length >= 3) {
+          return spokenWords.some(sw => sw.length >= 3 && (sw.includes(cleanKw) || cleanKw.includes(sw)));
+        }
+        return false;
+      });
+
+      let modelMatchCount = 0;
+      modelWords.forEach(mw => {
+        if (spokenWords.includes(mw)) modelMatchCount++;
+      });
+      const sentenceRatio = modelWords.length > 0 ? modelMatchCount / modelWords.length : 0;
+
+      const resBox = document.getElementById(`qa-result-${qIdx}`);
+      const transEl = document.getElementById(`qa-trans-${qIdx}`);
+      const scoreEl = document.getElementById(`qa-score-${qIdx}`);
+      const cheerEl = document.getElementById(`qa-encouragement-${qIdx}`);
+
+      resBox.style.display = 'block';
+      transEl.textContent = `"${transcript}"`;
+
+      if (keywordMatched) {
+        if (gradingStrictness === 'strict' && sentenceRatio < 0.5) {
+          scoreEl.className = 'accuracy-score score-medium';
+          scoreEl.innerHTML = '👍 คำตอบถูกต้อง (85%)';
+          cheerEl.textContent = 'เก่งมากครับ! ลองฝึกพูดตอบเต็มประโยคตามแนวคำตอบด้านล่างเพิ่มเติมได้นะครับ';
+        } else {
+          scoreEl.className = 'accuracy-score score-high';
+          scoreEl.innerHTML = `⭐ ตอบถูกต้องยอดเยี่ยม! 100% ${gradingStrictness === 'easy' ? '(โหมดเด็กเล็ก ป.1 🌟)' : ''}`;
+          cheerEl.textContent = '🎉 เก่งมากครับ! เข้าใจเนื้อเรื่องและพูดตอบภาษาอังกฤษได้ถูกต้องเลย';
+        }
+      } else {
+        scoreEl.className = 'accuracy-score score-low';
+        scoreEl.innerHTML = '💡 ลองตอบใหม่อีกครั้งนะครับ';
+        cheerEl.textContent = '💪 กดฟังคำถามหรือเปิดดูแนวคำตอบภาษาอังกฤษ แล้วลองพูดใหม่อีกครั้งนะครับ';
+      }
     }
 
     function cleanWord(w) {
@@ -2110,6 +2463,7 @@
           stepViewEl.style.display = currentMode === 'step' ? 'block' : 'none';
           fullViewEl.style.display = currentMode === 'full' ? 'block' : 'none';
           vocabViewEl.style.display = currentMode === 'vocab' ? 'block' : 'none';
+          qaViewEl.style.display = currentMode === 'qa' ? 'block' : 'none';
         });
       });
 
@@ -2148,6 +2502,17 @@
       // Full Story Mic
       btnFullMic.addEventListener('click', () => {
         toggleRecordingSentence('full', btnFullMic);
+      });
+
+      // Q&A New Non-Repeating Round & Stop Voice
+      btnNewQuestions.addEventListener('click', () => {
+        stopSpeaking();
+        stopRecording();
+        renderNewQuestionRound(currentStoryIndex);
+      });
+
+      btnStopQaVoice.addEventListener('click', () => {
+        stopSpeaking();
       });
 
       if (synth && typeof synth.onvoiceschanged !== 'undefined') {
