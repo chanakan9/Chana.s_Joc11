@@ -1028,13 +1028,13 @@
     /* Vocabulary Cards Grid */
     .vocab-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
       gap: 12px;
     }
 
     @media (min-width: 640px) {
       .vocab-grid {
-        grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       }
     }
 
@@ -1045,7 +1045,7 @@
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
       transition: all 0.18s ease;
     }
@@ -1065,23 +1065,53 @@
     }
 
     .vocab-en {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
       color: var(--ink);
       line-height: 1.25;
     }
 
     .vocab-phonetic {
-      font-size: 12px;
-      color: var(--ink-muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      margin-top: 2px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--primary-hover);
+      margin-top: 3px;
+    }
+
+    .vocab-meaning-box {
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
 
     .vocab-th {
       font-size: 14px;
       font-weight: 500;
       color: var(--ink-sub);
+    }
+
+    .vocab-pos {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      width: fit-content;
+    }
+
+    .vocab-pos.is-verb {
+      background: var(--emerald-soft);
+      color: #065f46;
+      border: 1px solid var(--emerald-border);
+    }
+
+    .vocab-pos.is-noun {
+      background: var(--surface-muted);
+      color: var(--ink-muted);
+      border: 1px solid var(--border);
     }
 
     .vocab-audio-btn {
@@ -1386,7 +1416,7 @@
               <div>
                 <h2 class="story-title" id="vocabStoryTitle">คำศัพท์น่ารู้</h2>
                 <p class="story-hint">
-                  💡 แตะที่การ์ดคำศัพท์ใบใดก็ได้เพื่อฟังเสียงอ่านชัดๆ พร้อมคำอ่านโฟเนติกส์และคำแปลภาษาไทย
+                  💡 แตะที่การ์ดคำศัพท์ใบใดก็ได้เพื่อฟังเสียงอ่านชัดๆ พร้อมคำอ่านภาษาไทย คำแปล และระบุชนิดคำ / กริยา (Verb ช่องไหน)
                 </p>
               </div>
             </div>
@@ -1461,14 +1491,18 @@
           { en: "His mother smiles.", th: "แม่ของเขายิ้ม" }
         ],
         vocab: [
-          { en: "Christmas", phonetic: "/ˈkrɪs.məs/", th: "วันคริสต์มาส" },
-          { en: "mother", phonetic: "/ˈmʌð.ər/", th: "แม่" },
-          { en: "toy", phonetic: "/tɔɪ/", th: "ของเล่น" },
-          { en: "lid", phonetic: "/lɪd/", th: "ฝาปิดกล่อง" },
-          { en: "gift", phonetic: "/ɡɪft/", th: "ของขวัญ" },
-          { en: "hugs", phonetic: "/hʌɡz/", th: "กอด" },
-          { en: "kisses", phonetic: "/ˈkɪs.ɪz/", th: "จูบ / หอมแก้ม" },
-          { en: "smiles", phonetic: "/smaɪlz/", th: "ยิ้ม" }
+          { en: "Christmas", readingTh: "คริส-มาส", th: "วันคริสต์มาส", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "mother", readingTh: "มัธ-เธอะ", th: "แม่", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "gives", readingTh: "กิฟว์ส", th: "ให้", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก give)", isVerb: true },
+          { en: "toy", readingTh: "ทอย", th: "ของเล่น", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "lid", readingTh: "ลิด", th: "ฝาปิดกล่อง", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "takes off", readingTh: "เทคส์ ออฟ", th: "เปิดออก / ถอดออก", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก take off)", isVerb: true },
+          { en: "sees", readingTh: "ซีส์", th: "เห็น", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก see)", isVerb: true },
+          { en: "likes", readingTh: "ไลคส์", th: "ชอบ", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก like)", isVerb: true },
+          { en: "gift", readingTh: "กิฟท์", th: "ของขวัญ", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "hugs", readingTh: "ฮักส์", th: "กอด", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก hug)", isVerb: true },
+          { en: "kisses", readingTh: "คิส-ซิซ", th: "จูบ / หอมแก้ม", verbInfo: "Verb ช่อง 1 (V.1 เติม -es จาก kiss)", isVerb: true },
+          { en: "smiles", readingTh: "สไมล์ส", th: "ยิ้ม", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก smile)", isVerb: true }
         ],
         questions: [
           { id: 'c1', q: "What special day is it in the story?", th: "ในเนื้อเรื่องเป็นเทศกาลวันอะไร?", answerEn: "It is Christmas.", keywords: ["christmas", "xmas"] },
@@ -1501,15 +1535,20 @@
           { en: "They have a good time in the forest.", th: "พวกเขามีช่วงเวลาที่ดีและมีความสุขในป่า" }
         ],
         vocab: [
-          { en: "forest", phonetic: "/ˈfɒr.ɪst/", th: "ป่าไม้" },
-          { en: "T-shirt", phonetic: "/ˈtiː.ʃɜːt/", th: "เสื้อยืด" },
-          { en: "jeans", phonetic: "/dʒiːnz/", th: "กางเกงยีนส์" },
-          { en: "father", phonetic: "/ˈfɑː.ðər/", th: "พ่อ" },
-          { en: "brother", phonetic: "/ˈbrʌð.ər/", th: "พี่ชาย / น้องชาย" },
-          { en: "tent", phonetic: "/tent/", th: "เต็นท์" },
-          { en: "campfire", phonetic: "/ˈkæmp.faɪ.ər/", th: "กองไฟแคมป์" },
-          { en: "branches", phonetic: "/ˈbrɑːn.tʃɪz/", th: "กิ่งไม้" },
-          { en: "ground", phonetic: "/ɡraʊnd/", th: "พื้นดิน" }
+          { en: "likes", readingTh: "ไลคส์", th: "ชอบ", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก like)", isVerb: true },
+          { en: "go", readingTh: "โก", th: "ไป", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "forest", readingTh: "ฟอ-ริสท์", th: "ป่าไม้", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "wear", readingTh: "แวร์", th: "สวมใส่", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "T-shirt", readingTh: "ที-เชิร์ท", th: "เสื้อยืด", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "jeans", readingTh: "จีนส์", th: "กางเกงยีนส์", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "father", readingTh: "ฟา-เธอะ", th: "พ่อ", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "brother", readingTh: "บรัธ-เธอะ", th: "พี่ชาย / น้องชาย", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "build", readingTh: "บิลด์", th: "สร้าง / กาง (เต็นท์)", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "tent", readingTh: "เทนท์", th: "เต็นท์", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "campfire", readingTh: "แคมป์-ไฟ-เออะ", th: "กองไฟแคมป์", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "pick up", readingTh: "พิค อัพ", th: "หยิบขึ้น / เก็บ", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "branches", readingTh: "แบรน-ชิซ", th: "กิ่งไม้", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "ground", readingTh: "กราวนด์", th: "พื้นดิน", verbInfo: "คำนาม (Noun)", isVerb: false }
         ],
         questions: [
           { id: 'f1', q: "Who likes to go to the forest?", th: "ใครชอบไปเที่ยวในป่า?", answerEn: "Grace likes to go to the forest.", keywords: ["grace"] },
@@ -1540,15 +1579,19 @@
           { en: "Vitamin D is important for your bones but remember to use sun cream when you are in the sun.", th: "วิตามินดีสำคัญต่อกระดูก แต่จำไว้ว่าต้องทาครีมกันแดดเมื่ออยู่กลางแดด" }
         ],
         vocab: [
-          { en: "playground", phonetic: "/ˈpleɪ.ɡraʊnd/", th: "สนามเด็กเล่น" },
-          { en: "children", phonetic: "/ˈtʃɪl.drən/", th: "เด็กๆ" },
-          { en: "swings", phonetic: "/swɪŋz/", th: "ชิงช้า" },
-          { en: "sand", phonetic: "/sænd/", th: "ทราย" },
-          { en: "slide", phonetic: "/slaɪd/", th: "กระดานลื่น" },
-          { en: "receive", phonetic: "/rɪˈsiːv/", th: "ได้รับ" },
-          { en: "Vitamin D", phonetic: "/ˈvɪt.ə.mɪn diː/", th: "วิตามินดี" },
-          { en: "bones", phonetic: "/bəʊnz/", th: "กระดูก" },
-          { en: "sun cream", phonetic: "/ˈsʌn ˌkriːm/", th: "ครีมกันแดด" }
+          { en: "children", readingTh: "ชิล-เดริน", th: "เด็กๆ", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "playing", readingTh: "เพล-อิง", th: "กำลังเล่น", verbInfo: "Verb ช่อง 1 เติม -ing (จาก V.1 play)", isVerb: true },
+          { en: "playground", readingTh: "เพล-กราวนด์", th: "สนามเด็กเล่น", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "swings", readingTh: "สวิงส์", th: "ชิงช้า", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "sand", readingTh: "แซนด์", th: "ทราย", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "slide", readingTh: "สไลด์", th: "กระดานลื่น", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "receive", readingTh: "ริ-ซีฟว์", th: "ได้รับ", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "Vitamin D", readingTh: "ไว-ทะ-มิน ดี", th: "วิตามินดี", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "comes", readingTh: "คัมส์", th: "มาจาก", verbInfo: "Verb ช่อง 1 (V.1 เติม -s จาก come)", isVerb: true },
+          { en: "bones", readingTh: "โบนส์", th: "กระดูก", verbInfo: "คำนาม (Noun)", isVerb: false },
+          { en: "remember", readingTh: "ริ-เมม-เบอะ", th: "จำไว้", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "use", readingTh: "ยูซ", th: "ใช้ / ทา", verbInfo: "Verb ช่อง 1 (V.1)", isVerb: true },
+          { en: "sun cream", readingTh: "ซัน ครีม", th: "ครีมกันแดด", verbInfo: "คำนาม (Noun)", isVerb: false }
         ],
         questions: [
           { id: 'p1', q: "On what day are the children playing outside?", th: "เด็กๆ ออกมาเล่นข้างนอกในวันอะไร?", answerEn: "On Sunday.", keywords: ["sunday"] },
@@ -1833,11 +1876,14 @@
           <div class="vocab-word-row">
             <div>
               <div class="vocab-en en-font">${item.en}</div>
-              <div class="vocab-phonetic">${item.phonetic}</div>
+              <div class="vocab-phonetic">คำอ่าน: ${item.readingTh}</div>
             </div>
             <span class="vocab-audio-btn" aria-hidden="true">🔊</span>
           </div>
-          <div class="vocab-th">${item.th}</div>
+          <div class="vocab-meaning-box">
+            <div class="vocab-th">คำแปล: <strong>${item.th}</strong></div>
+            <span class="vocab-pos ${item.isVerb ? 'is-verb' : 'is-noun'}">${item.verbInfo}</span>
+          </div>
         </div>
       `).join('');
 
