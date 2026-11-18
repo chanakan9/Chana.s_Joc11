@@ -876,12 +876,12 @@
               <div>
                 <h2 class="story-title en-font" id="currentStoryTitle">Story Title</h2>
                 <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-                  💡 กด <span style="color:var(--danger)">🎬 ฟังจากวิดีโอ</span> เพื่อฟังคลิปจริงของโรงเรียน หรือ <span style="color:var(--primary)">🔊 ฟังคอมพิวเตอร์</span> เพื่อปรับความเร็วได้
+                  💡 กดปุ่ม <span style="color:var(--primary)">🔊 ฟังประโยค</span> เพื่อฟังเสียงระบบ (TTS) หรือแตะที่คำศัพท์แต่ละคำเพื่อฟังเสียงเฉพาะคำได้เลย
                 </div>
               </div>
               <div class="story-global-actions">
-                <button class="btn btn-secondary btn-sm" id="btnPlayAllStep">
-                  🔊 ฟังคอมทั้งหมด
+                <button class="btn btn-primary btn-sm" id="btnPlayAllStep">
+                  🔊 ฟังทั้งหมด (TTS)
                 </button>
                 <button class="btn btn-outline btn-sm" id="btnStopVoice">
                   🛑 หยุดเสียง
@@ -963,14 +963,14 @@
         </main>
       </div>
 
-      <!-- Right Panel: YouTube Companion (Playing dynamic trimmed segments) -->
+      <!-- Right Panel: YouTube Companion -->
       <aside class="sticky-video-panel">
         <div>
           <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
             📺 วิดีโอเสียงต้นฉบับ SG
           </h3>
           <p style="font-size: 12px; color: var(--text-muted);">
-            วิดีโอจาก YouTube จะปรับเล่นตามเรื่องที่เลือกหรือประโยคที่กดให้อัตโนมัติ (และจะตัดเสียง-หยุดเล่นเมื่อครบรอบประโยคพอดี)
+            วิดีโอต้นฉบับจาก YouTube สำหรับเปิดฟังเทียบสำเนียงควบคู่กับการฝึกอ่าน
           </p>
         </div>
 
@@ -980,7 +980,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <div class="video-status-badge" id="videoStatus">
-            <span>⚪ รอคำสั่งเล่นประโยค</span>
+            <span>⚪ พร้อมเล่นวิดีโอต้นฉบับ</span>
           </div>
           <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
             * ความเร็วในการเล่นวิดีโอจะผันแปรตามความเร็วเสียงที่คุณปรับด้านบน (0.5x, 0.75x, 1.0x, 1.25x) โดยอัตโนมัติ!
@@ -999,7 +999,7 @@
       <div>
         <strong>ข้อมูลทางเทคนิคและข้อแนะนำเพื่อคุณครู/ผู้ปกครอง:</strong><br>
         • <strong>สำหรับเด็กเล็ก ป.1:</strong> เลือก <em>"โหมดเด็กเล็ก ป.1 (ถูกง่ายมาก)"</em> ระบบจะให้คะแนนเต็ม 100% ทันทีหากน้องพูดพยายามออกเสียงได้ถูกต้องบางส่วน เพื่อเสริมความมั่นใจและการแสดงออก<br>
-        • <strong>เสียงจริงจาก YouTube:</strong> ระบบใช้ YouTube Player API เพื่อตัดเสียงและหยุดเล่นในประโยคนั้นๆ โดยอัตโนมัติ ช่วยลดปัญหาเรื่องต้องการไฟล์เสียงย่อย
+        • <strong>เสียงฝึกทีละประโยค (TTS):</strong> ใช้เสียงสังเคราะห์ของระบบที่ออกเสียงตรงคำศัพท์ 100% สามารถปรับความเร็วช้า-เร็ว สลับสำเนียง US/UK และแตะฟังเฉพาะคำศัพท์ได้ทันที
       </div>
     </div>
   </div>
@@ -1370,12 +1370,8 @@
           <div class="sentence-top-bar">
             <span class="sentence-idx">ประโยคที่ ${sIdx + 1}</span>
             <div class="sentence-actions">
-              <!-- Click to play exact original YouTube Audio Segment -->
-              <button class="btn btn-youtube btn-sm play-yt-btn" data-start="${item.start}" data-end="${item.end}" data-label="ป.${sIdx+1}">
-                🎬 ฟังจากวิดีโอ
-              </button>
-              <button class="btn btn-outline btn-sm play-sentence-btn" data-sidx="${sIdx}" title="ฟังคอม">
-                🔊 ฟังคอม
+              <button class="btn btn-primary btn-sm play-sentence-btn" data-sidx="${sIdx}" title="ฟังประโยคด้วยเสียงระบบ (TTS)">
+                🔊 ฟังประโยค
               </button>
             </div>
           </div>
@@ -1417,17 +1413,7 @@
         });
       });
 
-      // Attach YouTube segment play buttons
-      sentencesListEl.querySelectorAll('.play-yt-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const start = parseFloat(btn.dataset.start);
-          const end = parseFloat(btn.dataset.end);
-          const label = btn.dataset.label;
-          playYoutubeSegment(start, end, label);
-        });
-      });
-
-      // Attach sentence play buttons
+      // Attach sentence play buttons (TTS)
       sentencesListEl.querySelectorAll('.play-sentence-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const sIdx = parseInt(btn.dataset.sidx);
@@ -1446,7 +1432,7 @@
 
     function renderFullStory(story) {
       const spans = story.sentences.map((s, idx) => {
-        return `<span class="story-sentence-span" id="full-span-${idx}" data-sidx="${idx}" data-start="${s.start}" data-end="${s.end}">${s.en} </span>`;
+        return `<span class="story-sentence-span" id="full-span-${idx}" data-sidx="${idx}">${s.en} </span>`;
       }).join('');
 
       fullStoryContentEl.innerHTML = spans;
@@ -1454,10 +1440,10 @@
       fullStoryContentEl.querySelectorAll('.story-sentence-span').forEach(span => {
         span.addEventListener('click', () => {
           const sIdx = parseInt(span.dataset.sidx);
-          const start = parseFloat(span.dataset.start);
-          const end = parseFloat(span.dataset.end);
           highlightFullSpan(sIdx);
-          playYoutubeSegment(start, end, `ประโยค ${sIdx+1}`);
+          speakText(story.sentences[sIdx].en, () => {
+            clearFullHighlights();
+          });
         });
       });
     }
@@ -1756,7 +1742,7 @@
       
       if (finalScore < 50) {
         scoreClass = 'score-low';
-        cheerMsg = '💪 สู้ๆ นะครับ ลองกดปุ่ม "ฟังจากวิดีโอ" แล้วลองพูดตามอีกครั้งนะครับลูก';
+        cheerMsg = '💪 สู้ๆ นะครับ ลองกดปุ่ม "ฟังประโยค" แล้วลองพูดตามอีกครั้งนะครับลูก';
       } else if (finalScore < 85) {
         scoreClass = 'score-medium';
         cheerMsg = '👍 เก่งมากเลยครับ! ชัดเจนเกือบสมบูรณ์แบบแล้วครับ';
