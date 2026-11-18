@@ -2,44 +2,51 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ฝึกการออกเสียง & สำเนียงภาษาอังกฤษ (Primary 1)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>แบบฝึกหัดฝึกออกเสียง & สำเนียงภาษาอังกฤษ (Primary 1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Include YouTube IFrame Player API -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-light: #eff6ff;
-      --secondary: #10b981;
-      --secondary-hover: #059669;
+      --primary-border: #bfdbfe;
+      --secondary: #059669;
+      --secondary-hover: #047857;
       --secondary-light: #ecfdf5;
-      --accent: #f59e0b;
-      --accent-light: #fef3c7;
-      --danger: #ef4444;
-      --danger-light: #fee2e2;
-      --purple: #8b5cf6;
-      --purple-light: #f5f3ff;
-      
-      --text-main: #1e293b;
+      --secondary-border: #a7f3d0;
+      --accent: #d97706;
+      --accent-light: #fffbeb;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --danger-border: #fecaca;
+
+      --text-main: #0f172a;
+      --text-sub: #334155;
       --text-muted: #64748b;
-      --bg: #f8fafc;
+      --bg: #f1f5f9;
       --surface: #ffffff;
+      --surface-soft: #f8fafc;
       --border: #e2e8f0;
-      --border-focus: #93c5fd;
-      
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
       --radius-full: 9999px;
-      
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-      --shadow-hover: 0 14px 24px -4px rgba(59, 130, 246, 0.16);
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 6px 16px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+      --shadow-active: 0 8px 20px -4px rgba(37, 99, 235, 0.18);
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
     }
 
     * {
@@ -47,6 +54,11 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -59,88 +71,117 @@
       flex-direction: column;
     }
 
-    .en-font {
-      font-family: 'Fredoka', cursive, 'Prompt', sans-serif;
+    button, select, a {
+      touch-action: manipulation;
     }
 
-    /* Container */
+    .en-font {
+      font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: 0.2px;
+    }
+
+    /* App Container with Safe-Area Support for Notched Mobile & iPad */
     .app-container {
-      max-width: 1000px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 16px;
       width: 100%;
       flex: 1;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(28px, env(safe-area-inset-bottom));
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 24px 28px 40px;
+      }
     }
 
     /* Header */
-    header {
-      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-      color: white;
-      padding: 20px 24px;
+    .app-header {
+      background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+      color: #ffffff;
+      padding: 18px 20px;
       border-radius: var(--radius-lg);
-      margin-bottom: 20px;
+      margin-bottom: var(--space-4);
       box-shadow: var(--shadow-md);
-      position: relative;
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    header::after {
-      content: '🌟';
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 40px;
-      opacity: 0.3;
-      transform: rotate(15deg);
+    @media (min-width: 768px) {
+      .app-header {
+        padding: 24px 28px;
+        margin-bottom: var(--space-5);
+      }
     }
 
     .header-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(4px);
-      padding: 3px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 4px 12px;
       border-radius: var(--radius-full);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      letter-spacing: 0.4px;
     }
 
-    header h1 {
-      font-size: 24px;
+    .app-header h1 {
+      font-size: clamp(20px, 3vw, 26px);
       font-weight: 700;
+      line-height: 1.3;
       margin-bottom: 4px;
+    }
+
+    .app-header p {
+      font-size: clamp(13px, 1.8vw, 14.5px);
+      opacity: 0.92;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    .header-icon {
+      font-size: 42px;
+      line-height: 1;
+      flex-shrink: 0;
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .header-icon {
+        display: block;
+      }
+    }
+
+    /* Section Label */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    header p {
-      font-size: 14px;
-      opacity: 0.92;
-      max-width: 700px;
-    }
-
-    /* Story Selection Tabs */
-    .story-selector-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
+    /* Story Selection Grid: Compact 3-up on mobile, spacious cards on tablet/desktop */
     .story-tabs {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: var(--space-4);
     }
 
-    @media (max-width: 640px) {
+    @media (min-width: 640px) {
       .story-tabs {
-        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: var(--space-5);
       }
     }
 
@@ -148,303 +189,388 @@
       background: var(--surface);
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 14px;
-      text-align: left;
+      padding: 10px 8px;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 4px;
-      position: relative;
+      min-height: 68px;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    @media (min-width: 640px) {
+      .story-card-btn {
+        padding: 14px 16px;
+        text-align: left;
+        align-items: flex-start;
+        min-height: 88px;
+      }
     }
 
     .story-card-btn:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
+      border-color: #93c5fd;
+      transform: translateY(-1px);
       box-shadow: var(--shadow-sm);
+    }
+
+    .story-card-btn:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
     }
 
     .story-card-btn.active {
       border-color: var(--primary);
       background: var(--primary-light);
-      box-shadow: var(--shadow-hover);
+      box-shadow: var(--shadow-active);
     }
 
     .story-card-btn .story-num {
       font-size: 11px;
       font-weight: 700;
       color: var(--primary);
-      background: white;
+      background: #ffffff;
       padding: 2px 8px;
       border-radius: var(--radius-full);
-      display: inline-block;
-      width: fit-content;
-      border: 1px solid var(--border);
+      border: 1px solid var(--primary-border);
+      white-space: nowrap;
+    }
+
+    .story-card-btn.active .story-num {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
     }
 
     .story-card-btn .story-name {
-      font-size: 16px;
+      font-size: clamp(13px, 2vw, 17px);
       font-weight: 700;
       color: var(--text-main);
+      line-height: 1.25;
+      word-break: break-word;
     }
 
     .story-card-btn .story-desc {
       font-size: 12px;
       color: var(--text-muted);
+      line-height: 1.35;
+      display: none;
     }
 
-    /* Split Layout for Interactive Learning & Video Sync */
-    .app-layout {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 20px;
-      align-items: start;
-    }
-
-    @media (max-width: 900px) {
-      .app-layout {
-        grid-template-columns: 1fr;
+    @media (min-width: 640px) {
+      .story-card-btn .story-desc {
+        display: block;
       }
     }
 
-    /* Sticky Side Video Panel */
-    .sticky-video-panel {
-      position: sticky;
-      top: 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      box-shadow: var(--shadow-md);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .mini-video-wrapper {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: var(--radius-sm);
-      background: #000;
-      border: 1px solid var(--border);
-    }
-
-    .mini-video-wrapper iframe, .mini-video-wrapper div {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .video-status-badge {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: var(--radius-full);
-      background: #fef3c7;
-      color: #d97706;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      width: fit-content;
-    }
-
-    .video-status-badge.active {
-      background: #dcfce7;
-      color: #15803d;
-    }
-
-    /* Controls Bar: Audio Speed, Accent, Mode */
+    /* Controls Bar: Responsive Grid for Mobile, iPad, Desktop */
     .controls-panel {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
+      padding: 14px;
+      margin-bottom: var(--space-4);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
       box-shadow: var(--shadow-sm);
+    }
+
+    @media (min-width: 640px) {
+      .controls-panel {
+        padding: 16px 18px;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 18px;
+      }
+      .control-group.speed-control {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .controls-panel {
+        grid-template-columns: 1.35fr 0.85fr 1.1fr;
+        align-items: end;
+        margin-bottom: var(--space-5);
+      }
+      .control-group.speed-control {
+        grid-column: auto;
+      }
     }
 
     .control-group {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
     }
 
     .control-label {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text-sub);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .speed-btn-group {
-      display: flex;
-      background: #f1f5f9;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
       padding: 3px;
-      border-radius: var(--radius-full);
+      border-radius: var(--radius-sm);
+      gap: 3px;
     }
 
     .speed-btn {
       border: none;
       background: transparent;
-      padding: 4px 10px;
-      border-radius: var(--radius-full);
-      font-size: 12px;
+      min-height: 40px;
+      padding: 6px 4px;
+      border-radius: 7px;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text-sub);
       cursor: pointer;
       transition: all 0.15s ease;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.15;
+    }
+
+    .speed-btn small {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--text-muted);
     }
 
     .speed-btn.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
     }
 
-    .accent-select {
-      background: #f1f5f9;
-      border: 1px solid transparent;
-      border-radius: var(--radius-full);
-      padding: 5px 12px;
-      font-size: 13px;
+    .speed-btn.active small {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    /* 16px font on mobile prevents iOS Safari auto-zoom on tap */
+    .control-select {
+      width: 100%;
+      min-height: 44px;
+      background-color: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 36px 8px 12px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-main);
       cursor: pointer;
-      outline: none;
       font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
     }
 
-    .accent-select:focus {
-      border-color: var(--primary);
-      background: white;
+    @media (min-width: 768px) {
+      .control-select {
+        font-size: 14px;
+      }
     }
 
-    /* Action tabs: Step-by-Step vs Full Story vs Video */
+    .control-select:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 1px;
+      background-color: #ffffff;
+    }
+
+    .control-select.kid-mode-select {
+      background-color: var(--secondary-light);
+      border-color: var(--secondary-border);
+      color: #065f46;
+    }
+
+    /* Main Two-Column Layout on Desktop, Stacked on Mobile & Tablet */
+    .app-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .app-layout {
+        grid-template-columns: minmax(0, 1fr) 350px;
+        gap: 24px;
+      }
+    }
+
+    /* Practice Mode Segmented Bar */
     .view-modes {
-      display: flex;
-      border-bottom: 2px solid var(--border);
-      gap: 8px;
-      margin-bottom: 20px;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      background: var(--surface);
+      padding: 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-sm);
     }
 
     .view-tab {
-      padding: 10px 16px;
-      font-size: 14px;
+      min-height: 44px;
+      padding: 8px 6px;
+      font-size: clamp(12px, 1.8vw, 14px);
       font-weight: 600;
-      background: none;
+      background: transparent;
       border: none;
-      border-bottom: 3px solid transparent;
-      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      color: var(--text-sub);
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
+      text-align: center;
+      line-height: 1.25;
+      font-family: inherit;
     }
 
     .view-tab:hover {
       color: var(--primary);
+      background: var(--surface-soft);
     }
 
     .view-tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.24);
     }
 
-    /* Main Story Card */
+    .view-tab-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 400px) {
+      .view-tab {
+        flex-direction: column;
+        gap: 2px;
+        padding: 6px 4px;
+        font-size: 11.5px;
+      }
+    }
+
+    /* Main Content Card */
     .story-hero-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 16px;
       box-shadow: var(--shadow-sm);
-      margin-bottom: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .story-hero-card {
+        padding: 24px;
+      }
     }
 
     .story-header-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
-      gap: 10px;
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 14px;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
     }
 
     .story-title {
-      font-size: 24px;
+      font-size: clamp(20px, 2.8vw, 25px);
       font-weight: 700;
       color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      line-height: 1.25;
+    }
+
+    .story-helper-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.5;
     }
 
     .story-global-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
+    @media (min-width: 640px) {
+      .story-global-actions {
+        width: auto;
+      }
+    }
+
+    /* Buttons with >=42px touch targets */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      min-height: 42px;
       padding: 8px 16px;
       border-radius: var(--radius-full);
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       font-family: inherit;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
     }
 
     .btn-primary {
       background: var(--primary);
-      color: white;
+      color: #ffffff;
     }
     .btn-primary:hover {
       background: var(--primary-hover);
     }
 
-    .btn-secondary {
-      background: #f1f5f9;
-      color: var(--text-main);
-    }
-    .btn-secondary:hover {
-      background: #e2e8f0;
-    }
-
-    .btn-success {
-      background: var(--secondary);
-      color: white;
-    }
-    .btn-success:hover {
-      background: var(--secondary-hover);
-    }
-
     .btn-outline {
-      background: transparent;
+      background: #ffffff;
       border-color: var(--border);
-      color: var(--text-main);
+      color: var(--text-sub);
     }
     .btn-outline:hover {
       border-color: var(--primary);
@@ -452,21 +578,17 @@
       background: var(--primary-light);
     }
 
-    .btn-youtube {
-      background: #fee2e2;
-      color: #991b1b;
-      border-color: #fca5a5;
-    }
-    .btn-youtube:hover {
-      background: #fecaca;
+    .story-global-actions .btn {
+      flex: 1 1 auto;
     }
 
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 12px;
+    @media (min-width: 640px) {
+      .story-global-actions .btn {
+        flex: 0 0 auto;
+      }
     }
 
-    /* Sentence List */
+    /* Sentence Cards */
     .sentences-list {
       display: flex;
       flex-direction: column;
@@ -478,136 +600,171 @@
       border-radius: var(--radius-md);
       padding: 16px;
       background: #ffffff;
-      transition: all 0.25s ease;
-      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    @media (min-width: 640px) {
+      .sentence-card {
+        padding: 18px 20px;
+      }
     }
 
     .sentence-card:hover {
-      border-color: var(--border-focus);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border-color: #cbd5e1;
     }
 
     .sentence-card.is-playing {
       border-color: var(--primary);
-      background: #f8faff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      background: #f8fbff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
     }
 
     .sentence-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .sentence-idx {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--text-muted);
-      background: #f1f5f9;
-      padding: 2px 8px;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 4px 10px;
       border-radius: var(--radius-full);
     }
 
-    .sentence-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
     .sentence-en {
-      font-size: 19px;
+      font-size: clamp(19px, 2.5vw, 22px);
       font-weight: 600;
-      color: #1e293b;
-      line-height: 1.5;
+      color: var(--text-main);
+      line-height: 1.55;
       margin-bottom: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 6px;
       align-items: baseline;
     }
 
     .clickable-word {
       cursor: pointer;
-      padding: 1px 4px;
-      border-radius: 4px;
-      transition: background 0.15s;
-      position: relative;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border-bottom: 2px dotted #cbd5e1;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
 
-    .clickable-word:hover {
+    .clickable-word:hover,
+    .clickable-word:active,
+    .clickable-word.word-speaking {
       background: #dbeafe;
-      color: #1d4ed8;
+      color: var(--primary-hover);
+      border-bottom-color: var(--primary);
     }
 
     .sentence-th {
-      font-size: 13px;
-      color: #64748b;
-      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
 
-    /* Mic & Testing Box */
+    /* Microphone Practice Box */
     .recording-area {
-      background: #f8fafc;
-      border: 1px dashed var(--border);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-top: 10px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
+    .recording-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .recording-prompt {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
     .mic-button {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      padding: 8px 16px;
+      min-height: 44px;
+      padding: 8px 18px;
       border-radius: var(--radius-full);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      border: none;
+      border: 1px solid transparent;
       cursor: pointer;
-      transition: all 0.2s;
-      width: fit-content;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    @media (max-width: 480px) {
+      .recording-bar .mic-button {
+        width: 100%;
+      }
     }
 
     .mic-button.idle {
       background: #e0f2fe;
       color: #0369a1;
+      border-color: #bae6fd;
     }
     .mic-button.idle:hover {
       background: #bae6fd;
     }
 
     .mic-button.recording {
-      background: #fee2e2;
-      color: #b91c1c;
-      animation: pulse 1.5s infinite;
+      background: var(--danger);
+      color: #ffffff;
+      animation: pulse 1.4s infinite;
     }
 
     @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+      70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    .mic-notice {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--danger-light);
+      color: #991b1b;
+      border: 1px solid var(--danger-border);
+      display: none;
     }
 
     .recognition-result {
-      font-size: 13px;
-      padding: 8px 12px;
-      background: white;
-      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 8px;
       border: 1px solid var(--border);
     }
 
     .transcript-line {
       display: flex;
+      flex-wrap: wrap;
       align-items: baseline;
       gap: 6px;
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .transcript-text {
@@ -615,41 +772,40 @@
       color: var(--text-main);
     }
 
-    /* Accuracy feedback */
     .feedback-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       margin-top: 6px;
-      padding-top: 6px;
-      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+      border-top: 1px solid var(--surface-soft);
     }
 
     .accuracy-score {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .score-high { color: #16a34a; }
-    .score-medium { color: #d97706; }
-    .score-low { color: #dc2626; }
+    .score-high { color: #15803d; }
+    .score-medium { color: #b45309; }
+    .score-low { color: #b91c1c; }
 
     .word-breakdown {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 6px;
+      gap: 5px;
+      margin-top: 8px;
     }
 
     .word-chip {
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12.5px;
       font-weight: 600;
     }
 
@@ -668,24 +824,30 @@
 
     /* Full Story View */
     .full-story-box {
-      background: white;
-      padding: 24px;
+      background: var(--surface-soft);
+      padding: 20px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
-      line-height: 2.2;
-      font-size: 20px;
-      color: #1e293b;
+      line-height: 2.1;
+      font-size: clamp(19px, 2.6vw, 23px);
+      color: var(--text-main);
+    }
+
+    @media (min-width: 640px) {
+      .full-story-box {
+        padding: 24px 28px;
+      }
     }
 
     .full-story-box .story-sentence-span {
       cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 6px;
-      transition: background 0.15s;
+      padding: 3px 6px;
+      border-radius: 8px;
+      transition: background-color 0.15s ease;
     }
 
     .full-story-box .story-sentence-span:hover {
-      background: #e0f2fe;
+      background: #dbeafe;
     }
 
     .full-story-box .story-sentence-span.highlighted {
@@ -696,23 +858,31 @@
     /* Vocabulary Cards Grid */
     .vocab-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .vocab-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
     }
 
     .vocab-card {
-      background: white;
-      border: 1px solid var(--border);
+      background: #ffffff;
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-md);
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      transition: all 0.2s;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     }
 
-    .vocab-card:hover {
+    .vocab-card:hover,
+    .vocab-card:active {
       transform: translateY(-2px);
       box-shadow: var(--shadow-sm);
       border-color: var(--primary);
@@ -721,75 +891,185 @@
     .vocab-word-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 8px;
     }
 
     .vocab-en {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--text-main);
+      line-height: 1.25;
     }
 
     .vocab-phonetic {
-      font-size: 12px;
-      color: #64748b;
-      font-family: monospace;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-top: 2px;
     }
 
     .vocab-th {
-      font-size: 13px;
-      color: #334155;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
     }
 
     .vocab-audio-btn {
-      background: #eff6ff;
+      background: var(--primary-light);
       border: none;
-      color: #2563eb;
-      width: 32px;
-      height: 32px;
+      color: var(--primary);
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s;
+      transition: background-color 0.15s ease, transform 0.15s ease;
     }
 
     .vocab-audio-btn:hover {
       background: #dbeafe;
     }
 
-    /* Footer & tips */
-    .tip-box {
-      margin-top: 24px;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      font-size: 13px;
-      color: #92400e;
+    /* YouTube Reference Companion Panel:
+       - Mobile (<640px): Clean stacked card
+       - Tablet/iPad (640px-1023px): Balanced 2-column horizontal companion
+       - Desktop (>=1024px): Sticky right sidebar */
+    .sticky-video-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .sticky-video-panel {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 24px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .sticky-video-panel {
+        position: sticky;
+        top: 20px;
+      }
+    }
+
+    .video-panel-header {
       display: flex;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .video-panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .video-story-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--primary-hover);
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      width: fit-content;
+      margin-top: 4px;
+    }
+
+    .mini-video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      background: #0f172a;
+      border: 1px solid var(--border);
+    }
+
+    .mini-video-wrapper iframe,
+    .mini-video-wrapper > div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-controls-col {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 640px) {
-      .app-container {
-        padding: 10px;
-      }
-      header {
-        padding: 16px;
-      }
-      header h1 {
-        font-size: 20px;
-      }
-      .controls-panel {
+    .video-status-badge {
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      background: var(--surface-soft);
+      color: var(--text-sub);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+
+    .video-status-badge.active {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    .video-action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .video-action-row .btn {
+      flex: 1 1 auto;
+    }
+
+    /* Footer Tips */
+    .tip-box {
+      margin-top: 24px;
+      background: var(--accent-light);
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      font-size: 13.5px;
+      color: #92400e;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 480px) {
+      .tip-box {
         flex-direction: column;
-        align-items: flex-start;
-      }
-      .sentence-en {
-        font-size: 17px;
+        gap: 6px;
       }
     }
   </style>
@@ -798,140 +1078,139 @@
 
   <div class="app-container">
     <!-- Header -->
-    <header>
-      <div class="header-badge">PRIMARY 1 • READ & SPEAK PRACTICE</div>
-      <h1><span>🎧</span> ฝึกออกเสียงและสำเนียงภาษาอังกฤษ</h1>
-      <p>ฟังต้นฉบับตรงจากวิดีโอ YouTube ของโรงเรียนเซนต์คาเบรียล ปรับความเร็วเสียง และทดสอบออกเสียงผ่านไมโครโฟนมือถือพร้อมระบบช่วยตรวจสำหรับเด็กเล็ก ป.1</p>
+    <header class="app-header">
+      <div>
+        <div class="header-badge">🌟 PRIMARY 1 • READ & SPEAK PRACTICE</div>
+        <h1>🎧 ฝึกออกเสียงและสำเนียงภาษาอังกฤษ</h1>
+        <p>ฝึกฟังเสียงอ่านชัดๆ ปรับความเร็วช้า-เร็ว เลือกสำเนียง US/UK และทดสอบพูดผ่านไมโครโฟนได้ทั้งบนคอมพิวเตอร์ แท็บเล็ต iPad และมือถือทุกรุ่น</p>
+      </div>
+      <div class="header-icon" aria-hidden="true">📚</div>
     </header>
 
-    <!-- Story Selector Tabs -->
-    <div class="story-selector-label">เลือกบทเรียน (3 เรื่องจากแบบฝึกหัด):</div>
-    <div class="story-tabs" id="storyTabs">
+    <!-- Story Selector -->
+    <div class="section-label">📌 เลือกบทเรียน (3 เรื่องจากแบบฝึกหัด):</div>
+    <div class="story-tabs" id="storyTabs" role="tablist" aria-label="เลือกบทเรียน">
       <!-- Injected via JS -->
     </div>
 
     <!-- Audio Speed, Accent & Grading Controls -->
-    <div class="controls-panel">
+    <section class="controls-panel" aria-label="ตั้งค่าเสียงและการตรวจคะแนน">
       <!-- Speed selector -->
-      <div class="control-group">
-        <span class="control-label">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          ความเร็วเสียง:
-        </span>
-        <div class="speed-btn-group" id="speedGroup">
-          <button class="speed-btn" data-speed="0.5">0.5x ช้ามาก</button>
-          <button class="speed-btn" data-speed="0.75">0.75x ช้า</button>
-          <button class="speed-btn active" data-speed="1.0">1.0x ปกติ</button>
-          <button class="speed-btn" data-speed="1.25">1.25x เร็ว</button>
+      <div class="control-group speed-control">
+        <span class="control-label">⏱️ ความเร็วเสียงอ่าน:</span>
+        <div class="speed-btn-group" id="speedGroup" role="group" aria-label="ความเร็วเสียงอ่าน">
+          <button type="button" class="speed-btn" data-speed="0.5">0.5x<small>ช้ามาก</small></button>
+          <button type="button" class="speed-btn" data-speed="0.75">0.75x<small>ช้า</small></button>
+          <button type="button" class="speed-btn active" data-speed="1.0">1.0x<small>ปกติ</small></button>
+          <button type="button" class="speed-btn" data-speed="1.25">1.25x<small>เร็ว</small></button>
         </div>
       </div>
 
       <!-- Accent selector -->
       <div class="control-group">
-        <span class="control-label">
-          🗣️ สำเนียงพูด (TTS):
-        </span>
-        <select class="accent-select" id="accentSelect">
-          <option value="en-US">🇺🇸 อเมริกัน (US)</option>
-          <option value="en-GB">🇬🇧 อังกฤษ (UK)</option>
-        </select>
-      </div>
-
-      <!-- STRICTNESS GRADING SELECTOR (Specifically for P.1 kids requirement) -->
-      <div class="control-group">
-        <span class="control-label">
-          🎯 โหมดตรวจไมค์:
-        </span>
-        <select class="accent-select" id="strictnessSelect" style="background: var(--secondary-light); color: var(--secondary); border: 1px solid #a7f3d0;">
-          <option value="easy">🌟 โหมดเด็กเล็ก ป.1 (ถูกง่ายมาก • แนะนำ)</option>
-          <option value="normal">🎯 โหมดมาตรฐาน (ปกติ)</option>
-          <option value="strict">🔍 โหมดท้าทาย (ตรวจละเอียด)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Split Layout with YouTube Video as learning companion -->
-    <div class="app-layout">
-      
-      <!-- Left Panel: Lesson Practicing and modes -->
-      <div>
-        <!-- Mode Selector Tabs -->
-        <div class="view-modes">
-          <button class="view-tab active" data-mode="step">
-            <span>📝</span> ฝึกทีละประโยค + ทดสอบไมค์
-          </button>
-          <button class="view-tab" data-mode="full">
-            <span>📖</span> อ่านและฟังทั้งบทความ
-          </button>
-          <button class="view-tab" data-mode="vocab">
-            <span>🔤</span> คำศัพท์น่ารู้ประจำบท
-          </button>
+        <label class="control-label" for="accentSelect">🗣️ สำเนียงเสียงระบบ (TTS):</label>
+        <div class="select-wrapper">
+          <select class="control-select" id="accentSelect">
+            <option value="en-US">🇺🇸 อเมริกัน (US)</option>
+            <option value="en-GB">🇬🇧 อังกฤษ (UK)</option>
+          </select>
         </div>
+      </div>
 
-        <!-- Content Sections -->
+      <!-- Grading strictness selector -->
+      <div class="control-group">
+        <label class="control-label" for="strictnessSelect">🎯 โหมดตรวจไมค์:</label>
+        <div class="select-wrapper">
+          <select class="control-select kid-mode-select" id="strictnessSelect">
+            <option value="easy">🌟 เด็กเล็ก ป.1 (ถูกง่ายมาก • แนะนำ)</option>
+            <option value="normal">🎯 มาตรฐาน (ปกติ)</option>
+            <option value="strict">🔍 ท้าทาย (ตรวจละเอียด)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workspace Layout -->
+    <div class="app-layout">
+      <!-- Left / Primary Column -->
+      <div>
+        <!-- Practice Mode Tabs -->
+        <nav class="view-modes" aria-label="โหมดการฝึก">
+          <button type="button" class="view-tab active" data-mode="step">
+            <span class="view-tab-icon">📝</span>
+            <span>ฝึกทีละประโยค</span>
+          </button>
+          <button type="button" class="view-tab" data-mode="full">
+            <span class="view-tab-icon">📖</span>
+            <span>อ่านและฟังทั้งบท</span>
+          </button>
+          <button type="button" class="view-tab" data-mode="vocab">
+            <span class="view-tab-icon">🔤</span>
+            <span>คำศัพท์น่ารู้</span>
+          </button>
+        </nav>
+
         <main>
-          <!-- Step By Step Sentence Practice -->
+          <!-- Mode 1: Step-by-Step Sentence Practice (100% TTS) -->
           <section id="stepView" class="story-hero-card">
             <div class="story-header-row">
               <div>
                 <h2 class="story-title en-font" id="currentStoryTitle">Story Title</h2>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-                  💡 กดปุ่ม <span style="color:var(--primary)">🔊 ฟังประโยค</span> เพื่อฟังเสียงระบบ (TTS) หรือแตะที่คำศัพท์แต่ละคำเพื่อฟังเสียงเฉพาะคำได้เลย
-                </div>
+                <p class="story-helper-hint">
+                  💡 กดปุ่ม <strong style="color:var(--primary)">🔊 ฟังประโยค</strong> เพื่อฟังเสียงระบบ (TTS) หรือ<strong>แตะที่คำศัพท์แต่ละคำ</strong>เพื่อฟังเสียงเฉพาะคำได้ทันที
+                </p>
               </div>
               <div class="story-global-actions">
-                <button class="btn btn-primary btn-sm" id="btnPlayAllStep">
-                  🔊 ฟังทั้งหมด (TTS)
+                <button type="button" class="btn btn-primary" id="btnPlayAllStep">
+                  🔊 ฟังทุกประโยคต่อเนื่อง
                 </button>
-                <button class="btn btn-outline btn-sm" id="btnStopVoice">
-                  🛑 หยุดเสียง
+                <button type="button" class="btn btn-outline" id="btnStopVoice">
+                  ⏹️ หยุดเสียง
                 </button>
               </div>
             </div>
 
             <div class="sentences-list" id="sentencesList">
-              <!-- Sentences populated here -->
+              <!-- Sentences populated via JS -->
             </div>
           </section>
 
-          <!-- Full Story View -->
+          <!-- Mode 2: Full Story Practice (100% TTS) -->
           <section id="fullView" class="story-hero-card" style="display: none;">
             <div class="story-header-row">
               <div>
                 <h2 class="story-title en-font" id="fullStoryTitle">Story Title</h2>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-                  กดประโยคใดก็ได้เพื่อฟังคลิปเสียง หรือกดปุ่มเริ่มเล่นให้ฟังต่อเนื่องได้เลย
-                </div>
+                <p class="story-helper-hint">
+                  💡 แตะที่ประโยคใดก็ได้ในเนื้อเรื่องเพื่อฟังเสียงอ่าน (TTS) หรือกดปุ่มฟังทั้งเรื่องต่อเนื่องพร้อมไฮไลต์ตามจังหวะ
+                </p>
               </div>
               <div class="story-global-actions">
-                <button class="btn btn-youtube btn-sm" id="btnPlayFullVideo">
-                  🎬 ฟังจากวิดีโอต้นฉบับยาว
+                <button type="button" class="btn btn-primary" id="btnPlayFull">
+                  🔊 ฟังทั้งบทความ (TTS)
                 </button>
-                <button class="btn btn-primary btn-sm" id="btnPlayFull">
-                  🔊 เริ่มฟังต่อเนื่อง (คอม)
-                </button>
-                <button class="btn btn-outline btn-sm" id="btnStopFull">
-                  🛑 หยุด
+                <button type="button" class="btn btn-outline" id="btnStopFull">
+                  ⏹️ หยุดเสียง
                 </button>
               </div>
             </div>
 
             <div class="full-story-box en-font" id="fullStoryContent">
-              <!-- Full text injected here -->
+              <!-- Full story sentences injected via JS -->
             </div>
 
-            <!-- Full story reading test -->
+            <!-- Full Story Microphone Reading Check -->
             <div class="recording-area" style="margin-top: 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div class="recording-bar">
                 <div>
-                  <strong style="font-size: 14px;">🎤 ทดสอบอ่านทั้งเรื่องด้วยไมโครโฟน</strong>
-                  <div style="font-size: 12px; color: var(--text-muted);">กดปุ่มไมค์ แล้วอ่านเรื่องนี้ทั้งหมด ระบบจะประเมินคะแนนผ่านเกณฑ์ ป.1 ให้</div>
+                  <div class="recording-prompt">🎤 ทดสอบอ่านทั้งเรื่องด้วยไมโครโฟน</div>
+                  <div style="font-size: 12.5px; color: var(--text-muted);">กดปุ่มไมค์ แล้วลองอ่านออกเสียงตั้งแต่ต้นจนจบเรื่อง</div>
                 </div>
-                <button class="mic-button idle" id="btnFullMic">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                <button type="button" class="mic-button idle" id="btnFullMic">
+                  <span>🎤</span>
                   <span id="fullMicText">เริ่มอ่านผ่านไมค์</span>
                 </button>
               </div>
+              <div class="mic-notice" id="fullMicNotice"></div>
               <div id="fullStoryResult" style="display: none;" class="recognition-result">
                 <div class="transcript-line">
                   <span>เสียงที่คุณอ่าน:</span>
@@ -939,129 +1218,131 @@
                 </div>
                 <div class="feedback-row">
                   <div class="accuracy-score" id="fullScoreText">คะแนนความถูกต้อง: 0%</div>
-                  <div id="fullEncouragement" style="font-size: 12px; font-weight: 600;"></div>
+                  <div id="fullEncouragement" style="font-size: 13px; font-weight: 600;"></div>
                 </div>
                 <div class="word-breakdown" id="fullWordBreakdown"></div>
               </div>
             </div>
           </section>
 
-          <!-- Vocabulary View -->
+          <!-- Mode 3: Vocabulary Cards -->
           <section id="vocabView" class="story-hero-card" style="display: none;">
             <div class="story-header-row">
               <div>
                 <h2 class="story-title" id="vocabStoryTitle">คำศัพท์น่ารู้</h2>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-                  กดไอคอนลำโพงเพื่อฟังการออกเสียงและเน้นเสียงที่ถูกต้องพร้อมคำแปล
-                </div>
+                <p class="story-helper-hint">
+                  💡 แตะที่การ์ดคำศัพท์เพื่อฟังการออกเสียงระบบ (TTS) พร้อมดูคำอ่านโฟเนติกส์และคำแปลภาษาไทย
+                </p>
               </div>
             </div>
             <div class="vocab-grid" id="vocabGrid">
-              <!-- Vocab cards populated here -->
+              <!-- Vocab cards populated via JS -->
             </div>
           </section>
         </main>
       </div>
 
-      <!-- Right Panel: YouTube Companion -->
-      <aside class="sticky-video-panel">
+      <!-- Right / Bottom Companion: Original YouTube Video (Synced per Story!) -->
+      <aside class="sticky-video-panel" aria-label="วิดีโอเสียงต้นฉบับ">
         <div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
-            📺 วิดีโอเสียงต้นฉบับ SG
-          </h3>
-          <p style="font-size: 12px; color: var(--text-muted);">
-            วิดีโอต้นฉบับจาก YouTube สำหรับเปิดฟังเทียบสำเนียงควบคู่กับการฝึกอ่าน
-          </p>
+          <div class="video-panel-header" style="margin-bottom: 10px;">
+            <h3 class="video-panel-title">📺 วิดีโอเสียงต้นฉบับ (เทียบสำเนียง)</h3>
+            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.45;">
+              คลิปวิดีโอรวมบทเรียนจาก YouTube ตั้งช่วงเวลาเริ่มต้นให้ตรงตามเรื่องที่คุณเลือกด้านบนโดยอัตโนมัติ
+            </p>
+            <div class="video-story-tag" id="videoChapterBadge">
+              📌 ช่วงเรื่องที่ 5: 2:06 – 2:35
+            </div>
+          </div>
+
+          <div class="mini-video-wrapper">
+            <div id="youtubePlayer"></div>
+          </div>
         </div>
 
-        <div class="mini-video-wrapper">
-          <div id="youtubePlayer"></div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div class="video-controls-col">
           <div class="video-status-badge" id="videoStatus">
-            <span>⚪ พร้อมเล่นวิดีโอต้นฉบับ</span>
+            ⚪ พร้อมเล่นช่วงของบทเรียนนี้
           </div>
-          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
-            * ความเร็วในการเล่นวิดีโอจะผันแปรตามความเร็วเสียงที่คุณปรับด้านบน (0.5x, 0.75x, 1.0x, 1.25x) โดยอัตโนมัติ!
+
+          <div class="video-action-row">
+            <button type="button" class="btn btn-primary" id="btnPlayStoryVideo">
+              ▶️ เล่นวิดีโอเรื่องนี้
+            </button>
+            <button type="button" class="btn btn-outline" id="btnPauseStoryVideo">
+              ⏸️ พักวิดีโอ
+            </button>
           </div>
-          <a href="https://www.youtube.com/watch?v=PS-xW-sbhoQ" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="margin-top: 4px; justify-content: center;">
-            🔗 เปิดดูบน YouTube โดยตรง ↗
+
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">
+            * เมื่อเปลี่ยนบทเรียนด้านบน วิดีโอจะเลื่อนไปรอที่จุดเริ่มต้นของเรื่องนั้นให้อัตโนมัติ (เรื่อง The Forest ปรับเวลาจริงเป็น 3:38 – 4:08 แทนเวลาในคำอธิบายใต้คลิปที่พิมพ์คลาดเคลื่อนเป็น 3:09)
+          </p>
+
+          <a href="https://www.youtube.com/watch?v=PS-xW-sbhoQ" target="_blank" rel="noopener" class="btn btn-outline" style="width: 100%;">
+            🔗 เปิดดูคลิปเต็มบน YouTube ↗
           </a>
         </div>
       </aside>
-
     </div>
 
-    <!-- Tips on Mic usage on Mobile -->
+    <!-- Helpful Device & Parent Guide -->
     <div class="tip-box">
-      <div style="font-size: 20px;">💡</div>
+      <div style="font-size: 22px; line-height: 1;">💡</div>
       <div>
-        <strong>ข้อมูลทางเทคนิคและข้อแนะนำเพื่อคุณครู/ผู้ปกครอง:</strong><br>
-        • <strong>สำหรับเด็กเล็ก ป.1:</strong> เลือก <em>"โหมดเด็กเล็ก ป.1 (ถูกง่ายมาก)"</em> ระบบจะให้คะแนนเต็ม 100% ทันทีหากน้องพูดพยายามออกเสียงได้ถูกต้องบางส่วน เพื่อเสริมความมั่นใจและการแสดงออก<br>
-        • <strong>เสียงฝึกทีละประโยค (TTS):</strong> ใช้เสียงสังเคราะห์ของระบบที่ออกเสียงตรงคำศัพท์ 100% สามารถปรับความเร็วช้า-เร็ว สลับสำเนียง US/UK และแตะฟังเฉพาะคำศัพท์ได้ทันที
+        <strong>คำแนะนำสำหรับการใช้งานบนมือถือ แท็บเล็ต iPad และคอมพิวเตอร์:</strong><br>
+        • <strong>เสียงอ่านแบบฝึกหัด (TTS):</strong> ทั้งโหมด <em>"ฝึกทีละประโยค"</em> และ <em>"อ่านและฟังทั้งบท"</em> ใช้เสียงระบบ (TTS) ที่ตรงกับคำศัพท์ทุกคำ 100% (หากใช้ iPhone/iPad แนะนำให้เปิดสวิตช์เสียงข้างเครื่องเพื่อให้ได้ยินเสียงชัดเจน)<br>
+        • <strong>การใช้งานไมโครโฟน:</strong> แนะนำให้เปิดผ่าน Safari (สำหรับ iPhone/iPad) หรือ Google Chrome (สำหรับ Android/คอมพิวเตอร์) และกดอนุญาต (Allow) เมื่อเบราว์เซอร์ขอใช้ไมโครโฟน
       </div>
     </div>
   </div>
 
   <script>
-    // STORIES DATA extracted from Saint Gabriel's College P.1 Video Timestamps
+    // Verified Story Data & Chapter Timestamps in Video PS-xW-sbhoQ (Total video length 5:08)
+    // Chapter 5 Christmas Time: 2:06 (126s) - 2:35 (155s)
+    // Chapter 8 The Forest: 3:38 (218s) - 4:08 (248s) [Fixes uploader's 3:09 typo after Ch.7 I Love My Family 3:03-3:38]
+    // Chapter 9 Play Outside: 4:08 (248s) - 4:39 (279s)
     const STORIES = [
       {
         id: "christmas",
         number: "5",
         title: "5. Christmas Time",
+        shortName: "Christmas Time",
         shortDesc: "Harry and his mother on Christmas",
-        youtubeStart: 126, // 2:06
-        youtubeEnd: 155,   // 2:35
+        youtubeStart: 126,
+        youtubeEnd: 155,
+        timeLabel: "2:06 – 2:35",
         sentences: [
           {
             en: "It is Christmas.",
-            th: "เป็นเทศกาลวันคริสต์มาส",
-            start: 126,
-            end: 129
+            th: "เป็นเทศกาลวันคริสต์มาส"
           },
           {
             en: "Harry's mother gives Harry a toy.",
-            th: "แม่ของแฮร์รี่ให้ของเล่นแก่แฮร์รี่",
-            start: 129,
-            end: 133
+            th: "แม่ของแฮร์รี่ให้ของเล่นแก่แฮร์รี่"
           },
           {
             en: "The toy is in the box.",
-            th: "ของเล่นอยู่ในกล่อง",
-            start: 133,
-            end: 136
+            th: "ของเล่นอยู่ในกล่อง"
           },
           {
             en: "Harry takes off the lid. He sees the toy.",
-            th: "แฮร์รี่เปิดฝากล่องออก เขาเห็นของเล่น",
-            start: 136,
-            end: 141
+            th: "แฮร์รี่เปิดฝากล่องออก เขาเห็นของเล่น"
           },
           {
             en: "It is a car. The car is blue.",
-            th: "มันคือรถยนต์ รถยนต์คันนั้นสีฟ้า",
-            start: 141,
-            end: 145
+            th: "มันคือรถยนต์ รถยนต์คันนั้นสีฟ้า"
           },
           {
             en: "Harry likes the gift.",
-            th: "แฮร์รี่ชอบของขวัญชิ้นนี้",
-            start: 145,
-            end: 148
+            th: "แฮร์รี่ชอบของขวัญชิ้นนี้"
           },
           {
             en: "He hugs and kisses his mother.",
-            th: "เขากอดและหอมแก้มแม่ของเขา",
-            start: 148,
-            end: 152
+            th: "เขากอดและหอมแก้มแม่ของเขา"
           },
           {
             en: "His mother smiles.",
-            th: "แม่ของเขายิ้ม",
-            start: 152,
-            end: 155
+            th: "แม่ของเขายิ้ม"
           }
         ],
         vocab: [
@@ -1071,7 +1352,7 @@
           { en: "lid", phonetic: "/lɪd/", th: "ฝาปิดกล่อง" },
           { en: "gift", phonetic: "/ɡɪft/", th: "ของขวัญ" },
           { en: "hugs", phonetic: "/hʌɡz/", th: "กอด" },
-          { en: "kisses", phonetic: "/ˈkɪs.ɪz/", th: "จูบ/หอมแก้ม" },
+          { en: "kisses", phonetic: "/ˈkɪs.ɪz/", th: "จูบ / หอมแก้ม" },
           { en: "smiles", phonetic: "/smaɪlz/", th: "ยิ้ม" }
         ]
       },
@@ -1079,51 +1360,39 @@
         id: "forest",
         number: "8",
         title: "8. The Forest",
+        shortName: "The Forest",
         shortDesc: "Grace camping in the forest with family",
-        youtubeStart: 189, // 3:09
-        youtubeEnd: 248,   // 4:08
+        youtubeStart: 218,
+        youtubeEnd: 248,
+        timeLabel: "3:38 – 4:08",
         sentences: [
           {
             en: "Grace likes to go to the forest.",
-            th: "เกรซชอบไปเที่ยวในป่า",
-            start: 189,
-            end: 195
+            th: "เกรซชอบไปเที่ยวในป่า"
           },
           {
             en: "She can wear T-shirt and jeans.",
-            th: "เธอสวมเสื้อยืดและกางเกงยีนส์ได้",
-            start: 195,
-            end: 201
+            th: "เธอสวมเสื้อยืดและกางเกงยีนส์ได้"
           },
           {
             en: "She likes to go with her father and brother.",
-            th: "เธอชอบไปกับคุณพ่อและพี่ชาย/น้องชายของเธอ",
-            start: 201,
-            end: 209
+            th: "เธอชอบไปกับคุณพ่อและพี่ชาย/น้องชายของเธอ"
           },
           {
             en: "They can do a lot of fun things.",
-            th: "พวกเขาสามารถทำกิจกรรมสนุกๆ มากมาย",
-            start: 209,
-            end: 216
+            th: "พวกเขาสามารถทำกิจกรรมสนุกๆ มากมาย"
           },
           {
             en: "They like to build a tent and campfire.",
-            th: "พวกเขาชอบกางเต็นท์และก่อกองไฟ",
-            start: 216,
-            end: 225
+            th: "พวกเขาชอบกางเต็นท์และก่อกองไฟ"
           },
           {
             en: "They pick up branches on the ground.",
-            th: "พวกเขาช่วยกันเก็บกิ่งไม้บนพื้นดิน",
-            start: 225,
-            end: 235
+            th: "พวกเขาช่วยกันเก็บกิ่งไม้บนพื้นดิน"
           },
           {
             en: "They have a good time in the forest.",
-            th: "พวกเขามีช่วงเวลาที่ดีและมีความสุขในป่า",
-            start: 235,
-            end: 248
+            th: "พวกเขามีช่วงเวลาที่ดีและมีความสุขในป่า"
           }
         ],
         vocab: [
@@ -1142,39 +1411,31 @@
         id: "playground",
         number: "9",
         title: "9. Play Outside",
+        shortName: "Play Outside",
         shortDesc: "Children playing at the playground on Sunday",
-        youtubeStart: 248, // 4:08
-        youtubeEnd: 279,   // 4:39
+        youtubeStart: 248,
+        youtubeEnd: 279,
+        timeLabel: "4:08 – 4:39",
         sentences: [
           {
             en: "On Sunday, the children are playing outside in the playground.",
-            th: "ในวันอาทิตย์ เด็กๆ กำลังเล่นข้างนอกที่สนามเด็กเล่น",
-            start: 248,
-            end: 255
+            th: "ในวันอาทิตย์ เด็กๆ กำลังเล่นข้างนอกที่สนามเด็กเล่น"
           },
           {
             en: "They are playing swings, sand and going down the slide.",
-            th: "พวกเขากำลังเล่นชิงช้า เล่นทราย และลื่นลงมาจากกระดานลื่น",
-            start: 255,
-            end: 261
+            th: "พวกเขากำลังเล่นชิงช้า เล่นทราย และลื่นลงมาจากกระดานลื่น"
           },
           {
             en: "It's good to play outside.",
-            th: "มันเป็นเรื่องดีที่จะได้ออกมาเล่นข้างนอก",
-            start: 261,
-            end: 264
+            th: "มันเป็นเรื่องดีที่จะได้ออกมาเล่นข้างนอก"
           },
           {
             en: "You can receive Vitamin D that comes from the sun.",
-            th: "คุณจะได้รับวิตามินดีที่มาจากแสงแดด",
-            start: 264,
-            end: 270
+            th: "คุณจะได้รับวิตามินดีที่มาจากแสงแดด"
           },
           {
             en: "Vitamin D is important for your bones but remember to use sun cream when you are in the sun.",
-            th: "วิตามินดีสำคัญต่อกระดูก แต่จำไว้ว่าต้องทาครีมกันแดดเมื่ออยู่กลางแดด",
-            start: 270,
-            end: 279
+            th: "วิตามินดีสำคัญต่อกระดูก แต่จำไว้ว่าต้องทาครีมกันแดดเมื่ออยู่กลางแดด"
           }
         ],
         vocab: [
@@ -1191,23 +1452,25 @@
       }
     ];
 
-    // State
+    // App State
     let currentStoryIndex = 0;
     let playbackSpeed = 1.0;
     let selectedAccent = 'en-US';
-    let gradingStrictness = 'easy'; // 'easy', 'normal', 'strict'
+    let gradingStrictness = 'easy';
     let currentMode = 'step';
-    let synth = window.speechSynthesis;
+    const synth = window.speechSynthesis || null;
     let recognition = null;
-    let activeRecSentenceIdx = null; 
+    let activeRecSentenceIdx = null;
+    let isStepAllPlaying = false;
     let isFullPlaying = false;
-    let fullPlayTimeout = null;
+    let seqTimeout = null;
 
-    // YouTube State
+    // YouTube Player State
     let ytPlayer = null;
+    let isYtReady = false;
     let ytTimer = null;
 
-    // Speech recognition setup
+    // Speech Recognition Support Check
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const isSpeechSupported = !!SpeechRecognition;
 
@@ -1217,7 +1480,7 @@
     const accentSelectEl = document.getElementById('accentSelect');
     const strictnessSelectEl = document.getElementById('strictnessSelect');
     const viewTabs = document.querySelectorAll('.view-tab');
-    
+
     const stepViewEl = document.getElementById('stepView');
     const fullViewEl = document.getElementById('fullView');
     const vocabViewEl = document.getElementById('vocabView');
@@ -1232,135 +1495,187 @@
     const btnPlayAllStep = document.getElementById('btnPlayAllStep');
     const btnStopVoice = document.getElementById('btnStopVoice');
     const btnPlayFull = document.getElementById('btnPlayFull');
-    const btnPlayFullVideo = document.getElementById('btnPlayFullVideo');
     const btnStopFull = document.getElementById('btnStopFull');
 
     const btnFullMic = document.getElementById('btnFullMic');
     const fullMicText = document.getElementById('fullMicText');
+    const fullMicNotice = document.getElementById('fullMicNotice');
     const fullStoryResult = document.getElementById('fullStoryResult');
     const fullTranscriptText = document.getElementById('fullTranscriptText');
     const fullScoreText = document.getElementById('fullScoreText');
     const fullEncouragement = document.getElementById('fullEncouragement');
     const fullWordBreakdown = document.getElementById('fullWordBreakdown');
-    const videoStatusEl = document.getElementById('videoStatus');
 
-    // Initialize
+    const videoChapterBadgeEl = document.getElementById('videoChapterBadge');
+    const videoStatusEl = document.getElementById('videoStatus');
+    const btnPlayStoryVideo = document.getElementById('btnPlayStoryVideo');
+    const btnPauseStoryVideo = document.getElementById('btnPauseStoryVideo');
+
     function init() {
       renderStoryTabs();
       loadStory(0);
       setupEvents();
     }
 
-    // YouTube IFrame API Callback
+    // YouTube IFrame Player API Ready Callback
     window.onYouTubeIframeAPIReady = function() {
+      const initialStory = STORIES[currentStoryIndex];
       ytPlayer = new YT.Player('youtubePlayer', {
         height: '100%',
         width: '100%',
         videoId: 'PS-xW-sbhoQ',
         playerVars: {
-          'playsinline': 1,
-          'rel': 0,
-          'modestbranding': 1,
-          'controls': 1
+          playsinline: 1,
+          rel: 0,
+          modestbranding: 1,
+          controls: 1,
+          start: initialStory.youtubeStart,
+          end: initialStory.youtubeEnd
         },
         events: {
-          'onReady': () => {
-            updateVideoStatus("🟢 พร้อมเล่นตามบทเรียน", true);
+          onReady: () => {
+            isYtReady = true;
+            cueStoryVideo(currentStoryIndex);
+          },
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              stopSpeaking();
+              if (typeof ytPlayer.setPlaybackRate === 'function') {
+                ytPlayer.setPlaybackRate(playbackSpeed);
+              }
+              const story = STORIES[currentStoryIndex];
+              updateVideoStatus(`🟢 กำลังเล่น: ${story.shortName} (${story.timeLabel})`, true);
+              startVideoEndMonitor(story.youtubeEnd);
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+              clearVideoMonitor();
+              const story = STORIES[currentStoryIndex];
+              updateVideoStatus(`⚪ พร้อมเล่นเรื่อง ${story.shortName} (${story.timeLabel})`, false);
+            }
           }
         }
       });
     };
 
+    function clearVideoMonitor() {
+      if (ytTimer) {
+        clearInterval(ytTimer);
+        ytTimer = null;
+      }
+    }
+
+    function startVideoEndMonitor(endSeconds) {
+      clearVideoMonitor();
+      ytTimer = setInterval(() => {
+        if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+          if (ytPlayer.getCurrentTime() >= endSeconds) {
+            ytPlayer.pauseVideo();
+            clearVideoMonitor();
+            const story = STORIES[currentStoryIndex];
+            updateVideoStatus(`✅ เล่นจบช่วงเรื่อง ${story.shortName}`, false);
+          }
+        }
+      }, 200);
+    }
+
+    // Cue the YouTube player to the selected story's exact start & end timestamp
+    function cueStoryVideo(storyIdx) {
+      const story = STORIES[storyIdx];
+      videoChapterBadgeEl.textContent = `📌 เรื่องที่ ${story.number} (${story.shortName}): นาทีที่ ${story.timeLabel}`;
+      updateVideoStatus(`⚪ พร้อมเล่นเรื่อง ${story.shortName} (${story.timeLabel})`, false);
+
+      clearVideoMonitor();
+      if (isYtReady && ytPlayer && typeof ytPlayer.cueVideoById === 'function') {
+        ytPlayer.cueVideoById({
+          videoId: 'PS-xW-sbhoQ',
+          startSeconds: story.youtubeStart,
+          endSeconds: story.youtubeEnd
+        });
+      }
+    }
+
+    function playCurrentStoryVideo() {
+      const story = STORIES[currentStoryIndex];
+      if (!isYtReady || !ytPlayer || typeof ytPlayer.loadVideoById !== 'function') {
+        updateVideoStatus('⏳ กำลังเตรียมตัวเล่นวิดีโอ กรุณารอสักครู่...', false);
+        return;
+      }
+      stopSpeaking();
+      ytPlayer.loadVideoById({
+        videoId: 'PS-xW-sbhoQ',
+        startSeconds: story.youtubeStart,
+        endSeconds: story.youtubeEnd
+      });
+      if (typeof ytPlayer.setPlaybackRate === 'function') {
+        ytPlayer.setPlaybackRate(playbackSpeed);
+      }
+    }
+
+    function pauseCurrentStoryVideo() {
+      clearVideoMonitor();
+      if (isYtReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+        ytPlayer.pauseVideo();
+      }
+    }
+
     function updateVideoStatus(text, isActive) {
       if (!videoStatusEl) return;
-      videoStatusEl.innerHTML = `<span>${isActive ? '🟢' : '⚪'} ${text}</span>`;
+      videoStatusEl.textContent = text;
       videoStatusEl.className = `video-status-badge ${isActive ? 'active' : ''}`;
     }
 
-    function playYoutubeSegment(startTime, endTime, label = "") {
-      if (!ytPlayer || typeof ytPlayer.seekTo !== 'function') {
-        updateVideoStatus("⚠️ ผู้เล่นวิดีโอยังไม่พร้อม", false);
-        return;
-      }
-
-      // Stop any background Speech Synthesis
-      stopSpeaking();
-
-      // Update Video Status label
-      updateVideoStatus(`▶️ เล่นช่วง: ${label || 'เสียงจริง'}`, true);
-
-      ytPlayer.seekTo(startTime, true);
-      ytPlayer.setPlaybackRate(playbackSpeed); // Sync playback speed with user choice!
-      ytPlayer.playVideo();
-
-      if (ytTimer) clearInterval(ytTimer);
-      ytTimer = setInterval(() => {
-        if (ytPlayer.getCurrentTime() >= endTime) {
-          ytPlayer.pauseVideo();
-          updateVideoStatus("⏸️ เล่นเสร็จสิ้น", false);
-          clearInterval(ytTimer);
-        }
-      }, 100);
-    }
-
-    // Render Story selector buttons
+    // Render Top Story Tabs
     function renderStoryTabs() {
       storyTabsEl.innerHTML = STORIES.map((story, idx) => `
-        <button class="story-card-btn ${idx === currentStoryIndex ? 'active' : ''}" data-idx="${idx}">
+        <button type="button" role="tab" aria-selected="${idx === currentStoryIndex}" class="story-card-btn ${idx === currentStoryIndex ? 'active' : ''}" data-idx="${idx}">
           <span class="story-num">เรื่องที่ ${story.number}</span>
-          <span class="story-name en-font">${story.title}</span>
+          <span class="story-name en-font">${story.shortName}</span>
           <span class="story-desc">${story.shortDesc}</span>
         </button>
       `).join('');
 
       storyTabsEl.querySelectorAll('.story-card-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          if (idx === currentStoryIndex) return;
           stopSpeaking();
           stopRecording();
-          if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-            ytPlayer.pauseVideo();
-          }
-          const idx = parseInt(btn.dataset.idx);
           loadStory(idx);
         });
       });
     }
 
-    // Load selected story into all views
+    // Load Story into Views & Sync Companion Video Chapter
     function loadStory(idx) {
       currentStoryIndex = idx;
       const story = STORIES[idx];
 
-      // Update active tab style
       document.querySelectorAll('.story-card-btn').forEach((b, i) => {
-        b.classList.toggle('active', i === idx);
+        const active = i === idx;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-selected', String(active));
       });
 
-      // Update titles
       currentStoryTitleEl.textContent = story.title;
       fullStoryTitleEl.textContent = story.title;
       vocabStoryTitleEl.textContent = `คำศัพท์น่ารู้: ${story.title}`;
 
-      // Render Sentences for Step View
       renderSentences(story);
-
-      // Render Full Story View
       renderFullStory(story);
-
-      // Render Vocab
       renderVocab(story);
-
-      // Reset full recording UI
       resetFullRecordingUI();
+
+      // Sync YouTube player to the newly selected story's segment
+      cueStoryVideo(idx);
     }
 
+    // Render Step-by-Step Sentences (100% TTS)
     function renderSentences(story) {
       sentencesListEl.innerHTML = '';
       story.sentences.forEach((item, sIdx) => {
         const words = item.en.split(' ');
         const wordsHtml = words.map(w => {
           const clean = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
-          return `<span class="clickable-word" data-word="${clean}">${w}</span>`;
+          return `<span class="clickable-word" role="button" tabindex="0" data-word="${clean}" title="แตะเพื่อฟังคำว่า ${clean}">${w}</span>`;
         }).join(' ');
 
         const card = document.createElement('div');
@@ -1368,26 +1683,23 @@
         card.id = `sentence-card-${sIdx}`;
         card.innerHTML = `
           <div class="sentence-top-bar">
-            <span class="sentence-idx">ประโยคที่ ${sIdx + 1}</span>
-            <div class="sentence-actions">
-              <button class="btn btn-primary btn-sm play-sentence-btn" data-sidx="${sIdx}" title="ฟังประโยคด้วยเสียงระบบ (TTS)">
-                🔊 ฟังประโยค
-              </button>
-            </div>
+            <span class="sentence-idx">ประโยคที่ ${sIdx + 1} / ${story.sentences.length}</span>
+            <button type="button" class="btn btn-primary play-sentence-btn" data-sidx="${sIdx}">
+              🔊 ฟังประโยค
+            </button>
           </div>
           <div class="sentence-en en-font">${wordsHtml}</div>
           <div class="sentence-th">${item.th}</div>
-          
+
           <div class="recording-area">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-              <span style="font-size: 13px; font-weight: 600; color: #475569;">
-                🎤 ทดสอบอ่านประโยคนี้:
-              </span>
-              <button class="mic-button idle mic-sentence-btn" data-sidx="${sIdx}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            <div class="recording-bar">
+              <span class="recording-prompt">🎤 ทดสอบอ่านออกเสียงประโยคนี้:</span>
+              <button type="button" class="mic-button idle mic-sentence-btn" data-sidx="${sIdx}">
+                <span>🎤</span>
                 <span>กดไมค์เพื่ออ่าน</span>
               </button>
             </div>
+            <div class="mic-notice" id="mic-notice-${sIdx}"></div>
             <div class="recognition-result" id="rec-result-${sIdx}" style="display: none;">
               <div class="transcript-line">
                 <span>คุณอ่านว่า:</span>
@@ -1395,7 +1707,7 @@
               </div>
               <div class="feedback-row">
                 <div class="accuracy-score" id="score-text-${sIdx}">คะแนน: 0%</div>
-                <div id="encouragement-${sIdx}" style="font-size: 12px; font-weight: 600;"></div>
+                <div id="encouragement-${sIdx}" style="font-size: 13px; font-weight: 600;"></div>
               </div>
               <div class="word-breakdown" id="breakdown-${sIdx}"></div>
             </div>
@@ -1404,114 +1716,153 @@
         sentencesListEl.appendChild(card);
       });
 
-      // Attach word click listeners for TTS
+      // Individual Word Click & Keyboard TTS
       sentencesListEl.querySelectorAll('.clickable-word').forEach(wordEl => {
-        wordEl.addEventListener('click', (e) => {
+        const triggerWord = (e) => {
           e.stopPropagation();
-          const word = wordEl.dataset.word;
-          speakText(word);
+          document.querySelectorAll('.clickable-word.word-speaking').forEach(el => el.classList.remove('word-speaking'));
+          wordEl.classList.add('word-speaking');
+          speakText(wordEl.dataset.word, () => {
+            wordEl.classList.remove('word-speaking');
+          });
+        };
+        wordEl.addEventListener('click', triggerWord);
+        wordEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerWord(e);
+          }
         });
       });
 
-      // Attach sentence play buttons (TTS)
+      // Sentence Play Button (TTS)
       sentencesListEl.querySelectorAll('.play-sentence-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const sIdx = parseInt(btn.dataset.sidx);
+          const sIdx = parseInt(btn.dataset.sidx, 10);
           playSentence(sIdx);
         });
       });
 
-      // Attach mic buttons
+      // Sentence Microphone Button
       sentencesListEl.querySelectorAll('.mic-sentence-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const sIdx = parseInt(btn.dataset.sidx);
+          const sIdx = parseInt(btn.dataset.sidx, 10);
           toggleRecordingSentence(sIdx, btn);
         });
       });
     }
 
+    // Render Full Story View (100% TTS)
     function renderFullStory(story) {
-      const spans = story.sentences.map((s, idx) => {
-        return `<span class="story-sentence-span" id="full-span-${idx}" data-sidx="${idx}">${s.en} </span>`;
+      fullStoryContentEl.innerHTML = story.sentences.map((s, idx) => {
+        return `<span class="story-sentence-span" role="button" tabindex="0" id="full-span-${idx}" data-sidx="${idx}">${s.en} </span>`;
       }).join('');
 
-      fullStoryContentEl.innerHTML = spans;
-
       fullStoryContentEl.querySelectorAll('.story-sentence-span').forEach(span => {
-        span.addEventListener('click', () => {
-          const sIdx = parseInt(span.dataset.sidx);
+        const triggerSpan = () => {
+          const sIdx = parseInt(span.dataset.sidx, 10);
+          stopSpeaking();
           highlightFullSpan(sIdx);
           speakText(story.sentences[sIdx].en, () => {
             clearFullHighlights();
           });
+        };
+        span.addEventListener('click', triggerSpan);
+        span.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerSpan();
+          }
         });
       });
     }
 
+    // Render Vocabulary Cards (100% TTS)
     function renderVocab(story) {
       vocabGridEl.innerHTML = story.vocab.map(item => `
-        <div class="vocab-card">
+        <div class="vocab-card" role="button" tabindex="0" data-word="${item.en}">
           <div class="vocab-word-row">
             <div>
               <div class="vocab-en en-font">${item.en}</div>
               <div class="vocab-phonetic">${item.phonetic}</div>
             </div>
-            <button class="vocab-audio-btn" data-word="${item.en}" title="ฟังเสียง">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </button>
+            <span class="vocab-audio-btn" aria-hidden="true">🔊</span>
           </div>
           <div class="vocab-th">${item.th}</div>
         </div>
       `).join('');
 
-      vocabGridEl.querySelectorAll('.vocab-audio-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          speakText(btn.dataset.word);
+      vocabGridEl.querySelectorAll('.vocab-card').forEach(card => {
+        const playWord = () => speakText(card.dataset.word);
+        card.addEventListener('click', playWord);
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playWord();
+          }
         });
       });
     }
 
-    // Speech Synthesis helper
+    // Cross-Device Speech Synthesis (Handles iOS Safari, iPadOS, Android Chrome & Desktop)
     function speakText(text, onEndCallback = null) {
-      if (!('speechSynthesis' in window)) {
-        alert("ขออภัย เบราว์เซอร์ของคุณยังไม่รองรับระบบเสียง SpeechSynthesis");
+      if (!synth) {
+        if (onEndCallback) onEndCallback();
         return;
       }
-      stopSpeaking();
+
+      pauseCurrentStoryVideo();
+      if (synth.speaking || synth.pending) {
+        synth.cancel();
+      }
 
       const utterance = new SpeechSynthesisUtterance(text);
+      // Keep global reference so mobile browsers don't garbage-collect mid-speech
+      window._activeUtterance = utterance;
+
       utterance.rate = playbackSpeed;
       utterance.lang = selectedAccent;
 
-      // Find appropriate voice
       const voices = synth.getVoices();
-      if (voices.length > 0) {
-        const langVoice = voices.find(v => v.lang.startsWith(selectedAccent.substring(0, 2)) && v.lang.includes(selectedAccent.split('-')[1])) 
-                        || voices.find(v => v.lang.startsWith('en'));
-        if (langVoice) {
-          utterance.voice = langVoice;
+      if (voices && voices.length > 0) {
+        const targetNorm = selectedAccent.toLowerCase();
+        const exactVoice = voices.find(v => v.lang.replace('_', '-').toLowerCase().startsWith(targetNorm));
+        const fallbackEn = voices.find(v => v.lang.toLowerCase().startsWith('en'));
+        if (exactVoice) {
+          utterance.voice = exactVoice;
+        } else if (fallbackEn) {
+          utterance.voice = fallbackEn;
         }
       }
 
-      if (onEndCallback) {
-        utterance.onend = onEndCallback;
-        utterance.onerror = onEndCallback;
-      }
+      let finished = false;
+      const finishOnce = () => {
+        if (finished) return;
+        finished = true;
+        if (onEndCallback) onEndCallback();
+      };
+
+      utterance.onend = finishOnce;
+      utterance.onerror = finishOnce;
 
       synth.speak(utterance);
     }
 
     function stopSpeaking() {
-      if (synth) {
+      isStepAllPlaying = false;
+      isFullPlaying = false;
+      if (seqTimeout) {
+        clearTimeout(seqTimeout);
+        seqTimeout = null;
+      }
+      if (synth && (synth.speaking || synth.pending)) {
         synth.cancel();
       }
-      isFullPlaying = false;
-      if (fullPlayTimeout) {
-        clearTimeout(fullPlayTimeout);
-        fullPlayTimeout = null;
-      }
-      document.querySelectorAll('.sentence-card').forEach(c => c.classList.remove('is-playing'));
+      document.querySelectorAll('.sentence-card.is-playing').forEach(c => c.classList.remove('is-playing'));
+      document.querySelectorAll('.clickable-word.word-speaking').forEach(w => w.classList.remove('word-speaking'));
       clearFullHighlights();
+      btnPlayAllStep.innerHTML = '🔊 ฟังทุกประโยคต่อเนื่อง';
+      btnPlayFull.innerHTML = '🔊 ฟังทั้งบทความ (TTS)';
     }
 
     function playSentence(sIdx) {
@@ -1525,100 +1876,111 @@
       });
     }
 
-    // Play all sentences sequentially using SpeechSynthesis
     function playAllSentences(startIndex = 0) {
       const story = STORIES[currentStoryIndex];
-      if (startIndex >= story.sentences.length) {
+      if (!isStepAllPlaying || startIndex >= story.sentences.length) {
         stopSpeaking();
         return;
       }
 
+      document.querySelectorAll('.sentence-card.is-playing').forEach(c => c.classList.remove('is-playing'));
       const card = document.getElementById(`sentence-card-${startIndex}`);
-      document.querySelectorAll('.sentence-card').forEach(c => c.classList.remove('is-playing'));
       if (card) {
         card.classList.add('is-playing');
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
       speakText(story.sentences[startIndex].en, () => {
-        fullPlayTimeout = setTimeout(() => {
+        if (!isStepAllPlaying) return;
+        seqTimeout = setTimeout(() => {
           playAllSentences(startIndex + 1);
-        }, 500);
+        }, 450);
       });
     }
 
-    // Full Story Audio Highlighting
     function highlightFullSpan(sIdx) {
       clearFullHighlights();
       const span = document.getElementById(`full-span-${sIdx}`);
       if (span) {
         span.classList.add('highlighted');
-        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
 
     function clearFullHighlights() {
-      document.querySelectorAll('.story-sentence-span').forEach(s => s.classList.remove('highlighted'));
+      document.querySelectorAll('.story-sentence-span.highlighted').forEach(s => s.classList.remove('highlighted'));
     }
 
     function playFullStorySequential(sIdx = 0) {
       const story = STORIES[currentStoryIndex];
-      if (sIdx >= story.sentences.length) {
-        isFullPlaying = false;
-        clearFullHighlights();
-        btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
+      if (!isFullPlaying || sIdx >= story.sentences.length) {
+        stopSpeaking();
         return;
       }
 
-      isFullPlaying = true;
       highlightFullSpan(sIdx);
-
       speakText(story.sentences[sIdx].en, () => {
-        fullPlayTimeout = setTimeout(() => {
-          if (isFullPlaying) {
-            playFullStorySequential(sIdx + 1);
-          }
+        if (!isFullPlaying) return;
+        seqTimeout = setTimeout(() => {
+          playFullStorySequential(sIdx + 1);
         }, 350);
       });
     }
 
-    // Speech Recognition Functions
-    function toggleRecordingSentence(sIdx, buttonEl) {
+    // Inline Notice Helper (Replaces blocked browser alert() dialogs)
+    function showMicNotice(targetIdx, message) {
+      const el = targetIdx === 'full'
+        ? fullMicNotice
+        : document.getElementById(`mic-notice-${targetIdx}`);
+      if (!el) return;
+      if (!message) {
+        el.style.display = 'none';
+        el.textContent = '';
+      } else {
+        el.textContent = message;
+        el.style.display = 'block';
+      }
+    }
+
+    // Speech Recognition (Microphone Check)
+    function toggleRecordingSentence(targetIdx, buttonEl) {
+      showMicNotice(targetIdx, '');
+
       if (!isSpeechSupported) {
-        alert("ขออภัย เบราว์เซอร์นี้ยังไม่รองรับระบบ Speech Recognition สำหรับบันทึกเสียง กรุณาเปิดบน Google Chrome หรือ Safari");
+        showMicNotice(
+          targetIdx,
+          '⚠️ เบราว์เซอร์นี้ยังไม่รองรับการรับเสียงพูด แนะนำให้เปิดใช้งานผ่าน Safari (iPhone/iPad) หรือ Google Chrome ครับ'
+        );
         return;
       }
 
-      if (activeRecSentenceIdx === sIdx) {
+      if (activeRecSentenceIdx === targetIdx) {
         stopRecording();
         return;
       }
 
       stopRecording();
       stopSpeaking();
-      startRecording(sIdx, buttonEl);
+      pauseCurrentStoryVideo();
+      startRecording(targetIdx, buttonEl);
     }
 
     function startRecording(targetIdx, buttonEl) {
       try {
         recognition = new SpeechRecognition();
-        recognition.lang = 'en-US'; // always capture in english
+        recognition.lang = selectedAccent;
         recognition.continuous = false;
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
         activeRecSentenceIdx = targetIdx;
 
-        // UI state: Recording
         if (targetIdx === 'full') {
           buttonEl.className = 'mic-button recording';
-          fullMicText.textContent = 'กำลังฟัง... พูดได้เลย';
+          fullMicText.textContent = 'กำลังฟัง... พูดได้เลย (แตะเพื่อหยุด)';
         } else {
           buttonEl.className = 'mic-button recording mic-sentence-btn';
-          buttonEl.innerHTML = `
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-            <span>กำลังฟัง... พูดได้เลย</span>
-          `;
+          buttonEl.innerHTML = '<span>🔴</span><span>กำลังฟัง... พูดได้เลย</span>';
         }
 
         recognition.onresult = (event) => {
@@ -1631,9 +1993,16 @@
         };
 
         recognition.onerror = (event) => {
-          console.warn("Speech recognition error:", event.error);
-          if (event.error === 'not-allowed') {
-            alert("กรุณากดอนุญาตให้เข้าถึงไมโครโฟน (Allow Microphone) ในการตั้งค่าเบราว์เซอร์");
+          if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+            showMicNotice(
+              targetIdx,
+              '⚠️ กรุณากดอนุญาตให้เข้าถึงไมโครโฟน (Allow Microphone) ในแถบตั้งค่าของเบราว์เซอร์เพื่อทดสอบพูดครับ'
+            );
+          } else if (event.error === 'no-speech') {
+            showMicNotice(
+              targetIdx,
+              '💡 ยังไม่ได้ยินเสียงพูดเลยครับ ลองกดไมค์แล้วพูดใกล้ๆ อีกครั้งนะครับ'
+            );
           }
           stopRecording();
         };
@@ -1644,24 +2013,20 @@
 
         recognition.start();
       } catch (err) {
-        console.error("Mic error:", err);
+        showMicNotice(targetIdx, '⚠️ ไม่สามารถเริ่มไมโครโฟนได้ในขณะนี้ กรุณาลองใหม่อีกครั้งครับ');
         stopRecording();
       }
     }
 
     function stopRecording() {
       if (recognition) {
-        try { recognition.stop(); } catch(e){}
+        try { recognition.stop(); } catch (e) {}
         recognition = null;
       }
 
-      // Reset all buttons
       document.querySelectorAll('.mic-sentence-btn').forEach(btn => {
         btn.className = 'mic-button idle mic-sentence-btn';
-        btn.innerHTML = `
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-          <span>กดไมค์เพื่ออ่าน</span>
-        `;
+        btn.innerHTML = '<span>🎤</span><span>กดไมค์เพื่ออ่าน</span>';
       });
 
       btnFullMic.className = 'mic-button idle';
@@ -1669,65 +2034,54 @@
       activeRecSentenceIdx = null;
     }
 
-    // Clean word for comparison (lower-case, remove punctuation)
     function cleanWord(w) {
       return w.toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
-    // Compare spoken transcript against target text (Grade-1 friendly mode logic added)
+    // Primary-1 Friendly Evaluation Engine
     function evaluateSentence(sIdx, transcript) {
       const story = STORIES[currentStoryIndex];
       const targetText = story.sentences[sIdx].en;
-      
       const targetWords = targetText.split(/\s+/);
       const spokenWords = transcript.split(/\s+/).map(cleanWord).filter(Boolean);
 
       let matchedCount = 0;
-      
-      // We will create the word chips visual feedback
       let chipsHtml = targetWords.map(rawWord => {
         const cleaned = cleanWord(rawWord);
         const isMatch = spokenWords.includes(cleaned);
-        
+
         if (isMatch) {
           matchedCount++;
           return `<span class="word-chip correct">✓ ${rawWord}</span>`;
-        } else {
-          // In easy mode, we can show a softer/green badge if it matches loosely or if we boost it later
-          if (gradingStrictness === 'easy') {
-            // Check if there is some substring overlap to be extremely helpful to children
-            const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
-            if (partial && cleaned.length > 2) {
-              matchedCount += 0.8;
-              return `<span class="word-chip correct">✓ ${rawWord}</span>`;
-            }
-          }
-          return `<span class="word-chip missed">✗ ${rawWord}</span>`;
         }
+        if (gradingStrictness === 'easy') {
+          const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
+          if (partial && cleaned.length > 2) {
+            matchedCount += 0.8;
+            return `<span class="word-chip correct">✓ ${rawWord}</span>`;
+          }
+        }
+        return `<span class="word-chip missed">✗ ${rawWord}</span>`;
       }).join('');
 
-      let rawPercent = Math.round((matchedCount / targetWords.length) * 100);
+      const rawPercent = Math.round((matchedCount / targetWords.length) * 100);
       let finalScore = rawPercent;
 
-      // Primary 1 Easy Mode - Extremely Lenient Logic
       if (gradingStrictness === 'easy') {
         if (rawPercent >= 25) {
-          finalScore = 100; // Boost to perfect score easily to motivate the kids!
-          // Redraw chips to all look correct/encouraging
+          finalScore = 100;
           chipsHtml = targetWords.map(rawWord => `<span class="word-chip correct">⭐ ${rawWord}</span>`).join('');
         } else {
-          // Even with minimal effort, double the score
           finalScore = Math.min(90, rawPercent * 2.5);
         }
       } else if (gradingStrictness === 'normal') {
         if (rawPercent >= 70) {
-          finalScore = 100; // Gentle standard boosting
+          finalScore = 100;
         }
       }
 
       finalScore = Math.round(finalScore);
 
-      // Show results
       const resContainer = document.getElementById(`rec-result-${sIdx}`);
       const transText = document.getElementById(`trans-text-${sIdx}`);
       const scoreText = document.getElementById(`score-text-${sIdx}`);
@@ -1739,10 +2093,10 @@
 
       let scoreClass = 'score-high';
       let cheerMsg = '🎉 ยอดเยี่ยมมากครับ! ออกเสียงได้เก่งมาก ถูกต้องทั้งหมด 🌟';
-      
+
       if (finalScore < 50) {
         scoreClass = 'score-low';
-        cheerMsg = '💪 สู้ๆ นะครับ ลองกดปุ่ม "ฟังประโยค" แล้วลองพูดตามอีกครั้งนะครับลูก';
+        cheerMsg = '💪 สู้ๆ นะครับ ลองกดปุ่ม "🔊 ฟังประโยค" แล้วพูดตามอีกครั้งนะครับ';
       } else if (finalScore < 85) {
         scoreClass = 'score-medium';
         cheerMsg = '👍 เก่งมากเลยครับ! ชัดเจนเกือบสมบูรณ์แบบแล้วครับ';
@@ -1767,19 +2121,18 @@
         if (isMatch) {
           matchedCount++;
           return `<span class="word-chip correct">${rawWord}</span>`;
-        } else {
-          if (gradingStrictness === 'easy') {
-            const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
-            if (partial && cleaned.length > 2) {
-              matchedCount += 0.8;
-              return `<span class="word-chip correct">${rawWord}</span>`;
-            }
-          }
-          return `<span class="word-chip missed">${rawWord}</span>`;
         }
+        if (gradingStrictness === 'easy') {
+          const partial = spokenWords.some(sw => sw.includes(cleaned) || cleaned.includes(sw));
+          if (partial && cleaned.length > 2) {
+            matchedCount += 0.8;
+            return `<span class="word-chip correct">${rawWord}</span>`;
+          }
+        }
+        return `<span class="word-chip missed">${rawWord}</span>`;
       }).join('');
 
-      let rawPercent = Math.round((matchedCount / targetWords.length) * 100);
+      const rawPercent = Math.round((matchedCount / targetWords.length) * 100);
       let finalScore = rawPercent;
 
       if (gradingStrictness === 'easy') {
@@ -1801,10 +2154,10 @@
       fullTranscriptText.textContent = `"${transcript}"`;
 
       let scoreClass = 'score-high';
-      let cheerMsg = '🎉 สุดยอดไปเลย! อ่านจบเรื่องราวได้คล่องแคล่วมากครับเก่งมาก';
+      let cheerMsg = '🎉 สุดยอดไปเลย! อ่านจบเรื่องราวได้คล่องแคล่วมากครับ';
       if (finalScore < 50) {
         scoreClass = 'score-low';
-        cheerMsg = '💪 พยายามได้ดีมากครับ! ค่อยๆ ฝึกสะกดทีละคำในเมนูประโยคดูนะครับ';
+        cheerMsg = '💪 พยายามได้ดีมากครับ! ค่อยๆ ฝึกฟังทีละประโยคแล้วลองใหม่นะครับ';
       } else if (finalScore < 85) {
         scoreClass = 'score-medium';
         cheerMsg = '👍 ยอดเยี่ยมเลยครับ อ่านเนื้อหาของบทเรียนได้ดีมากครับ';
@@ -1817,6 +2170,7 @@
     }
 
     function resetFullRecordingUI() {
+      showMicNotice('full', '');
       fullStoryResult.style.display = 'none';
       fullTranscriptText.textContent = '-';
       fullScoreText.textContent = 'คะแนนความถูกต้อง: 0%';
@@ -1824,31 +2178,30 @@
       fullEncouragement.textContent = '';
     }
 
-    // Setup global events
     function setupEvents() {
-      // Speed selection
+      // Speed Selector
       speedGroupEl.querySelectorAll('.speed-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           speedGroupEl.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           playbackSpeed = parseFloat(btn.dataset.speed);
-          if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
+          if (isYtReady && ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
             ytPlayer.setPlaybackRate(playbackSpeed);
           }
         });
       });
 
-      // Accent selection
+      // Accent Selector
       accentSelectEl.addEventListener('change', (e) => {
         selectedAccent = e.target.value;
       });
 
-      // Strictness selection
+      // Grading Strictness Selector
       strictnessSelectEl.addEventListener('change', (e) => {
         gradingStrictness = e.target.value;
       });
 
-      // View mode navigation tabs
+      // View Mode Tabs
       viewTabs.forEach(tab => {
         tab.addEventListener('click', () => {
           viewTabs.forEach(t => t.classList.remove('active'));
@@ -1864,62 +2217,60 @@
         });
       });
 
-      // Play all in step view using SpeechSynthesis
+      // Play All in Step View (TTS)
       btnPlayAllStep.addEventListener('click', () => {
-        playAllSentences(0);
-      });
-
-      // Stop speech
-      btnStopVoice.addEventListener('click', () => {
-        stopSpeaking();
-        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-          ytPlayer.pauseVideo();
+        if (isStepAllPlaying) {
+          stopSpeaking();
+        } else {
+          stopSpeaking();
+          isStepAllPlaying = true;
+          btnPlayAllStep.innerHTML = '⏹️ กำลังเล่น (แตะเพื่อหยุด)';
+          playAllSentences(0);
         }
       });
 
-      // Play full story via SpeechSynthesis
+      btnStopVoice.addEventListener('click', () => {
+        stopSpeaking();
+      });
+
+      // Play Full Story (TTS)
       btnPlayFull.addEventListener('click', () => {
         if (isFullPlaying) {
           stopSpeaking();
-          btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
         } else {
-          btnPlayFull.innerHTML = `🛑 กำลังเล่น (คลิกเพื่อหยุด)`;
+          stopSpeaking();
+          isFullPlaying = true;
+          btnPlayFull.innerHTML = '⏹️ กำลังเล่น (แตะเพื่อหยุด)';
           playFullStorySequential(0);
         }
       });
 
-      // Play full story original video clipping!
-      btnPlayFullVideo.addEventListener('click', () => {
-        const story = STORIES[currentStoryIndex];
-        playYoutubeSegment(story.youtubeStart, story.youtubeEnd, "เล่นทั้งเรื่อง");
-      });
-
       btnStopFull.addEventListener('click', () => {
         stopSpeaking();
-        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-          ytPlayer.pauseVideo();
-        }
-        btnPlayFull.innerHTML = `🔊 เริ่มฟังต่อเนื่อง (คอม)`;
       });
 
-      // Full Mic button
+      // Full Story Mic Button
       btnFullMic.addEventListener('click', () => {
-        if (activeRecSentenceIdx === 'full') {
-          stopRecording();
-        } else {
-          toggleRecordingSentence('full', btnFullMic);
-        }
+        toggleRecordingSentence('full', btnFullMic);
       });
 
-      // Load voices if delayed in some browsers
-      if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = () => {
-          // Voices ready
+      // YouTube Companion Play / Pause Buttons
+      btnPlayStoryVideo.addEventListener('click', () => {
+        playCurrentStoryVideo();
+      });
+
+      btnPauseStoryVideo.addEventListener('click', () => {
+        pauseCurrentStoryVideo();
+      });
+
+      // Preload voices on browsers that populate asynchronously
+      if (synth && typeof synth.onvoiceschanged !== 'undefined') {
+        synth.onvoiceschanged = () => {
+          synth.getVoices();
         };
       }
     }
 
-    // Launch
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
