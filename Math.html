@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบสร้างใบงานโจทย์ปัญหาคณิตศาสตร์ (พร้อมปริ้น)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --ink-worksheet: #111827;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --radius: 14px;
+      --shadow-page: 0 10px 28px rgba(15, 23, 42, 0.1), 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    /* Screen Control Header (Hidden when printing) */
+    .control-bar-wrap {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    }
+
+    .control-bar {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .brand-info h1 {
+      font-family: 'Prompt', sans-serif;
+      font-size: clamp(17px, 2.4vw, 21px);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .brand-info p {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .control-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'Prompt', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      min-height: 44px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.22);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-print {
+      background: #ffffff;
+      color: var(--ink);
+      border-color: #94a3b8;
+    }
+
+    .btn-print:hover {
+      border-color: var(--ink);
+      background: #f8fafc;
+    }
+
+    .print-helper-note {
+      max-width: 900px;
+      margin: 12px auto 0;
+      padding: 0 20px;
+    }
+
+    .print-helper-inner {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      font-size: 13.5px;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: none;
+    }
+
+    .print-helper-inner.visible {
+      display: block;
+    }
+
+    /* Worksheet Preview Canvas */
+    .sheets-workspace {
+      max-width: 860px;
+      margin: 22px auto 48px;
+      padding: 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Individual A4 Sheet */
+    .worksheet-page {
+      background: #ffffff;
+      color: var(--ink-worksheet);
+      width: 100%;
+      max-width: 210mm;
+      min-height: 285mm;
+      margin: 0 auto;
+      padding: clamp(14px, 3vw, 24px);
+      border-radius: 8px;
+      box-shadow: var(--shadow-page);
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.18s ease;
+    }
+
+    .worksheet-page.refreshing {
+      opacity: 0.55;
+    }
+
+    /* Dashed School-Worksheet Frame */
+    .sheet-dashed-frame {
+      border: 2px dashed #1e293b;
+      border-radius: 20px;
+      padding: clamp(16px, 3vw, 26px) clamp(16px, 3.2vw, 28px) 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Section Ribbon Banner */
+    .section-banner-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .section-banner {
+      background: #111827;
+      color: #ffffff;
+      font-family: 'Prompt', sans-serif;
+      font-size: clamp(15px, 2.2vw, 18.5px);
+      font-weight: 700;
+      padding: 6px 22px;
+      border-radius: 8px;
+      border: 2px solid #111827;
+      text-align: center;
+      letter-spacing: 0.2px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .star-deco {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Part 1: Short Symbolic Sentence + Answer (5 Items) */
+    .short-problems-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .short-problem-item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .problem-question {
+      font-size: clamp(16px, 2.1vw, 18.5px);
+      font-weight: 600;
+      line-height: 1.5;
+      color: #111827;
+    }
+
+    .short-answer-line {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-left: clamp(8px, 2vw, 20px);
+      font-size: clamp(15.5px, 2vw, 18px);
+      font-weight: 600;
+    }
+
+    .blank-line {
+      border-bottom: 1.6px solid #111827;
+      display: inline-block;
+      height: 1.25em;
+    }
+
+    .blank-equation {
+      flex: 1 1 210px;
+      min-width: 150px;
+    }
+
+    .blank-short-ans {
+      width: 115px;
+      flex: 0 1 115px;
+    }
+
+    /* Part 2: Show Your Work (แสดงวิธีทำ) */
+    .long-problem-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .long-problem-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .long-problem-left {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .equation-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding-left: clamp(8px, 2vw, 18px);
+      font-size: clamp(15.5px, 2vw, 18px);
+      font-weight: 600;
+    }
+
+    .equation-row .blank-line {
+      flex: 1;
+      max-width: 380px;
+    }
+
+    .method-label {
+      font-size: clamp(16px, 2vw, 18px);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      margin-top: 2px;
+    }
+
+    .line-art-box {
+      width: clamp(78px, 14vw, 112px);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .line-art-box svg {
+      width: 100%;
+      height: auto;
+    }
+
+    .work-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .work-line {
+      width: 100%;
+      border-bottom: 1.5px solid #1e293b;
+      height: 8px;
+    }
+
+    .final-ans-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: clamp(16px, 2vw, 18px);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .final-ans-row .blank-line {
+      width: 240px;
+      max-width: 65%;
+    }
+
+    /* Page 2 Spacing & Coloring Footer */
+    .page2-problems {
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+    }
+
+    .coloring-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 16px;
+      padding-top: 6px;
+    }
+
+    .page-number-badge {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 2px solid #1e293b;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Prompt', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    @media (max-width: 600px) {
+      .control-actions {
+        width: 100%;
+      }
+      .control-actions .btn {
+        flex: 1 1 auto;
+      }
+      .line-art-box {
+        width: 72px;
+      }
+    }
+
+    /* Exact A4 Print Styles */
+    @page {
+      size: A4 portrait;
+      margin: 9mm 10mm;
+    }
+
+    @media print {
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .control-bar-wrap,
+      .print-helper-note {
+        display: none !important;
+      }
+
+      .sheets-workspace {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+        gap: 0 !important;
+      }
+
+      .worksheet-page {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 2mm 2mm 6mm !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 272mm !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .worksheet-page.page-break-after {
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .short-problems-list {
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+      }
+
+      .work-lines {
+        gap: 25px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Action Bar -->
+  <header class="control-bar-wrap">
+    <div class="control-bar">
+      <div class="brand-info">
+        <h1>📝 ระบบสร้างใบงานโจทย์ปัญหาคณิตศาสตร์ (พร้อมปริ้น)</h1>
+        <p>สร้างโจทย์ปัญหาการบวกและการลบตามแนวต้นฉบับ กดรับโจทย์ใหม่ได้ไม่ซ้ำเดิม</p>
+      </div>
+      <div class="control-actions">
+        <button type="button" class="btn btn-primary" id="btnNewWorksheet">
+          🎲 รับโจทย์ใหม่
+        </button>
+        <button type="button" class="btn btn-print" id="btnPrintWorksheet">
+          🖨️ สั่งปริ้น
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="print-helper-note">
+    <div class="print-helper-inner" id="printSandboxNotice">
+      💡 หากกดสั่งปริ้นในกรอบตัวอย่างนี้แล้วหน้าต่างพิมพ์ไม่เด้งขึ้น ให้กดปุ่ม <strong>Download</strong> (ไอคอนดาวน์โหลดมุมขวาบนของแผงแอป) เพื่อเปิดไฟล์ในเบราว์เซอร์ปกติ แล้วกด <strong>สั่งปริ้น</strong> ลงกระดาษ A4 ได้ทันทีครับ
+    </div>
+  </div>
+
+  <!-- Printable Worksheets Container -->
+  <main class="sheets-workspace" id="sheetsWorkspace">
+
+    <!-- SHEET 1: 5 Short Symbolic Problems + 1 Long Method Problem -->
+    <section class="worksheet-page page-break-after" aria-label="ใบงานแผ่นที่ 1">
+      <div class="sheet-dashed-frame">
+        <div>
+          <!-- Banner 1 -->
+          <div class="section-banner-row">
+            <svg class="star-deco" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <div class="section-banner">จงเขียนประโยคสัญลักษณ์และหาคำตอบ</div>
+            <svg class="star-deco" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+
+          <div class="short-problems-list" id="shortProblemsList">
+            <!-- 5 short problems populated via JS -->
+          </div>
+
+          <!-- Banner 2 -->
+          <div class="section-banner-row" style="margin-top: 6px;">
+            <div class="section-banner">จงเขียนประโยคสัญลักษณ์และแสดงวิธีทำ</div>
+          </div>
+
+          <!-- Long Problem #1 -->
+          <div id="longProblem1Container">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="page-number-badge">1</div>
+      </div>
+    </section>
+
+    <!-- SHEET 2: Long Method Problems #2 and #3 -->
+    <section class="worksheet-page" aria-label="ใบงานแผ่นที่ 2">
+      <div class="sheet-dashed-frame">
+        <div class="page2-problems">
+          <!-- Long Problem #2 -->
+          <div id="longProblem2Container"></div>
+
+          <!-- Long Problem #3 -->
+          <div id="longProblem3Container"></div>
+        </div>
+
+        <!-- Cute Black & White Coloring Footer (Stars, Rainbow & Pencil) -->
+        <div class="coloring-footer" aria-hidden="true">
+          <svg width="120" height="58" viewBox="0 0 120 58" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="18 14 21 22 29 22 23 27 25 35 18 30 11 35 13 27 7 22 15 22"/>
+            <polygon points="56 26 58.5 32 65 32 60 36 61.8 42 56 38.5 50.2 42 52 36 47 32 53.5 32"/>
+            <circle cx="40" cy="14" r="3.5"/>
+            <polygon points="96 30 98 35 103 35 99 38 100.5 43 96 40 91.5 43 93 38 89 35 94 35"/>
+          </svg>
+
+          <svg width="210" height="96" viewBox="0 0 210 96" fill="none" stroke="#111827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Rainbow & Clouds -->
+            <path d="M22 76 C22 42, 78 42, 78 76"/>
+            <path d="M30 76 C30 50, 70 50, 70 76"/>
+            <path d="M38 76 C38 58, 62 58, 62 76"/>
+            <path d="M12 80 C8 80, 6 75, 10 72 C9 67, 15 64, 19 67 C23 64, 29 67, 28 72 C32 75, 30 80, 25 80 Z" fill="#ffffff"/>
+            <path d="M65 80 C61 80, 59 75, 63 72 C62 67, 68 64, 72 67 C76 64, 82 67, 81 72 C85 75, 83 80, 78 80 Z" fill="#ffffff"/>
+            <!-- Smiling Pencil Character -->
+            <g transform="translate(115, 12) rotate(22)">
+              <rect x="14" y="8" width="32" height="52" rx="3" fill="#ffffff"/>
+              <line x1="14" y1="18" x2="46" y2="18"/>
+              <polygon points="14,60 46,60 30,84" fill="#ffffff"/>
+              <polygon points="26,78 34,78 30,84" fill="#111827"/>
+              <circle cx="24" cy="34" r="2.2" fill="#111827"/>
+              <circle cx="36" cy="34" r="2.2" fill="#111827"/>
+              <path d="M24 43 Q30 49 36 43"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="page-number-badge">2</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Line-art coloring illustrations matching Primary school math worksheets
+    const ILLUSTRATIONS = {
+      car: `
+        <svg viewBox="0 0 120 90" fill="none" stroke="#111827" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 56 L28 30 Q32 20 44 20 L76 20 Q88 20 92 30 L102 56 Z" fill="#ffffff"/>
+          <path d="M14 56 L106 56 Q112 56 112 64 L112 72 Q112 76 106 76 L14 76 Q8 76 8 70 L8 62 Q8 56 14 56 Z" fill="#ffffff"/>
+          <path d="M35 30 L85 30 L91 50 L29 50 Z"/>
+          <circle cx="48" cy="40" r="2" fill="#111827"/>
+          <circle cx="66" cy="40" r="2" fill="#111827"/>
+          <path d="M51 45 Q57 49 63 45"/>
+          <circle cx="30" cy="76" r="10" fill="#ffffff"/>
+          <circle cx="30" cy="76" r="4"/>
+          <circle cx="88" cy="76" r="10" fill="#ffffff"/>
+          <circle cx="88" cy="76" r="4"/>
+        </svg>
+      `,
+      balloons: `
+        <svg viewBox="0 0 110 115" fill="none" stroke="#111827" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <ellipse cx="44" cy="40" rx="24" ry="28" fill="#ffffff"/>
+          <polygon points="41,68 47,68 44,73"/>
+          <path d="M44 73 Q36 88 45 104"/>
+          <circle cx="36" cy="36" r="2" fill="#111827"/>
+          <circle cx="51" cy="36" r="2" fill="#111827"/>
+          <path d="M39 45 Q44 50 49 45"/>
+          <ellipse cx="78" cy="52" rx="18" ry="22" fill="#ffffff"/>
+          <polygon points="75,74 81,74 78,78"/>
+          <path d="M78 78 Q84 92 74 106"/>
+        </svg>
+      `,
+      chick: `
+        <svg viewBox="0 0 110 115" fill="none" stroke="#111827" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M30 56 C30 30, 80 30, 80 56" fill="#ffffff"/>
+          <circle cx="46" cy="45" r="2.2" fill="#111827"/>
+          <circle cx="64" cy="45" r="2.2" fill="#111827"/>
+          <polygon points="55,48 50,54 60,54" fill="#ffffff"/>
+          <path d="M22 58 L34 68 L45 57 L55 68 L66 57 L77 68 L88 58 C90 86, 76 102, 55 102 C34 102, 20 86, 22 58 Z" fill="#ffffff"/>
+        </svg>
+      `
+    };
+
+    // Rich Pool of Primary Math Word Problems Modeled After test.pdf Archetypes:
+    // 1) add_more: มีอยู่เดิม + ได้เพิ่ม/ซื้อเพิ่ม -> รวมมีทั้งหมดกี่...
+    // 2) sub_remove: มีอยู่เดิม - ขายไป/แตกไป/แจกไป -> เหลือกี่...
+    // 3) add_compare_more: A มี X, B มีมากกว่า A อยู่ Y -> B มีกี่...
+    // 4) sub_part_whole: มีทั้งหมด X เป็นชนิดแรก Y -> ที่เหลือเป็นชนิดที่สองกี่...
+    // 5) sub_compare_more: มีสิ่งแรก X มีสิ่งที่สอง Y -> มีสิ่งแรกมากกว่าสิ่งที่สองกี่...
+    // 6) sub_compare_less: มีสิ่งแรก X มีสิ่งที่สอง Y -> มีสิ่งที่สองน้อยกว่าสิ่งแรกกี่...
+    const PROBLEM_BANKS = {
+      add_more: [
+        { id: 'am1', unit: 'ดวง', tpl: (a, b) => `ฉันมีดาว ${a} ดวง เพื่อนให้มาเพิ่มอีก ${b} ดวง ฉันมีดาวทั้งหมดกี่ดวง` },
+        { id: 'am2', unit: 'คัน', tpl: (a, b) => `พ่อมีรถสีแดง ${a} คัน ซื้อมาเพิ่มอีก ${b} คัน รวมพ่อมีรถกี่คัน` },
+        { id: 'am3', unit: 'แท่ง', tpl: (a, b) => `ก้องมีดินสอสี ${a} แท่ง แม่ซื้อให้เพิ่มอีก ${b} แท่ง ก้องมีดินสอสีทั้งหมดกี่แท่ง` },
+        { id: 'am4', unit: 'ตัว', tpl: (a, b) => `ใบบัวพับนกกระดาษได้ ${a} ตัว พับเพิ่มอีก ${b} ตัว ใบบัวมีนกกระดาษทั้งหมดกี่ตัว` },
+        { id: 'am5', unit: 'ผล', tpl: (a, b) => `ป้าเก็บมะม่วงได้ ${a} ผล เก็บเพิ่มได้อีก ${b} ผล รวมป้าเก็บมะม่วงได้กี่ผล` },
+        { id: 'am6', unit: 'เล่ม', tpl: (a, b) => `ห้องสมุดมีหนังสือนิทาน ${a} เล่ม ครูนำมาเพิ่มอีก ${b} เล่ม ห้องสมุดมีหนังสือนิทานทั้งหมดกี่เล่ม` },
+        { id: 'am7', unit: 'พวง', tpl: (a, b) => `คุณยายร้อยมาลัยได้ ${a} พวง ร้อยเพิ่มอีก ${b} พวง คุณยายมีมาลัยทั้งหมดกี่พวง` },
+        { id: 'am8', unit: 'อัน', tpl: (a, b) => `ฟ้าใสเก็บเปลือกหอยได้ ${a} อัน เก็บเพิ่มอีก ${b} อัน ฟ้าใสมีเปลือกหอยทั้งหมดกี่อัน` },
+        { id: 'am9', unit: 'กล่อง', tpl: (a, b) => `ร้านค้ามีนมจืด ${a} กล่อง รับมาเพิ่มอีก ${b} กล่อง รวมร้านค้ามีนมจืดกี่กล่อง` },
+        { id: 'am10', unit: 'ต้น', tpl: (a, b) => `ลุงปลูกต้นทานตะวันไว้ ${a} ต้น ปลูกเพิ่มอีก ${b} ต้น รวมลุงมีต้นทานตะวันกี่ต้น` }
+      ],
+      sub_remove: [
+        { id: 'sr1', unit: 'ไม้', tpl: (a, b) => `แม่ทำลูกชิ้น ${a} ไม้ ขายไป ${b} ไม้ เหลือลูกชิ้นกี่ไม้` },
+        { id: 'sr2', unit: 'ลูก', tpl: (a, b) => `น้องมีลูกโป่ง ${a} ลูก ทำแตกไป ${b} ลูก น้องเหลือลูกโป่งกี่ลูก` },
+        { id: 'sr3', unit: 'ชิ้น', tpl: (a, b) => `พี่มีคุกกี้ ${a} ชิ้น แบ่งให้เพื่อนไป ${b} ชิ้น พี่เหลือคุกกี้กี่ชิ้น` },
+        { id: 'sr4', unit: 'ก้อน', tpl: (a, b) => `ร้านขนมทำขนมปัง ${a} ก้อน ขายไปแล้ว ${b} ก้อน เหลือขนมปังกี่ก้อน` },
+        { id: 'sr5', unit: 'ขวด', tpl: (a, b) => `ลุงมีน้ำส้ม ${a} ขวด แจกเด็กๆ ไป ${b} ขวด ลุงเหลือน้ำส้มกี่ขวด` },
+        { id: 'sr6', unit: 'แผ่น', tpl: (a, b) => `มินนี่มีกระดาษสี ${a} แผ่น ใช้พับจรวดไป ${b} แผ่น มินนี่เหลือกระดาษสีกี่แผ่น` },
+        { id: 'sr7', unit: 'ผล', tpl: (a, b) => `แม่ค้ามีแตงโม ${a} ผล ขายไป ${b} ผล แม่ค้าเหลือแตงโมกี่ผล` },
+        { id: 'sr8', unit: 'เม็ด', tpl: (a, b) => `ออมสินมีลูกอม ${a} เม็ด กินไป ${b} เม็ด ออมสินเหลือลูกอมกี่เม็ด` },
+        { id: 'sr9', unit: 'ใบ', tpl: (a, b) => `พ่อมีถุงผ้า ${a} ใบ นำไปใส่ของแล้ว ${b} ใบ พ่อเหลือถุงผ้ากี่ใบ` },
+        { id: 'sr10', unit: 'ด้าม', tpl: (a, b) => `ครูมีปากกา ${a} ด้าม แจกให้นักเรียนไป ${b} ด้าม ครูเหลือปากกากี่ด้าม` }
+      ],
+      add_compare_more: [
+        { id: 'acm1', unit: 'ชิ้น', tpl: (a, b) => `แดนมีเลโก้ ${a} ชิ้น แมนมีมากกว่าแดน ${b} ชิ้น แมนมีเลโก้กี่ชิ้น` },
+        { id: 'acm2', unit: 'ตัว', tpl: (a, b) => `พลอยมีตุ๊กตา ${a} ตัว แพรวมีมากกว่าพลอย ${b} ตัว แพรวมีตุ๊กตากี่ตัว` },
+        { id: 'acm3', unit: 'ลูก', tpl: (a, b) => `ต้นมีลูกแก้ว ${a} ลูก เต้มีมากกว่าต้น ${b} ลูก เต้มีลูกแก้วกี่ลูก` },
+        { id: 'acm4', unit: 'หน้า', tpl: (a, b) => `นิดอ่านหนังสือได้ ${a} หน้า หน่อยอ่านได้มากกว่านิด ${b} หน้า หน่อยอ่านหนังสือได้กี่หน้า` },
+        { id: 'acm5', unit: 'ใบ', tpl: (a, b) => `ปิติเก็บขวดน้ำได้ ${a} ใบ มานีเก็บได้มากกว่าปิติ ${b} ใบ มานีเก็บขวดน้ำได้กี่ใบ` },
+        { id: 'acm6', unit: 'เส้น', tpl: (a, b) => `กิ่งมีโบว์ผูกผม ${a} เส้น แก้วมีมากกว่ากิ่ง ${b} เส้น แก้วมีโบว์ผูกผมกี่เส้น` }
+      ],
+      sub_part_whole: [
+        { id: 'spw1', unit: 'ดอก', tpl: (a, b) => `ในบึงมีดอกบัว ${a} ดอก เป็นบัวตูม ${b} ดอก ที่เหลือเป็นบัวบานกี่ดอก` },
+        { id: 'spw2', unit: 'ลูก', tpl: (a, b) => `ในตะกร้ามีลูกบอล ${a} ลูก เป็นลูกบอลสีแดง ${b} ลูก ที่เหลือเป็นลูกบอลสีฟ้ากี่ลูก` },
+        { id: 'spw3', unit: 'คน', tpl: (a, b) => `นักเรียนในห้องมี ${a} คน เป็นนักเรียนชาย ${b} คน ที่เหลือเป็นนักเรียนหญิงกี่คน` },
+        { id: 'spw4', unit: 'ผล', tpl: (a, b) => `แม่ซื้อมะละกอมา ${a} ผล เป็นมะละกอดิบ ${b} ผล ที่เหลือเป็นมะละกอสุกกี่ผล` },
+        { id: 'spw5', unit: 'ตัว', tpl: (a, b) => `ในเล้ามีไก่ทั้งหมด ${a} ตัว เป็นแม่ไก่ ${b} ตัว ที่เหลือเป็นลูกไก่กี่ตัว` },
+        { id: 'spw6', unit: 'ห่อ', tpl: (a, b) => `บนโต๊ะมีขนม ${a} ห่อ เป็นขนมถั่ว ${b} ห่อ ที่เหลือเป็นขนมมันฝรั่งกี่ห่อ` }
+      ],
+      sub_compare_more: [
+        { id: 'scm1', unit: 'ผล', tpl: (a, b) => `ครูมีส้ม ${a} ผล มีแอปเปิล ${b} ผล ครูมีส้มมากกว่าแอปเปิลกี่ผล` },
+        { id: 'scm2', unit: 'ตัว', tpl: (a, b) => `สวนสัตว์มีนกแก้ว ${a} ตัว มีนกยูง ${b} ตัว มีนกแก้วมากกว่านกยูงกี่ตัว` },
+        { id: 'scm3', unit: 'แท่ง', tpl: (a, b) => `ร้านค้ามีไอศกรีมกะทิ ${a} แท่ง มีไอศกรีมช็อกโกแลต ${b} แท่ง มีไอศกรีมกะทิมากกว่าช็อกโกแลตกี่แท่ง` },
+        { id: 'scm4', unit: 'เหรียญ', tpl: (a, b) => `แพรมีเหรียญบาท ${a} เหรียญ มีเหรียญสิบ ${b} เหรียญ แพรมีเหรียญบาทมากกว่าเหรียญสิบกี่เหรียญ` },
+        { id: 'scm5', unit: 'ลำ', tpl: (a, b) => `พี่พับเรือกระดาษได้ ${a} ลำ น้องพับได้ ${b} ลำ พี่พับเรือกระดาษได้มากกว่าน้องกี่ลำ` },
+        { id: 'scm6', unit: 'ดอก', tpl: (a, b) => `แจกันใบแรกมีดอกกุหลาบ ${a} ดอก ใบที่สองมี ${b} ดอก แจกันใบแรกมีดอกกุหลาบมากกว่าใบที่สองกี่ดอก` }
+      ],
+      sub_compare_less: [
+        { id: 'scl1', unit: 'ฟอง', tpl: (a, b) => `แม่มีไข่ไก่ ${a} ฟอง มีไข่เป็ด ${b} ฟอง มีไข่เป็ดน้อยกว่าไข่ไก่กี่ฟอง` },
+        { id: 'scl2', unit: 'ต้น', tpl: (a, b) => `พ่อปลูกต้นกล้วย ${a} ต้น ปลูกต้นมะพร้าว ${b} ต้น มีต้นมะพร้าวน้อยกว่าต้นกล้วยกี่ต้น` },
+        { id: 'scl3', unit: 'คน', tpl: (a, b) => `ชมรมดนตรีมีนักเรียน ${a} คน ชมรมศิลปะมี ${b} คน ชมรมศิลปะมีนักเรียนน้อยกว่าชมรมดนตรีกี่คน` },
+        { id: 'scl4', unit: 'ตัว', tpl: (a, b) => `ในตู้ปลามีปลาทอง ${a} ตัว มีปลาหางนกยูง ${b} ตัว มีปลาหางนกยูงน้อยกว่าปลาทองกี่ตัว` },
+        { id: 'scl5', unit: 'ชิ้น', tpl: (a, b) => `ป้าทำขนมตาล ${a} ชิ้น ทำขนมกล้วย ${b} ชิ้น มีขนมกล้วยน้อยกว่าขนมตาลกี่ชิ้น` },
+        { id: 'scl6', unit: 'คัน', tpl: (a, b) => `ลานจอดรถมีรถยนต์ ${a} คัน มีรถจักรยาน ${b} คัน มีรถจักรยานน้อยกว่ารถยนต์กี่คัน` }
+      ]
+    };
+
+    // Non-repeating deck state per category + previous number-pair tracker
+    const deckQueues = {};
+    const lastRoundTemplateIds = new Set();
+    let lastRoundNumberPairs = new Set();
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Draw 1 template from a category, strictly avoiding any template used in the previous worksheet
+    function drawTemplate(categoryKey, usedInCurrentSheet) {
+      if (!deckQueues[categoryKey] || deckQueues[categoryKey].length === 0) {
+        const fresh = PROBLEM_BANKS[categoryKey].filter(
+          item => !lastRoundTemplateIds.has(item.id) && !usedInCurrentSheet.has(item.id)
+        );
+        const fallback = PROBLEM_BANKS[categoryKey].filter(
+          item => lastRoundTemplateIds.has(item.id) && !usedInCurrentSheet.has(item.id)
+        );
+        deckQueues[categoryKey] = [...shuffle(fresh), ...shuffle(fallback)];
+      }
+
+      // Find first item in queue not used in previous round or current sheet
+      let idx = deckQueues[categoryKey].findIndex(
+        item => !lastRoundTemplateIds.has(item.id) && !usedInCurrentSheet.has(item.id)
+      );
+      if (idx === -1) {
+        idx = 0;
+      }
+      const [picked] = deckQueues[categoryKey].splice(idx, 1);
+      usedInCurrentSheet.add(picked.id);
+      return picked;
+    }
+
+    // Generate age-appropriate Primary 1-2 numbers (within 10..65) that never repeat previous sheet's pairs
+    function generateNumbers(opType, usedPairsCurrent) {
+      for (let attempt = 0; attempt < 40; attempt++) {
+        let a, b;
+        if (opType === 'add') {
+          a = randInt(12, 45);
+          b = randInt(7, Math.min(35, 68 - a));
+        } else {
+          a = randInt(28, 60);
+          b = randInt(9, a - 7);
+        }
+        const key = `${opType}:${a},${b}`;
+        if (!lastRoundNumberPairs.has(key) && !usedPairsCurrent.has(key)) {
+          usedPairsCurrent.add(key);
+          return { a, b, key };
+        }
+      }
+      const a = opType === 'add' ? randInt(14, 40) : randInt(32, 58);
+      const b = opType === 'add' ? randInt(8, 25) : randInt(10, 24);
+      return { a, b, key: `${opType}:${a},${b}` };
+    }
+
+    function buildLongProblemHtml(num, text, artHtml) {
+      return `
+        <div class="long-problem-block">
+          <div class="long-problem-top">
+            <div class="long-problem-left">
+              <div class="problem-question">${num}. ${text}</div>
+              <div class="equation-row">
+                <span>ประโยคสัญลักษณ์</span>
+                <span class="blank-line"></span>
+              </div>
+              <div class="method-label">วิธีทำ</div>
+            </div>
+            <div class="line-art-box">${artHtml}</div>
+          </div>
+
+          <div class="work-lines">
+            <div class="work-line"></div>
+            <div class="work-line"></div>
+            <div class="work-line"></div>
+          </div>
+
+          <div class="final-ans-row">
+            <span>ตอบ</span>
+            <span class="blank-line"></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function generateWorksheet() {
+      const usedTemplatesNow = new Set();
+      const usedPairsNow = new Set();
+
+      // 5 Short-answer problems matching Page (2) structure of test.pdf
+      const shortSpec = [
+        { cat: 'add_more', op: 'add' },
+        { cat: 'sub_remove', op: 'sub' },
+        { cat: 'add_compare_more', op: 'add' },
+        { cat: 'sub_part_whole', op: 'sub' },
+        { cat: 'sub_compare_more', op: 'sub' }
+      ];
+
+      const shortItems = shortSpec.map((spec, idx) => {
+        const tplObj = drawTemplate(spec.cat, usedTemplatesNow);
+        const nums = generateNumbers(spec.op, usedPairsNow);
+        return {
+          num: idx + 1,
+          text: tplObj.tpl(nums.a, nums.b),
+          unit: tplObj.unit,
+          tplId: tplObj.id,
+          pairKey: nums.key
+        };
+      });
+
+      // 3 Show-your-work problems matching Page (2) bottom & Page (3) of test.pdf
+      const longSpec = [
+        { cat: 'add_more', op: 'add', art: ILLUSTRATIONS.car },
+        { cat: 'sub_remove', op: 'sub', art: ILLUSTRATIONS.balloons },
+        { cat: 'sub_compare_less', op: 'sub', art: ILLUSTRATIONS.chick }
+      ];
+
+      const longItems = longSpec.map((spec, idx) => {
+        const tplObj = drawTemplate(spec.cat, usedTemplatesNow);
+        const nums = generateNumbers(spec.op, usedPairsNow);
+        return {
+          num: idx + 1,
+          text: tplObj.tpl(nums.a, nums.b),
+          art: spec.art,
+          tplId: tplObj.id,
+          pairKey: nums.key
+        };
+      });
+
+      // Record current round IDs & number pairs so the next click NEVER repeats any of them
+      lastRoundTemplateIds.clear();
+      usedTemplatesNow.forEach(id => lastRoundTemplateIds.add(id));
+      lastRoundNumberPairs = usedPairsNow;
+
+      // Render Part 1 (5 short problems)
+      const shortListEl = document.getElementById('shortProblemsList');
+      shortListEl.innerHTML = shortItems.map(item => `
+        <div class="short-problem-item">
+          <div class="problem-question">${item.num}. ${item.text}</div>
+          <div class="short-answer-line">
+            <span>ประโยคสัญลักษณ์</span>
+            <span class="blank-line blank-equation"></span>
+            <span>ตอบ</span>
+            <span class="blank-line blank-short-ans"></span>
+            <span>${item.unit}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Part 2 (3 show-your-work problems across Sheet 1 & Sheet 2)
+      document.getElementById('longProblem1Container').innerHTML = buildLongProblemHtml(
+        longItems[0].num,
+        longItems[0].text,
+        longItems[0].art
+      );
+      document.getElementById('longProblem2Container').innerHTML = buildLongProblemHtml(
+        longItems[1].num,
+        longItems[1].text,
+        longItems[1].art
+      );
+      document.getElementById('longProblem3Container').innerHTML = buildLongProblemHtml(
+        longItems[2].num,
+        longItems[2].text,
+        longItems[2].art
+      );
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      generateWorksheet();
+
+      const btnNew = document.getElementById('btnNewWorksheet');
+      const btnPrint = document.getElementById('btnPrintWorksheet');
+      const pages = document.querySelectorAll('.worksheet-page');
+      const printNotice = document.getElementById('printSandboxNotice');
+
+      btnNew.addEventListener('click', () => {
+        pages.forEach(p => p.classList.add('refreshing'));
+        setTimeout(() => {
+          generateWorksheet();
+          pages.forEach(p => p.classList.remove('refreshing'));
+        }, 120);
+      });
+
+      btnPrint.addEventListener('click', () => {
+        // Show helpful standalone instruction in case iframe sandbox blocks window.print()
+        let isSandboxed = false;
+        try {
+          isSandboxed = window.self !== window.top;
+        } catch (e) {
+          isSandboxed = true;
+        }
+        if (isSandboxed && printNotice) {
+          printNotice.classList.add('visible');
+        }
+        window.print();
+      });
+    });
+  </script>
+</body>
+</html>
