@@ -395,10 +395,10 @@
       }
     }
 
-    /* Exact A4 Print Styles */
+    /* Exact A4 Print Styles (Strictly 2 A4 Pages, Never Overflowing to 4) */
     @page {
       size: A4 portrait;
-      margin: 9mm 10mm;
+      margin: 8mm 10mm;
     }
 
     @media print {
@@ -406,6 +406,8 @@
         background: #ffffff !important;
         margin: 0 !important;
         padding: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
       }
 
       .control-bar-wrap,
@@ -418,32 +420,89 @@
         padding: 0 !important;
         max-width: none !important;
         gap: 0 !important;
+        display: block !important;
       }
 
       .worksheet-page {
         box-shadow: none !important;
         border-radius: 0 !important;
         margin: 0 !important;
-        padding: 2mm 2mm 6mm !important;
+        padding: 0 1mm 5mm !important;
         width: 100% !important;
         max-width: none !important;
-        min-height: 272mm !important;
-        page-break-inside: avoid;
-        break-inside: avoid;
+        min-height: 0 !important;
+        height: 248mm !important;
+        max-height: 248mm !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
 
       .worksheet-page.page-break-after {
-        page-break-after: always;
-        break-after: page;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      .worksheet-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      .sheet-dashed-frame {
+        padding: 14px 20px 20px !important;
+      }
+
+      .section-banner-row {
+        margin-bottom: 12px !important;
+      }
+
+      .section-banner {
+        font-size: 16px !important;
+        padding: 4px 18px !important;
       }
 
       .short-problems-list {
-        gap: 15px !important;
-        margin-bottom: 20px !important;
+        gap: 11px !important;
+        margin-bottom: 14px !important;
+      }
+
+      .short-problem-item {
+        gap: 6px !important;
+      }
+
+      .problem-question {
+        font-size: 16px !important;
+        line-height: 1.42 !important;
+      }
+
+      .short-answer-line,
+      .equation-row,
+      .method-label,
+      .final-ans-row {
+        font-size: 15.5px !important;
+      }
+
+      .long-problem-block,
+      .long-problem-left {
+        gap: 8px !important;
+      }
+
+      .line-art-box {
+        width: 84px !important;
       }
 
       .work-lines {
-        gap: 25px !important;
+        gap: 22px !important;
+        margin-top: 6px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .page2-problems {
+        gap: 24px !important;
+      }
+
+      .coloring-footer {
+        margin-top: 8px !important;
       }
     }
   </style>
