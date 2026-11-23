@@ -192,16 +192,16 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .section-banner {
       background: #111827;
       color: #ffffff;
       font-family: 'Prompt', sans-serif;
-      font-size: clamp(15px, 2.2vw, 18.5px);
+      font-size: clamp(14px, 1.9vw, 16.5px);
       font-weight: 700;
-      padding: 6px 22px;
+      padding: 5px 20px;
       border-radius: 8px;
       border: 2px solid #111827;
       text-align: center;
@@ -211,29 +211,29 @@
     }
 
     .star-deco {
-      width: 24px;
-      height: 24px;
+      width: 21px;
+      height: 21px;
       flex-shrink: 0;
     }
 
-    /* Part 1: Short Symbolic Sentence + Answer (5 Items) */
+    /* Part 1: Short Symbolic Sentence + Answer (8 Items) */
     .short-problems-list {
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     .short-problem-item {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
 
     .problem-question {
-      font-size: clamp(16px, 2.1vw, 18.5px);
+      font-size: clamp(14.5px, 1.8vw, 16px);
       font-weight: 600;
-      line-height: 1.5;
+      line-height: 1.42;
       color: #111827;
     }
 
@@ -242,8 +242,8 @@
       align-items: baseline;
       flex-wrap: nowrap;
       gap: 8px;
-      padding-left: clamp(8px, 2vw, 20px);
-      font-size: clamp(15px, 1.9vw, 17.5px);
+      padding-left: clamp(8px, 1.8vw, 16px);
+      font-size: clamp(14px, 1.75vw, 15.5px);
       font-weight: 600;
       white-space: nowrap;
     }
@@ -256,9 +256,9 @@
     }
 
     .blank-line {
-      border-bottom: 1.6px solid #111827;
+      border-bottom: 1.5px solid #111827;
       display: inline-block;
-      height: 1.2em;
+      height: 1.15em;
     }
 
     .blank-equation {
@@ -267,22 +267,28 @@
     }
 
     .blank-short-ans {
-      width: 95px;
-      flex: 0 0 95px;
+      width: 90px;
+      flex: 0 0 90px;
     }
 
-    /* Part 2: Show Your Work (แสดงวิธีทำ) */
+    /* Part 2: Show Your Work (แสดงวิธีทำ - 6 Items Total) */
+    .sheet1-long-problems {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
     .long-problem-block {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .long-problem-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
     }
 
     .long-problem-left {
@@ -290,33 +296,33 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 7px;
     }
 
     .equation-row {
       display: flex;
       align-items: baseline;
       gap: 10px;
-      padding-left: clamp(8px, 2vw, 18px);
-      font-size: clamp(15.5px, 2vw, 18px);
+      padding-left: clamp(8px, 1.8vw, 16px);
+      font-size: clamp(14px, 1.75vw, 15.5px);
       font-weight: 600;
     }
 
     .equation-row .blank-line {
       flex: 1;
-      max-width: 380px;
+      max-width: 360px;
     }
 
     .method-label {
-      font-size: clamp(16px, 2vw, 18px);
+      font-size: clamp(14.5px, 1.8vw, 16px);
       font-weight: 700;
       text-decoration: underline;
-      text-underline-offset: 4px;
-      margin-top: 2px;
+      text-underline-offset: 3px;
+      margin-top: 1px;
     }
 
     .line-art-box {
-      width: clamp(78px, 14vw, 112px);
+      width: clamp(64px, 11vw, 84px);
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -331,28 +337,28 @@
     .work-lines {
       display: flex;
       flex-direction: column;
-      gap: 28px;
-      margin-top: 8px;
-      margin-bottom: 10px;
+      gap: 22px;
+      margin-top: 4px;
+      margin-bottom: 6px;
     }
 
     .work-line {
       width: 100%;
-      border-bottom: 1.5px solid #1e293b;
-      height: 8px;
+      border-bottom: 1.4px solid #1e293b;
+      height: 6px;
     }
 
     .final-ans-row {
       display: flex;
       align-items: baseline;
       gap: 10px;
-      font-size: clamp(16px, 2vw, 18px);
+      font-size: clamp(14.5px, 1.8vw, 16px);
       font-weight: 600;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .final-ans-row .blank-line {
-      width: 240px;
+      width: 220px;
       max-width: 65%;
     }
 
@@ -360,16 +366,16 @@
     .page2-problems {
       display: flex;
       flex-direction: column;
-      gap: 34px;
+      gap: 20px;
     }
 
     .coloring-footer {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: 16px;
-      margin-top: 16px;
-      padding-top: 6px;
+      gap: 14px;
+      margin-top: 10px;
+      padding-top: 2px;
     }
 
     .page-number-badge {
@@ -403,10 +409,10 @@
       }
     }
 
-    /* Exact A4 Print Styles (Strictly 2 Sheets on Chrome + Inkjet/Laser Printers) */
+    /* Exact A4 Print Styles (Full-Page Density, Strictly 2 A4 Sheets) */
     @page {
       size: A4 portrait;
-      margin: 7mm 10mm;
+      margin: 6mm 8mm;
     }
 
     @media print {
@@ -436,7 +442,7 @@
         box-shadow: none !important;
         border-radius: 0 !important;
         margin: 0 !important;
-        padding: 0 2px 18px !important;
+        padding: 0 2px 16px !important;
         width: 100% !important;
         max-width: none !important;
         min-height: 0 !important;
@@ -459,40 +465,41 @@
       }
 
       .sheet-dashed-frame {
-        min-height: 210mm !important;
-        padding: 12px 18px 20px !important;
+        min-height: 246mm !important;
+        padding: 10px 16px 16px !important;
       }
 
       .section-banner-row {
-        margin-bottom: 10px !important;
+        margin-bottom: 7px !important;
       }
 
       .section-banner {
-        font-size: 15px !important;
-        padding: 3px 16px !important;
+        font-size: 13.5px !important;
+        padding: 2px 14px !important;
       }
 
       .star-deco {
-        width: 20px !important;
-        height: 20px !important;
+        width: 18px !important;
+        height: 18px !important;
       }
 
       .short-problems-list {
-        gap: 9px !important;
-        margin-bottom: 12px !important;
+        gap: 7px !important;
+        margin-bottom: 9px !important;
       }
 
       .short-problem-item {
-        gap: 4px !important;
+        gap: 3px !important;
       }
 
       .problem-question {
-        font-size: 14.5px !important;
-        line-height: 1.38 !important;
+        font-size: 13px !important;
+        line-height: 1.32 !important;
       }
 
       .short-answer-line {
-        font-size: 14.5px !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
         flex-wrap: nowrap !important;
         white-space: nowrap !important;
         gap: 6px !important;
@@ -504,41 +511,60 @@
       }
 
       .blank-short-ans {
-        width: 85px !important;
-        flex: 0 0 85px !important;
+        width: 80px !important;
+        flex: 0 0 80px !important;
+      }
+
+      .sheet1-long-problems {
+        gap: 11px !important;
       }
 
       .equation-row,
       .method-label,
       .final-ans-row {
-        font-size: 14.5px !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
       }
 
       .long-problem-block,
       .long-problem-left {
-        gap: 6px !important;
+        gap: 4px !important;
       }
 
       .line-art-box {
-        width: 74px !important;
+        width: 58px !important;
       }
 
       .work-lines {
-        gap: 19px !important;
-        margin-top: 4px !important;
-        margin-bottom: 6px !important;
+        gap: 16px !important;
+        margin-top: 3px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .work-line {
+        height: 4px !important;
       }
 
       .page2-problems {
-        gap: 28px !important;
+        gap: 15px !important;
       }
 
       .page2-problems .work-lines {
-        gap: 24px !important;
+        gap: 18px !important;
       }
 
       .coloring-footer {
-        margin-top: 16px !important;
+        margin-top: 6px !important;
+      }
+
+      .coloring-footer svg:first-child {
+        width: 88px !important;
+        height: 42px !important;
+      }
+
+      .coloring-footer svg:last-child {
+        width: 145px !important;
+        height: 64px !important;
       }
     }
   </style>
@@ -592,12 +618,12 @@
           </div>
 
           <!-- Banner 2 -->
-          <div class="section-banner-row" style="margin-top: 6px;">
+          <div class="section-banner-row" style="margin-top: 4px;">
             <div class="section-banner">จงเขียนประโยคสัญลักษณ์และแสดงวิธีทำ</div>
           </div>
 
-          <!-- Long Problem #1 -->
-          <div id="longProblem1Container">
+          <!-- Long Problems #1 & #2 on Sheet 1 -->
+          <div class="sheet1-long-problems" id="sheet1LongProblems">
             <!-- Populated via JS -->
           </div>
         </div>
@@ -606,15 +632,11 @@
       </div>
     </section>
 
-    <!-- SHEET 2: Long Method Problems #2 and #3 -->
+    <!-- SHEET 2: Long Method Problems #3, #4, #5, #6 -->
     <section class="worksheet-page" aria-label="ใบงานแผ่นที่ 2">
       <div class="sheet-dashed-frame">
-        <div class="page2-problems">
-          <!-- Long Problem #2 -->
-          <div id="longProblem2Container"></div>
-
-          <!-- Long Problem #3 -->
-          <div id="longProblem3Container"></div>
+        <div class="page2-problems" id="sheet2LongProblems">
+          <!-- Long Problems #3 to #6 populated via JS -->
         </div>
 
         <!-- Cute Black & White Coloring Footer (Stars, Rainbow & Pencil) -->
@@ -690,6 +712,38 @@
           <polygon points="55,48 50,54 60,54" fill="#ffffff"/>
           <path d="M22 58 L34 68 L45 57 L55 68 L66 57 L77 68 L88 58 C90 86, 76 102, 55 102 C34 102, 20 86, 22 58 Z" fill="#ffffff"/>
         </svg>
+      `,
+      apple: `
+        <svg viewBox="0 0 110 110" fill="none" stroke="#111827" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M55 34 C40 28, 22 40, 24 62 C26 84, 42 96, 55 92 C68 96, 84 84, 86 62 C88 40, 70 28, 55 34 Z" fill="#ffffff"/>
+          <path d="M55 34 Q56 20 64 15"/>
+          <path d="M58 24 Q72 16 76 26 Q66 32 58 24 Z" fill="#ffffff"/>
+          <circle cx="45" cy="58" r="2.2" fill="#111827"/>
+          <circle cx="65" cy="58" r="2.2" fill="#111827"/>
+          <path d="M48 68 Q55 74 62 68"/>
+        </svg>
+      `,
+      book: `
+        <svg viewBox="0 0 115 100" fill="none" stroke="#111827" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 24 Q36 18 57 26 L57 82 Q36 74 16 80 Z" fill="#ffffff"/>
+          <path d="M98 24 Q78 18 57 26 L57 82 Q78 74 98 80 Z" fill="#ffffff"/>
+          <circle cx="34" cy="48" r="2" fill="#111827"/>
+          <circle cx="44" cy="48" r="2" fill="#111827"/>
+          <path d="M35 56 Q39 60 43 56"/>
+          <line x1="68" y1="42" x2="88" y2="40"/>
+          <line x1="68" y1="54" x2="88" y2="52"/>
+        </svg>
+      `,
+      fish: `
+        <svg viewBox="0 0 120 95" fill="none" stroke="#111827" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M88 48 L108 30 L106 66 Z" fill="#ffffff"/>
+          <ellipse cx="54" cy="48" rx="36" ry="24" fill="#ffffff"/>
+          <circle cx="34" cy="43" r="2.5" fill="#111827"/>
+          <path d="M32 54 Q38 59 44 54"/>
+          <path d="M56 36 Q66 48 56 60"/>
+          <circle cx="14" cy="34" r="3"/>
+          <circle cx="18" cy="22" r="4"/>
+        </svg>
       `
     };
 
@@ -731,7 +785,9 @@
         { id: 'acm3', unit: 'ลูก', tpl: (a, b) => `ต้นมีลูกแก้ว ${a} ลูก เต้มีมากกว่าต้น ${b} ลูก เต้มีลูกแก้วกี่ลูก` },
         { id: 'acm4', unit: 'หน้า', tpl: (a, b) => `นิดอ่านหนังสือได้ ${a} หน้า หน่อยอ่านได้มากกว่านิด ${b} หน้า หน่อยอ่านหนังสือได้กี่หน้า` },
         { id: 'acm5', unit: 'ใบ', tpl: (a, b) => `ปิติเก็บขวดน้ำได้ ${a} ใบ มานีเก็บได้มากกว่าปิติ ${b} ใบ มานีเก็บขวดน้ำได้กี่ใบ` },
-        { id: 'acm6', unit: 'เส้น', tpl: (a, b) => `กิ่งมีโบว์ผูกผม ${a} เส้น แก้วมีมากกว่ากิ่ง ${b} เส้น แก้วมีโบว์ผูกผมกี่เส้น` }
+        { id: 'acm6', unit: 'เส้น', tpl: (a, b) => `กิ่งมีโบว์ผูกผม ${a} เส้น แก้วมีมากกว่ากิ่ง ${b} เส้น แก้วมีโบว์ผูกผมกี่เส้น` },
+        { id: 'acm7', unit: 'ตัว', tpl: (a, b) => `ฟาร์มแรกมีแกะ ${a} ตัว ฟาร์มที่สองมีมากกว่าฟาร์มแรก ${b} ตัว ฟาร์มที่สองมีแกะกี่ตัว` },
+        { id: 'acm8', unit: 'ดวง', tpl: (a, b) => `จอยวาดรูปดาวได้ ${a} ดวง เจนวาดได้มากกว่าจอย ${b} ดวง เจนวาดรูปดาวได้กี่ดวง` }
       ],
       sub_part_whole: [
         { id: 'spw1', unit: 'ดอก', tpl: (a, b) => `ในบึงมีดอกบัว ${a} ดอก เป็นบัวตูม ${b} ดอก ที่เหลือเป็นบัวบานกี่ดอก` },
@@ -739,7 +795,9 @@
         { id: 'spw3', unit: 'คน', tpl: (a, b) => `นักเรียนในห้องมี ${a} คน เป็นนักเรียนชาย ${b} คน ที่เหลือเป็นนักเรียนหญิงกี่คน` },
         { id: 'spw4', unit: 'ผล', tpl: (a, b) => `แม่ซื้อมะละกอมา ${a} ผล เป็นมะละกอดิบ ${b} ผล ที่เหลือเป็นมะละกอสุกกี่ผล` },
         { id: 'spw5', unit: 'ตัว', tpl: (a, b) => `ในเล้ามีไก่ทั้งหมด ${a} ตัว เป็นแม่ไก่ ${b} ตัว ที่เหลือเป็นลูกไก่กี่ตัว` },
-        { id: 'spw6', unit: 'ห่อ', tpl: (a, b) => `บนโต๊ะมีขนม ${a} ห่อ เป็นขนมถั่ว ${b} ห่อ ที่เหลือเป็นขนมมันฝรั่งกี่ห่อ` }
+        { id: 'spw6', unit: 'ห่อ', tpl: (a, b) => `บนโต๊ะมีขนม ${a} ห่อ เป็นขนมถั่ว ${b} ห่อ ที่เหลือเป็นขนมมันฝรั่งกี่ห่อ` },
+        { id: 'spw7', unit: 'ใบ', tpl: (a, b) => `บนชั้นวางมีแก้วน้ำ ${a} ใบ เป็นแก้วพลาสติก ${b} ใบ ที่เหลือเป็นแก้วกระดาษกี่ใบ` },
+        { id: 'spw8', unit: 'ด้าม', tpl: (a, b) => `ในกล่องมีดินสอ ${a} ด้าม เป็นดินสอดำ ${b} ด้าม ที่เหลือเป็นดินสอสีแดงกี่ด้าม` }
       ],
       sub_compare_more: [
         { id: 'scm1', unit: 'ผล', tpl: (a, b) => `ครูมีส้ม ${a} ผล มีแอปเปิล ${b} ผล ครูมีส้มมากกว่าแอปเปิลกี่ผล` },
@@ -747,7 +805,9 @@
         { id: 'scm3', unit: 'แท่ง', tpl: (a, b) => `ร้านค้ามีไอศกรีมกะทิ ${a} แท่ง มีไอศกรีมช็อกโกแลต ${b} แท่ง มีไอศกรีมกะทิมากกว่าช็อกโกแลตกี่แท่ง` },
         { id: 'scm4', unit: 'เหรียญ', tpl: (a, b) => `แพรมีเหรียญบาท ${a} เหรียญ มีเหรียญสิบ ${b} เหรียญ แพรมีเหรียญบาทมากกว่าเหรียญสิบกี่เหรียญ` },
         { id: 'scm5', unit: 'ลำ', tpl: (a, b) => `พี่พับเรือกระดาษได้ ${a} ลำ น้องพับได้ ${b} ลำ พี่พับเรือกระดาษได้มากกว่าน้องกี่ลำ` },
-        { id: 'scm6', unit: 'ดอก', tpl: (a, b) => `แจกันใบแรกมีดอกกุหลาบ ${a} ดอก ใบที่สองมี ${b} ดอก แจกันใบแรกมีดอกกุหลาบมากกว่าใบที่สองกี่ดอก` }
+        { id: 'scm6', unit: 'ดอก', tpl: (a, b) => `แจกันใบแรกมีดอกกุหลาบ ${a} ดอก ใบที่สองมี ${b} ดอก แจกันใบแรกมีดอกกุหลาบมากกว่าใบที่สองกี่ดอก` },
+        { id: 'scm7', unit: 'ต้น', tpl: (a, b) => `ในสวนมีต้นมะลิ ${a} ต้น มีต้นชบา ${b} ต้น มีต้นมะลิมากกว่าต้นชบากี่ต้น` },
+        { id: 'scm8', unit: 'ตัว', tpl: (a, b) => `แม่ซื้อกุ้งมา ${a} ตัว ซื้อปูมา ${b} ตัว แม่ซื้อกุ้งมากกว่าปูกี่ตัว` }
       ],
       sub_compare_less: [
         { id: 'scl1', unit: 'ฟอง', tpl: (a, b) => `แม่มีไข่ไก่ ${a} ฟอง มีไข่เป็ด ${b} ฟอง มีไข่เป็ดน้อยกว่าไข่ไก่กี่ฟอง` },
@@ -755,7 +815,9 @@
         { id: 'scl3', unit: 'คน', tpl: (a, b) => `ชมรมดนตรีมีนักเรียน ${a} คน ชมรมศิลปะมี ${b} คน ชมรมศิลปะมีนักเรียนน้อยกว่าชมรมดนตรีกี่คน` },
         { id: 'scl4', unit: 'ตัว', tpl: (a, b) => `ในตู้ปลามีปลาทอง ${a} ตัว มีปลาหางนกยูง ${b} ตัว มีปลาหางนกยูงน้อยกว่าปลาทองกี่ตัว` },
         { id: 'scl5', unit: 'ชิ้น', tpl: (a, b) => `ป้าทำขนมตาล ${a} ชิ้น ทำขนมกล้วย ${b} ชิ้น มีขนมกล้วยน้อยกว่าขนมตาลกี่ชิ้น` },
-        { id: 'scl6', unit: 'คัน', tpl: (a, b) => `ลานจอดรถมีรถยนต์ ${a} คัน มีรถจักรยาน ${b} คัน มีรถจักรยานน้อยกว่ารถยนต์กี่คัน` }
+        { id: 'scl6', unit: 'คัน', tpl: (a, b) => `ลานจอดรถมีรถยนต์ ${a} คัน มีรถจักรยาน ${b} คัน มีรถจักรยานน้อยกว่ารถยนต์กี่คัน` },
+        { id: 'scl7', unit: 'ผล', tpl: (a, b) => `ตะกร้าแรกมีสตรอว์เบอร์รี ${a} ผล ตะกร้าที่สองมี ${b} ผล ตะกร้าที่สองมีน้อยกว่าตะกร้าแรกกี่ผล` },
+        { id: 'scl8', unit: 'ลูก', tpl: (a, b) => `กานต์เก็บลูกสนได้ ${a} ลูก ก้อยเก็บได้ ${b} ลูก ก้อยเก็บลูกสนได้น้อยกว่ากานต์กี่ลูก` }
       ]
     };
 
@@ -856,13 +918,16 @@
       const usedTemplatesNow = new Set();
       const usedPairsNow = new Set();
 
-      // 5 Short-answer problems matching Page (2) structure of test.pdf
+      // 8 Short-answer problems filling the top section of Sheet 1
       const shortSpec = [
         { cat: 'add_more', op: 'add' },
         { cat: 'sub_remove', op: 'sub' },
         { cat: 'add_compare_more', op: 'add' },
         { cat: 'sub_part_whole', op: 'sub' },
-        { cat: 'sub_compare_more', op: 'sub' }
+        { cat: 'sub_compare_more', op: 'sub' },
+        { cat: 'sub_compare_less', op: 'sub' },
+        { cat: 'add_more', op: 'add' },
+        { cat: 'sub_remove', op: 'sub' }
       ];
 
       const shortItems = shortSpec.map((spec, idx) => {
@@ -877,11 +942,14 @@
         };
       });
 
-      // 3 Show-your-work problems matching Page (2) bottom & Page (3) of test.pdf
+      // 6 Show-your-work problems: #1-#2 fill bottom of Sheet 1, #3-#6 fill Sheet 2 completely
       const longSpec = [
         { cat: 'add_more', op: 'add', art: ILLUSTRATIONS.car },
+        { cat: 'sub_part_whole', op: 'sub', art: ILLUSTRATIONS.apple },
         { cat: 'sub_remove', op: 'sub', art: ILLUSTRATIONS.balloons },
-        { cat: 'sub_compare_less', op: 'sub', art: ILLUSTRATIONS.chick }
+        { cat: 'add_compare_more', op: 'add', art: ILLUSTRATIONS.book },
+        { cat: 'sub_compare_less', op: 'sub', art: ILLUSTRATIONS.chick },
+        { cat: 'sub_compare_more', op: 'sub', art: ILLUSTRATIONS.fish }
       ];
 
       const longItems = longSpec.map((spec, idx) => {
@@ -901,7 +969,7 @@
       usedTemplatesNow.forEach(id => lastRoundTemplateIds.add(id));
       lastRoundNumberPairs = usedPairsNow;
 
-      // Render Part 1 (5 short problems)
+      // Render Part 1 (8 short problems)
       const shortListEl = document.getElementById('shortProblemsList');
       shortListEl.innerHTML = shortItems.map(item => `
         <div class="short-problem-item">
@@ -916,22 +984,16 @@
         </div>
       `).join('');
 
-      // Render Part 2 (3 show-your-work problems across Sheet 1 & Sheet 2)
-      document.getElementById('longProblem1Container').innerHTML = buildLongProblemHtml(
-        longItems[0].num,
-        longItems[0].text,
-        longItems[0].art
-      );
-      document.getElementById('longProblem2Container').innerHTML = buildLongProblemHtml(
-        longItems[1].num,
-        longItems[1].text,
-        longItems[1].art
-      );
-      document.getElementById('longProblem3Container').innerHTML = buildLongProblemHtml(
-        longItems[2].num,
-        longItems[2].text,
-        longItems[2].art
-      );
+      // Render Part 2: #1 & #2 on Sheet 1, #3 to #6 on Sheet 2
+      document.getElementById('sheet1LongProblems').innerHTML = longItems
+        .slice(0, 2)
+        .map(item => buildLongProblemHtml(item.num, item.text, item.art))
+        .join('');
+
+      document.getElementById('sheet2LongProblems').innerHTML = longItems
+        .slice(2)
+        .map(item => buildLongProblemHtml(item.num, item.text, item.art))
+        .join('');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
