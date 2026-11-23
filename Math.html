@@ -240,27 +240,35 @@
     .short-answer-line {
       display: flex;
       align-items: baseline;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
       padding-left: clamp(8px, 2vw, 20px);
-      font-size: clamp(15.5px, 2vw, 18px);
+      font-size: clamp(15px, 1.9vw, 17.5px);
       font-weight: 600;
+      white-space: nowrap;
+    }
+
+    @media screen and (max-width: 520px) {
+      .short-answer-line {
+        flex-wrap: wrap;
+        white-space: normal;
+      }
     }
 
     .blank-line {
       border-bottom: 1.6px solid #111827;
       display: inline-block;
-      height: 1.25em;
+      height: 1.2em;
     }
 
     .blank-equation {
-      flex: 1 1 210px;
-      min-width: 150px;
+      flex: 1 1 140px;
+      min-width: 90px;
     }
 
     .blank-short-ans {
-      width: 115px;
-      flex: 0 1 115px;
+      width: 95px;
+      flex: 0 0 95px;
     }
 
     /* Part 2: Show Your Work (แสดงวิธีทำ) */
@@ -395,10 +403,10 @@
       }
     }
 
-    /* Exact A4 Print Styles (Strictly 2 A4 Pages, Never Overflowing to 4) */
+    /* Exact A4 Print Styles (Strictly 2 Sheets on Chrome + Inkjet/Laser Printers) */
     @page {
       size: A4 portrait;
-      margin: 8mm 10mm;
+      margin: 7mm 10mm;
     }
 
     @media print {
@@ -424,15 +432,17 @@
       }
 
       .worksheet-page {
+        display: block !important;
         box-shadow: none !important;
         border-radius: 0 !important;
         margin: 0 !important;
-        padding: 0 1mm 5mm !important;
+        padding: 0 2px 18px !important;
         width: 100% !important;
         max-width: none !important;
         min-height: 0 !important;
-        height: 248mm !important;
-        max-height: 248mm !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -445,64 +455,90 @@
 
       .worksheet-page:last-child {
         page-break-after: auto !important;
-        break-after: auto !important;
+        break-after: avoid !important;
       }
 
       .sheet-dashed-frame {
-        padding: 14px 20px 20px !important;
+        min-height: 210mm !important;
+        padding: 12px 18px 20px !important;
       }
 
       .section-banner-row {
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
       }
 
       .section-banner {
-        font-size: 16px !important;
-        padding: 4px 18px !important;
+        font-size: 15px !important;
+        padding: 3px 16px !important;
+      }
+
+      .star-deco {
+        width: 20px !important;
+        height: 20px !important;
       }
 
       .short-problems-list {
-        gap: 11px !important;
-        margin-bottom: 14px !important;
+        gap: 9px !important;
+        margin-bottom: 12px !important;
       }
 
       .short-problem-item {
-        gap: 6px !important;
+        gap: 4px !important;
       }
 
       .problem-question {
-        font-size: 16px !important;
-        line-height: 1.42 !important;
+        font-size: 14.5px !important;
+        line-height: 1.38 !important;
       }
 
-      .short-answer-line,
+      .short-answer-line {
+        font-size: 14.5px !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        gap: 6px !important;
+      }
+
+      .blank-equation {
+        flex: 1 1 120px !important;
+        min-width: 80px !important;
+      }
+
+      .blank-short-ans {
+        width: 85px !important;
+        flex: 0 0 85px !important;
+      }
+
       .equation-row,
       .method-label,
       .final-ans-row {
-        font-size: 15.5px !important;
+        font-size: 14.5px !important;
       }
 
       .long-problem-block,
       .long-problem-left {
-        gap: 8px !important;
+        gap: 6px !important;
       }
 
       .line-art-box {
-        width: 84px !important;
+        width: 74px !important;
       }
 
       .work-lines {
-        gap: 22px !important;
-        margin-top: 6px !important;
-        margin-bottom: 8px !important;
+        gap: 19px !important;
+        margin-top: 4px !important;
+        margin-bottom: 6px !important;
       }
 
       .page2-problems {
+        gap: 28px !important;
+      }
+
+      .page2-problems .work-lines {
         gap: 24px !important;
       }
 
       .coloring-footer {
-        margin-top: 8px !important;
+        margin-top: 16px !important;
       }
     }
   </style>
