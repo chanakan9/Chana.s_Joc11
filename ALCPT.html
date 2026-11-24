@@ -152,6 +152,108 @@
       border-style: dashed;
     }
 
+    /* Import & Export Bar */
+    .import-bar {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-strong);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .import-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-import {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--navy);
+      background: var(--navy);
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-import:hover {
+      background: #143d66;
+    }
+
+    .btn-import:focus-visible,
+    .btn-save-html:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .btn-save-html {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brand-border);
+      background: var(--brand-soft);
+      color: var(--brand);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-save-html:hover {
+      background: #dbeafe;
+      border-color: var(--brand);
+    }
+
+    .import-hint {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    .import-status {
+      display: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      max-width: 680px;
+      width: 100%;
+      line-height: 1.5;
+    }
+
+    .import-status.is-ok {
+      display: block;
+      background: #ecfdf5;
+      color: var(--success-ink);
+      border: 1px solid #a7f3d0;
+    }
+
+    .import-status.is-err {
+      display: block;
+      background: #fef2f2;
+      color: var(--danger-ink);
+      border: 1px solid #fecaca;
+    }
+
+    .empty-state-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
     /* Active Form Toolbar */
     .quiz-toolbar {
       display: flex;
@@ -628,6 +730,22 @@
         <p class="hero-subtitle">เลือกชุดข้อสอบที่ต้องการฝึกซ้อม ตรวจคำตอบทันทีรายข้อ พร้อมสรุปคะแนนแบบเรียลไทม์</p>
         <span class="form-selector-label">เลือกชุดข้อสอบ (Form 81 – Form 100)</span>
         <div class="form-grid" id="form-selector-grid" role="tablist" aria-label="เลือกชุดข้อสอบ ALCPT"></div>
+
+        <div class="import-bar">
+          <input type="file" id="html-file-input" accept=".html,.htm" multiple hidden onchange="handleHtmlFilesImport(this.files)">
+          <div class="import-actions">
+            <button type="button" class="btn-import" onclick="triggerHtmlImport()">
+              📂 นำเข้าไฟล์ข้อสอบ (.html) หลายชุดพร้อมกัน
+            </button>
+            <button type="button" class="btn-save-html" onclick="exportMergedHtml()">
+              💾 บันทึกไฟล์เว็บฉบับรวมทุกชุด (.html)
+            </button>
+          </div>
+          <p class="import-hint">
+            เลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ 83–100 พร้อมกันทีเดียวได้ทุกไฟล์ • หากต้องการกดบันทึกเป็นไฟล์รวมถาวร ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันไฟล์บนเบราว์เซอร์ปกติก่อน
+          </p>
+          <div id="import-status" class="import-status" role="status" aria-live="polite"></div>
+        </div>
       </div>
     </div>
   </header>
@@ -654,11 +772,12 @@
 
   <div id="realtime-scoreboard" aria-live="polite"></div>
 
-  <script>
+  <script id="main-app-script">
     const AUDIO_BASE = "https://acelangvox.com/wp-content/uploads/2024/10/";
 
     // ข้อมูลข้อสอบ ALCPT แยกตามเลขชุด (81 - 100)
     // ชุดที่ 81 ดึงข้อมูลครบทั้ง 100 ข้อจากไฟล์ต้นฉบับ
+    /* __FORMS_DATA_START__ */
     const FORMS_DATA = {
       81: [
         { q: "1. Henry wants to know the height of the building.\nWhat does Henry want to know?", audio: "New-Recording-86.m4a", choices: ["how tall it is", "how much it cost", "where it is located", "why it was built"], ans: 0 },
@@ -865,9 +984,28 @@
         { q: "100. Lawrence scared me<em><strong> to death</strong></em> when he came in.", h: true, choices: ["a little", "on purpose", "a lot", "unintentionally"], ans: 2 }
       ]
     };
+    /* __FORMS_DATA_END__ */
 
-    // สร้างช่องข้อมูลชุดที่ 82 ถึง 100 ไว้รองรับการเพิ่มข้อสอบ
-    for (let f = 82; f <= 100; f++) {
+    const STORAGE_KEY = "alcpt_imported_forms_v1";
+
+    // โหลดข้อมูลชุดข้อสอบที่เคยนำเข้าไว้ในเบราว์เซอร์ (ถ้ามี)
+    try {
+      const savedJson = localStorage.getItem(STORAGE_KEY);
+      if (savedJson) {
+        const parsedSaved = JSON.parse(savedJson);
+        if (parsedSaved && typeof parsedSaved === "object") {
+          Object.keys(parsedSaved).forEach(k => {
+            const num = Number(k);
+            if (Number.isInteger(num) && Array.isArray(parsedSaved[k]) && parsedSaved[k].length > 0) {
+              FORMS_DATA[num] = parsedSaved[k];
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
+    // สร้างช่องข้อมูลชุดที่ 81 ถึง 100 ไว้รองรับการเพิ่มข้อสอบ
+    for (let f = 81; f <= 100; f++) {
       if (!FORMS_DATA[f]) {
         FORMS_DATA[f] = [];
       }
@@ -878,10 +1016,24 @@
     let answeredQuestions = 0;
     let totalQuestions = 0;
 
+    function getSortedFormNumbers() {
+      const nums = new Set();
+      for (let f = 81; f <= 100; f++) nums.add(f);
+      Object.keys(FORMS_DATA).forEach(k => {
+        const n = Number(k);
+        if (Number.isInteger(n) && n > 0) nums.add(n);
+      });
+      return Array.from(nums).sort((a, b) => a - b);
+    }
+
+    function getLoadedFormNumbers() {
+      return getSortedFormNumbers().filter(f => Array.isArray(FORMS_DATA[f]) && FORMS_DATA[f].length > 0);
+    }
+
     function buildFormSelector() {
       const grid = document.getElementById("form-selector-grid");
       grid.innerHTML = "";
-      for (let f = 81; f <= 100; f++) {
+      getSortedFormNumbers().forEach(f => {
         const hasData = FORMS_DATA[f] && FORMS_DATA[f].length > 0;
         const btn = document.createElement("button");
         btn.type = "button";
@@ -889,9 +1041,304 @@
         btn.ariaSelected = f === activeForm ? "true" : "false";
         btn.className = "form-pill" + (f === activeForm ? " is-active" : "") + (!hasData ? " is-empty" : "");
         btn.textContent = "ชุดที่ " + f;
+        btn.title = hasData ? `ชุดที่ ${f} (${FORMS_DATA[f].length} ข้อ)` : `ชุดที่ ${f} (ยังไม่มีข้อสอบ)`;
         btn.onclick = () => selectForm(f);
         grid.appendChild(btn);
+      });
+    }
+
+    function showImportStatus(message, isError) {
+      const statusEl = document.getElementById("import-status");
+      if (!statusEl) return;
+      statusEl.textContent = message;
+      statusEl.className = "import-status " + (isError ? "is-err" : "is-ok");
+    }
+
+    function triggerHtmlImport() {
+      const input = document.getElementById("html-file-input");
+      if (input) {
+        input.value = "";
+        input.click();
       }
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function serializeCleanInline(node) {
+      if (node.nodeType === 3) {
+        return escapeHtml(node.nodeValue || "");
+      }
+      if (node.nodeType !== 1) return "";
+      const tag = node.tagName.toLowerCase();
+      if (tag === "br") return "\n";
+      const inner = Array.from(node.childNodes).map(serializeCleanInline).join("");
+      if (tag === "strong" || tag === "b" || tag === "em" || tag === "i") {
+        return `<${tag}>${inner}</${tag}>`;
+      }
+      return inner;
+    }
+
+    function parseAceLangVoxHtml(rawText, fileName) {
+      let htmlSource = rawText;
+
+      // รองรับกรณีผู้ใช้กด Ctrl+S จากหน้า view-source แบบ Webpage, Complete
+      if (htmlSource.includes('class="line-content"') && !htmlSource.includes("ays-quiz-form")) {
+        const wrapperDoc = new DOMParser().parseFromString(htmlSource, "text/html");
+        const lineCells = wrapperDoc.querySelectorAll("td.line-content");
+        if (lineCells.length > 0) {
+          htmlSource = Array.from(lineCells).map(td => td.textContent).join("\n");
+        }
+      }
+
+      const doc = new DOMParser().parseFromString(htmlSource, "text/html");
+
+      // 1. ค้นหาหมายเลขชุดข้อสอบ (Form Number)
+      let detectedForm = null;
+      const candidateTitles = [
+        doc.querySelector(".ays-fs-title")?.textContent || "",
+        doc.querySelector("title")?.textContent || "",
+        doc.querySelector("h1")?.textContent || ""
+      ];
+      for (const t of candidateTitles) {
+        const m = t.match(/Form\s*(\d{1,3})/i);
+        if (m) {
+          detectedForm = Number(m[1]);
+          break;
+        }
+      }
+      if (!detectedForm && fileName) {
+        const cleanedName = fileName.replace(/elementor-page-\d+/gi, "").replace(/\.(html?|txt)$/i, "");
+        const mFile = cleanedName.match(/(\d{1,3})/);
+        if (mFile) {
+          detectedForm = Number(mFile[1]);
+        }
+      }
+
+      // 2. ถอดรหัสเฉลย Base64 จาก window.quizOptions_XX
+      const ansLookup = {};
+      const optRegex = /window\.quizOptions_\d+\[['"](\d+)['"]\]\s*=\s*['"]([^'"]+)['"]/g;
+      let match;
+      while ((match = optRegex.exec(htmlSource)) !== null) {
+        try {
+          const decoded = JSON.parse(atob(match[2]));
+          if (decoded && decoded.question_answer) {
+            ansLookup[match[1]] = decoded.question_answer;
+          }
+        } catch (err) {}
+      }
+
+      // 3. สกัดโจทย์ เสียง ตัวเลือก และคำอธิบายแต่ละข้อ
+      let steps = Array.from(doc.querySelectorAll("form.ays-quiz-form > .step[data-question-id]:not(.ays_question_result)"));
+      if (steps.length === 0) {
+        steps = Array.from(doc.querySelectorAll(".step[data-question-id]:not(.ays_question_result)"));
+      }
+      if (steps.length === 0) {
+        return { error: `ไม่พบข้อมูลข้อสอบในไฟล์ "${fileName}"` };
+      }
+
+      const parsedQuestions = [];
+      steps.forEach(step => {
+        const qid = step.getAttribute("data-question-id") || "";
+        const qDiv = step.querySelector(".ays_quiz_question, .ays-modern-dark-question");
+        if (!qDiv) return;
+
+        let audioSrc = "";
+        const sourceEl = qDiv.querySelector("audio source[src], audio[src]");
+        if (sourceEl) {
+          audioSrc = (sourceEl.getAttribute("src") || "").split("?")[0].trim();
+          audioSrc = audioSrc.replace("https://acelangvox.com/wp-content/uploads/", "");
+        }
+
+        const qClone = qDiv.cloneNode(true);
+        qClone.querySelectorAll("audio, .wp-audio-shortcode, .mejs-container, .mejs__container, .lvq-transcript-toggle, script, style").forEach(el => el.remove());
+
+        const hasHtml = Boolean(qClone.querySelector("strong, b, em, i"));
+        const pNodes = Array.from(qClone.querySelectorAll("p"));
+        const targetBlocks = pNodes.length > 0 ? pNodes : [qClone];
+        const lines = [];
+
+        targetBlocks.forEach(block => {
+          let rawLine = "";
+          if (hasHtml) {
+            rawLine = serializeCleanInline(block);
+          } else {
+            const bClone = block.cloneNode(true);
+            bClone.querySelectorAll("br").forEach(br => br.replaceWith("\n"));
+            rawLine = bClone.textContent || "";
+          }
+          const cleanedSublines = rawLine
+            .replace(/\uFEFF/g, "")
+            .replace(/\u00A0/g, " ")
+            .split("\n")
+            .map(s => s.replace(/[ \t]+/g, " ").trim())
+            .filter(s => s && s !== "&nbsp;");
+          if (cleanedSublines.length > 0) {
+            lines.push(cleanedSublines.join("\n"));
+          }
+        });
+
+        const qText = lines.join("\n");
+
+        const fields = Array.from(step.querySelectorAll(".ays-quiz-answers .ays-field"));
+        const qAnsMap = ansLookup[qid] || {};
+        let correctIdx = 0;
+        const choices = fields.map((field, cIdx) => {
+          const radio = field.querySelector('input[type="radio"]');
+          const hiddenCorr = field.querySelector('input[name="ays_answer_correct[]"]');
+          if (radio && String(qAnsMap[radio.value]) === "1") {
+            correctIdx = cIdx;
+          } else if (hiddenCorr && String(hiddenCorr.value) === "1") {
+            correctIdx = cIdx;
+          }
+          const lbl = field.querySelector("label.ays-quiz-keyboard-label") || field.querySelector("label:not(.ays_answer_image)");
+          const rawChoice = lbl ? lbl.textContent : field.textContent;
+          return rawChoice
+            .replace(/\uFEFF/g, "")
+            .replace(/\u00A0/g, " ")
+            .replace(/[ \t]+/g, " ")
+            .trim()
+            .replace(/^(?:[a-d]\.\s*|\.\s*)/i, "")
+            .trim();
+        });
+
+        if (choices.length === 0) return;
+
+        let expText = "";
+        const expDiv = step.querySelector(".ays_questtion_explanation");
+        if (expDiv) {
+          const expClone = expDiv.cloneNode(true);
+          expClone.querySelectorAll("br").forEach(br => br.replaceWith("\n"));
+          expClone.querySelectorAll("p").forEach(p => p.append("\n"));
+          const rawExp = (expClone.textContent || "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ");
+          const expLines = rawExp.split("\n").map(s => s.replace(/[ \t]+/g, " ").trim()).filter(Boolean);
+          if (expLines.length > 0) {
+            const joined = expLines.join(" ");
+            const mEx = joined.match(/Explanation:\s*(.+)/i);
+            expText = mEx ? mEx[1].trim() : joined;
+          }
+        }
+
+        const qObj = { q: qText };
+        if (audioSrc) qObj.audio = audioSrc;
+        if (hasHtml) qObj.h = true;
+        qObj.choices = choices;
+        qObj.ans = correctIdx;
+        if (expText) qObj.exp = expText;
+        parsedQuestions.push(qObj);
+      });
+
+      if (parsedQuestions.length === 0) {
+        return { error: `ไม่สามารถแยกโจทย์จากไฟล์ "${fileName}" ได้` };
+      }
+
+      return {
+        formNum: detectedForm || activeForm,
+        questions: parsedQuestions
+      };
+    }
+
+    async function handleHtmlFilesImport(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      const files = Array.from(fileList);
+      const importedForms = [];
+      const errors = [];
+
+      for (const file of files) {
+        try {
+          const text = await file.text();
+          const res = parseAceLangVoxHtml(text, file.name);
+          if (res.error) {
+            errors.push(res.error);
+          } else {
+            FORMS_DATA[res.formNum] = res.questions;
+            importedForms.push({ formNum: res.formNum, count: res.questions.length });
+          }
+        } catch (err) {
+          errors.push(`อ่านไฟล์ "${file.name}" ไม่สำเร็จ`);
+        }
+      }
+
+      if (importedForms.length > 0) {
+        importedForms.sort((a, b) => a.formNum - b.formNum);
+        // บันทึกลง localStorage แบบ best-effort
+        try {
+          const toSave = {};
+          getLoadedFormNumbers().forEach(f => {
+            if (f !== 81 && f !== 82) {
+              toSave[f] = FORMS_DATA[f];
+            }
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        } catch (e) {}
+
+        const firstImported = importedForms[0].formNum;
+        activeForm = firstImported;
+        buildFormSelector();
+        renderFormQuiz(firstImported);
+
+        const summaryList = importedForms.map(x => `ชุดที่ ${x.formNum} (${x.count} ข้อ)`).join(", ");
+        const errSuffix = errors.length > 0 ? ` • พบปัญหา ${errors.length} ไฟล์: ${errors.join("; ")}` : "";
+        showImportStatus(`✅ นำเข้าข้อสอบสำเร็จ ${importedForms.length} ชุด: ${summaryList}${errSuffix}`, false);
+      } else if (errors.length > 0) {
+        showImportStatus(`❌ ${errors.join(" | ")}`, true);
+      }
+    }
+
+    function exportMergedHtml() {
+      const loadedForms = getLoadedFormNumbers();
+      const exportData = {};
+      loadedForms.forEach(f => {
+        exportData[f] = FORMS_DATA[f];
+      });
+
+      const docClone = document.documentElement.cloneNode(true);
+      const clearIds = ["form-selector-grid", "quiz-main-area", "score-result", "realtime-scoreboard", "import-status"];
+      clearIds.forEach(id => {
+        const el = docClone.querySelector("#" + id);
+        if (el) {
+          el.innerHTML = "";
+          if (id === "import-status") el.className = "import-status";
+          if (id === "realtime-scoreboard") el.removeAttribute("style");
+        }
+      });
+
+      const scriptEl = docClone.querySelector("#main-app-script");
+      const startMarker = "/* __FORMS_DATA_START__ */";
+      const endMarker = "/* __FORMS_DATA_END__ */";
+      if (!scriptEl) return;
+
+      const src = scriptEl.textContent;
+      const sIdx = src.indexOf(startMarker);
+      const eIdx = src.indexOf(endMarker);
+      if (sIdx === -1 || eIdx === -1) return;
+
+      const serializedData = JSON.stringify(exportData, null, 2).replace(/<\//g, "<\\/");
+      scriptEl.textContent =
+        src.slice(0, sIdx + startMarker.length) +
+        "\n    const FORMS_DATA = " + serializedData + ";\n    " +
+        src.slice(eIdx);
+
+      const finalHtml = "<!DOCTYPE html>\n" + docClone.outerHTML;
+      const blob = new Blob([finalHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ALCPT-Practice-All-Forms-${loadedForms[0]}-${loadedForms[loadedForms.length - 1]}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      showImportStatus(
+        `💾 สร้างไฟล์รวมข้อสอบครบ ${loadedForms.length} ชุด (ชุดที่ ${loadedForms.join(", ")}) แล้ว! หากกดในหน้าพรีวิวนี้แล้วยังไม่ดาวน์โหลด ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันบนเบราว์เซอร์ปกติก่อนครับ`,
+        false
+      );
     }
 
     function selectForm(formNum) {
@@ -943,6 +1390,7 @@
       updateScoreDisplay();
 
       if (questions.length === 0) {
+        const loadedList = getLoadedFormNumbers().join(", ");
         metaEl.textContent = "ยังไม่มีข้อมูลข้อสอบในชุดนี้";
         resetBtn.style.display = "none";
         doneArea.style.display = "none";
@@ -951,9 +1399,12 @@
             <div class="empty-state-icon">📂</div>
             <h3 class="empty-state-title">ยังไม่มีข้อสอบในชุดที่ ${formNum}</h3>
             <p class="empty-state-desc">
-              ขณะนี้มีข้อมูลครบทั้ง 100 ข้อใน <strong>ชุดที่ 81 – 82</strong> แล้ว คุณสามารถนำข้อมูลข้อสอบของชุดที่ ${formNum} มาใส่เพิ่มในตัวแปร <code>FORMS_DATA[${formNum}]</code> ในโค้ดเพื่อใช้งานระบบตรวจคะแนนเดียวกันได้ทันที
+              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • คุณสามารถกดปุ่มด้านล่างเพื่อเลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ ${formNum} (หรือเลือกชุด 83–100 พร้อมกันทีเดียวทุกไฟล์) เพื่อดึงโจทย์ เสียง และเฉลยเข้าสู่ระบบอัตโนมัติได้ทันที
             </p>
-            <button type="button" class="btn-back-81" onclick="selectForm(81)">กลับไปทำชุดที่ 81</button>
+            <div class="empty-state-actions">
+              <button type="button" class="btn-import" onclick="triggerHtmlImport()">📂 เลือกไฟล์ .html นำเข้าข้อสอบ</button>
+              <button type="button" class="btn-back-81" onclick="selectForm(81)">กลับไปทำชุดที่ 81</button>
+            </div>
           </div>
         `;
         return;
