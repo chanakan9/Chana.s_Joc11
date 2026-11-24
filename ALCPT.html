@@ -190,9 +190,163 @@
     }
 
     .btn-import:focus-visible,
+    .btn-paste-toggle:focus-visible,
     .btn-save-html:focus-visible {
       outline: 2px solid var(--brand);
       outline-offset: 2px;
+    }
+
+    .btn-paste-toggle {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brand);
+      background: var(--brand);
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-paste-toggle:hover {
+      background: var(--brand-hover);
+      border-color: var(--brand-hover);
+    }
+
+    .paste-panel {
+      display: none;
+      width: 100%;
+      max-width: 720px;
+      margin-top: 6px;
+      padding: 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      text-align: left;
+    }
+
+    .paste-panel.is-open {
+      display: block;
+    }
+
+    .paste-panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .paste-panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 0;
+    }
+
+    .paste-num-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .paste-num-input {
+      width: 110px;
+      font: inherit;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .paste-num-input:focus {
+      outline: 2px solid var(--brand);
+      border-color: var(--brand);
+    }
+
+    .paste-textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      resize: vertical;
+      display: block;
+    }
+
+    .paste-textarea:focus {
+      outline: 2px solid var(--brand);
+      border-color: var(--brand);
+    }
+
+    .paste-panel-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .paste-step-note {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .paste-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-paste-submit {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--success);
+      color: #ffffff;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+    }
+
+    .btn-paste-submit:hover {
+      filter: brightness(0.93);
+    }
+
+    .btn-paste-cancel {
+      appearance: none;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .btn-paste-cancel:hover {
+      color: var(--ink);
+      border-color: var(--navy);
     }
 
     .btn-save-html {
@@ -732,17 +886,43 @@
         <div class="form-grid" id="form-selector-grid" role="tablist" aria-label="เลือกชุดข้อสอบ ALCPT"></div>
 
         <div class="import-bar">
-          <input type="file" id="html-file-input" accept=".html,.htm" multiple hidden onchange="handleHtmlFilesImport(this.files)">
+          <input type="file" id="html-file-input" accept=".html,.htm,.txt" multiple hidden onchange="handleHtmlFilesImport(this.files)">
           <div class="import-actions">
+            <button type="button" class="btn-paste-toggle" onclick="togglePastePanel()">
+              📋 วางโค้ดโดยตรง (Ctrl+V) ไม่ต้องเซฟไฟล์
+            </button>
             <button type="button" class="btn-import" onclick="triggerHtmlImport()">
-              📂 นำเข้าไฟล์ข้อสอบ (.html) หลายชุดพร้อมกัน
+              📂 นำเข้าไฟล์ (.txt / .html) หลายชุดพร้อมกัน
             </button>
             <button type="button" class="btn-save-html" onclick="exportMergedHtml()">
               💾 บันทึกไฟล์เว็บฉบับรวมทุกชุด (.html)
             </button>
           </div>
+
+          <div id="paste-import-panel" class="paste-panel">
+            <div class="paste-panel-head">
+              <p class="paste-panel-title">📋 วางซอร์สโค้ดจากหน้า view-source: เพื่อเพิ่มชุดข้อสอบ</p>
+              <label class="paste-num-group" for="paste-form-num">
+                เลขชุด:
+                <input type="number" id="paste-form-num" class="paste-num-input" min="1" max="999" placeholder="อ่านอัตโนมัติ">
+              </label>
+            </div>
+            <textarea
+              id="paste-html-textarea"
+              class="paste-textarea"
+              placeholder="วิธีใช้: เปิดหน้า view-source:... กด Ctrl + A แล้วกด Ctrl + C จากนั้นคลิกช่องนี้แล้วกด Ctrl + V..."
+            ></textarea>
+            <div class="paste-panel-footer">
+              <p class="paste-step-note">ระบบจะอ่านเลขชุด (เช่น Form 83) โจทย์ ไฟล์เสียง และถอดรหัสเฉลยให้อัตโนมัติ</p>
+              <div class="paste-btn-group">
+                <button type="button" class="btn-paste-cancel" onclick="closePastePanel()">ล้างช่อง / ซ่อน</button>
+                <button type="button" class="btn-paste-submit" onclick="handlePasteImport()">✨ แปลงโค้ดเข้าคลังข้อสอบทันที</button>
+              </div>
+            </div>
+          </div>
+
           <p class="import-hint">
-            เลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ 83–100 พร้อมกันทีเดียวได้ทุกไฟล์ • หากต้องการกดบันทึกเป็นไฟล์รวมถาวร ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันไฟล์บนเบราว์เซอร์ปกติก่อน
+            ก๊อปปี้โค้ดจากหน้า <code>view-source:</code> มาวางได้ทันทีโดยไม่ต้องเซฟไฟล์ (ไม่ติดสแกนไวรัส) หรือเลือกไฟล์ <code>.txt</code> / <code>.html</code> พร้อมกันหลายไฟล์ • หากต้องการกดบันทึกเป็นไฟล์รวมถาวร ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันบนเบราว์เซอร์ปกติก่อน
           </p>
           <div id="import-status" class="import-status" role="status" aria-live="polite"></div>
         </div>
@@ -1062,6 +1242,83 @@
       }
     }
 
+    function persistImportedForms() {
+      try {
+        const toSave = {};
+        getLoadedFormNumbers().forEach(f => {
+          if (f !== 81 && f !== 82) {
+            toSave[f] = FORMS_DATA[f];
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) {}
+    }
+
+    function togglePastePanel(prefillFormNum) {
+      const panel = document.getElementById("paste-import-panel");
+      const textarea = document.getElementById("paste-html-textarea");
+      const numInput = document.getElementById("paste-form-num");
+      if (!panel) return;
+
+      if (typeof prefillFormNum === "number") {
+        panel.classList.add("is-open");
+        if (numInput) numInput.value = String(prefillFormNum);
+        panel.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (textarea) setTimeout(() => textarea.focus(), 150);
+        return;
+      }
+
+      const isOpen = panel.classList.toggle("is-open");
+      if (isOpen && textarea) {
+        setTimeout(() => textarea.focus(), 80);
+      }
+    }
+
+    function closePastePanel() {
+      const panel = document.getElementById("paste-import-panel");
+      const textarea = document.getElementById("paste-html-textarea");
+      const numInput = document.getElementById("paste-form-num");
+      if (textarea) textarea.value = "";
+      if (numInput) numInput.value = "";
+      if (panel) panel.classList.remove("is-open");
+    }
+
+    function handlePasteImport() {
+      const textarea = document.getElementById("paste-html-textarea");
+      const numInput = document.getElementById("paste-form-num");
+      const rawCode = textarea ? textarea.value.trim() : "";
+
+      if (!rawCode) {
+        showImportStatus("❌ กรุณาวางซอร์สโค้ดหน้าเว็บข้อสอบลงในช่องข้อความก่อนกดแปลงครับ", true);
+        if (textarea) textarea.focus();
+        return;
+      }
+
+      const manualNum = numInput && numInput.value.trim() !== "" ? Number(numInput.value.trim()) : null;
+      const res = parseAceLangVoxHtml(rawCode, manualNum ? String(manualNum) : "");
+
+      if (res.error) {
+        showImportStatus(`❌ แปลงโค้ดไม่สำเร็จ: กรุณาตรวจสอบว่าคัดลอกโค้ดทั้งหมด (Ctrl+A) จากหน้า view-source ของชุดข้อสอบแล้ว`, true);
+        return;
+      }
+
+      const targetForm = (manualNum && Number.isInteger(manualNum) && manualNum > 0) ? manualNum : res.formNum;
+      FORMS_DATA[targetForm] = res.questions;
+      persistImportedForms();
+
+      if (textarea) textarea.value = "";
+      if (numInput) numInput.value = "";
+
+      activeForm = targetForm;
+      buildFormSelector();
+      renderFormQuiz(targetForm);
+
+      showImportStatus(
+        `✅ นำเข้า ชุดที่ ${targetForm} (${res.questions.length} ข้อ) สำเร็จ! ช่องวางโค้ดพร้อมสำหรับวางชุดถัดไปต่อได้ทันที`,
+        false
+      );
+    }
+
     function escapeHtml(str) {
       return str
         .replace(/&/g, "&amp;")
@@ -1307,6 +1564,18 @@
           if (id === "realtime-scoreboard") el.removeAttribute("style");
         }
       });
+      const clonePanel = docClone.querySelector("#paste-import-panel");
+      if (clonePanel) clonePanel.classList.remove("is-open");
+      const cloneTa = docClone.querySelector("#paste-html-textarea");
+      if (cloneTa) {
+        cloneTa.value = "";
+        cloneTa.textContent = "";
+      }
+      const cloneNum = docClone.querySelector("#paste-form-num");
+      if (cloneNum) {
+        cloneNum.value = "";
+        cloneNum.removeAttribute("value");
+      }
 
       const scriptEl = docClone.querySelector("#main-app-script");
       const startMarker = "/* __FORMS_DATA_START__ */";
@@ -1396,13 +1665,14 @@
         doneArea.style.display = "none";
         mainArea.innerHTML = `
           <div class="empty-state-card">
-            <div class="empty-state-icon">📂</div>
+            <div class="empty-state-icon">📋</div>
             <h3 class="empty-state-title">ยังไม่มีข้อสอบในชุดที่ ${formNum}</h3>
             <p class="empty-state-desc">
-              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • คุณสามารถกดปุ่มด้านล่างเพื่อเลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ ${formNum} (หรือเลือกชุด 83–100 พร้อมกันทีเดียวทุกไฟล์) เพื่อดึงโจทย์ เสียง และเฉลยเข้าสู่ระบบอัตโนมัติได้ทันที
+              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • คุณสามารถก๊อปปี้ซอร์สโค้ดจากหน้า <code>view-source:</code> ของชุดที่ ${formNum} มาวางโดยตรง (ไม่ต้องเซฟไฟล์) หรือเลือกไฟล์ <code>.txt</code> / <code>.html</code> เพื่อดึงโจทย์ เสียง และเฉลยอัตโนมัติได้ทันที
             </p>
             <div class="empty-state-actions">
-              <button type="button" class="btn-import" onclick="triggerHtmlImport()">📂 เลือกไฟล์ .html นำเข้าข้อสอบ</button>
+              <button type="button" class="btn-paste-toggle" onclick="togglePastePanel(${formNum})">📋 วางโค้ดชุดที่ ${formNum} โดยตรง (Ctrl+V)</button>
+              <button type="button" class="btn-import" onclick="triggerHtmlImport()">📂 เลือกไฟล์ .txt / .html</button>
               <button type="button" class="btn-back-81" onclick="selectForm(81)">กลับไปทำชุดที่ 81</button>
             </div>
           </div>
