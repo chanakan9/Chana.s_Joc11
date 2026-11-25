@@ -645,7 +645,7 @@
       background: #fee2e2;
     }
 
-    /* Empty State for Forms 82–100 */
+    /* Empty State */
     .empty-state-card {
       background: var(--surface);
       border: 1px dashed var(--border-strong);
@@ -775,7 +775,7 @@
         <div class="form-grid" id="form-selector-grid" role="tablist" aria-label="เลือกชุดข้อสอบ ALCPT"></div>
 
         <div class="import-bar">
-          <input type="file" id="html-file-input" accept=".html,.htm" multiple hidden onchange="handleHtmlFilesImport(this.files)">
+          <input type="file" id="html-file-input" accept=".html,.htm,.txt" multiple hidden onchange="handleHtmlFilesImport(this.files)">
           <div class="import-actions">
             <button type="button" class="btn-import" onclick="triggerHtmlImport()">
               📂 นำเข้าไฟล์ข้อสอบ (.html) หลายชุดพร้อมกัน
@@ -784,15 +784,16 @@
               💾 บันทึกไฟล์เว็บฉบับรวมทุกชุด (.html)
             </button>
           </div>
-          
+
           <!-- Paste Area UI -->
           <div class="paste-area-container">
-            <textarea id="paste-html-textarea" class="paste-textarea" placeholder="หรือ คัดลอกโค้ดทั้งหมด (Ctrl+A -> Ctrl+C) จากหน้า view-source แล้วกดวาง (Ctrl+V) ที่นี่เพื่อแปลงข้อสอบแทนการอัปโหลดไฟล์..."></textarea>
+            <textarea id="paste-html-textarea" class="paste-textarea" placeholder="วางโค้ดหน้าเว็บข้อสอบที่นี่ (แนะนำ: เปิดหน้าข้อสอบ → กด F12 → แท็บ Elements → คลิกขวาที่ <html> → Copy → Copy outerHTML แล้วกด Ctrl+V ที่นี่)"></textarea>
             <button type="button" class="paste-submit-btn" onclick="handlePastedHtmlImport()">⚡ แปลงและนำเข้าข้อสอบจากโค้ดที่วาง</button>
           </div>
 
           <p class="import-hint">
-            เลือกไฟล์ซอร์สโค้ด <code>.html</code> หรือวางโค้ดทั้งหมดจากหน้า <code>view-source</code> ของชุดข้อสอบที่ต้องการแปลงเข้าสู่ระบบ • หากต้องการกดบันทึกเป็นไฟล์รวมถาวร ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันไฟล์บนเบราว์เซอร์ปกติก่อน
+            วิธีที่ได้ผลที่สุด: เปิดหน้าข้อสอบให้โหลดเสร็จ → กด <code>F12</code> → แท็บ <b>Elements</b> → คลิกขวาที่บรรทัด <code>&lt;html&gt;</code> → <b>Copy → Copy outerHTML</b> แล้ววางในกล่องด้านบน
+            (ซอร์สจาก <code>view-source</code> อาจไม่มีตัวโจทย์ หากหน้าเว็บโหลดข้อสอบภายหลังด้วย JavaScript)
           </p>
           <div id="import-status" class="import-status" role="status" aria-live="polite"></div>
         </div>
@@ -823,10 +824,20 @@
   <div id="realtime-scoreboard" aria-live="polite"></div>
 
   <script id="main-app-script">
+  (function () {
+    "use strict";
+
+    // ป้องกันกรณีมีโค้ดแอปซ้ำ 2 ชุดในไฟล์เดียว (สาเหตุของ error "AUDIO_BASE has already been declared")
+    if (window.__ALCPT_APP_LOADED__) {
+      console.warn("ALCPT: พบสคริปต์แอปซ้ำในไฟล์ — ข้ามชุดที่ซ้ำ กรุณาลบโค้ดส่วนที่ซ้ำออกจากไฟล์");
+      return;
+    }
+    window.__ALCPT_APP_LOADED__ = true;
+
     const AUDIO_BASE = "https://acelangvox.com/wp-content/uploads/2024/10/";
+    const UPLOADS_BASE = "https://acelangvox.com/wp-content/uploads/";
 
     // ข้อมูลข้อสอบ ALCPT แยกตามเลขชุด (81 - 100)
-    // ชุดที่ 81 ดึงข้อมูลครบทั้ง 100 ข้อจากไฟล์ต้นฉบับ
     /* __FORMS_DATA_START__ */
     const FORMS_DATA = {
       81: [
@@ -1037,6 +1048,7 @@
     /* __FORMS_DATA_END__ */
 
     const STORAGE_KEY = "alcpt_imported_forms_v1";
+    const BUILTIN_FORMS = [81, 82];
 
     // โหลดข้อมูลชุดข้อสอบที่เคยนำเข้าไว้ในเบราว์เซอร์ (ถ้ามี)
     try {
@@ -1080,6 +1092,18 @@
       return getSortedFormNumbers().filter(f => Array.isArray(FORMS_DATA[f]) && FORMS_DATA[f].length > 0);
     }
 
+    function saveImportedForms() {
+      try {
+        const toSave = {};
+        getLoadedFormNumbers().forEach(f => {
+          if (!BUILTIN_FORMS.includes(f)) {
+            toSave[f] = FORMS_DATA[f];
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) {}
+    }
+
     function buildFormSelector() {
       const grid = document.getElementById("form-selector-grid");
       grid.innerHTML = "";
@@ -1087,8 +1111,8 @@
         const hasData = FORMS_DATA[f] && FORMS_DATA[f].length > 0;
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.role = "tab";
-        btn.ariaSelected = f === activeForm ? "true" : "false";
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", f === activeForm ? "true" : "false");
         btn.className = "form-pill" + (f === activeForm ? " is-active" : "") + (!hasData ? " is-empty" : "");
         btn.textContent = "ชุดที่ " + f;
         btn.title = hasData ? `ชุดที่ ${f} (${FORMS_DATA[f].length} ข้อ)` : `ชุดที่ ${f} (ยังไม่มีข้อสอบ)`;
@@ -1104,7 +1128,7 @@
       statusEl.className = "import-status " + (isError ? "is-err" : "is-ok");
     }
 
-    // ฟังก์ชันช่วยนำเข้าข้อมูลจากการคัดลอกวางโค้ดโดยตรง
+    // นำเข้าข้อมูลจากการคัดลอกวางโค้ดโดยตรง
     function handlePastedHtmlImport() {
       const textarea = document.getElementById("paste-html-textarea");
       if (!textarea) return;
@@ -1113,30 +1137,28 @@
         showImportStatus("❌ กรุณาวางซอร์สโค้ด HTML ก่อนกดปุ่มแปลง", true);
         return;
       }
-      
-      const res = parseAceLangVoxHtml(val, "pasted-code");
-      if (res.error) {
-        showImportStatus("❌ แปลงโค้ดไม่สำเร็จ: " + res.error + " (กรุณาตรวจสอบว่าคัดลอกโค้ดทั้งหมด (Ctrl+A) จากหน้า view-source ของชุดข้อสอบแล้ว)", true);
-      } else {
-        FORMS_DATA[res.formNum] = res.questions;
-        
-        // บันทึกลง localStorage แบบ best-effort
-        try {
-          const toSave = {};
-          getLoadedFormNumbers().forEach(f => {
-            if (f !== 81 && f !== 82) {
-              toSave[f] = FORMS_DATA[f];
-            }
-          });
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-        } catch (e) {}
 
-        activeForm = res.formNum;
-        buildFormSelector();
-        renderFormQuiz(res.formNum);
-        textarea.value = ""; // ล้างค่ากล่องข้อความหลังแปลงสำเร็จ
-        showImportStatus(`✅ แปลงและนำเข้าข้อสอบ "ชุดที่ ${res.formNum}" สำเร็จเรียบร้อยแล้วจำนวน ${res.questions.length} ข้อ!`, false);
+      let res;
+      try {
+        res = parseAceLangVoxHtml(val, "pasted-code");
+      } catch (err) {
+        res = { error: "เกิดข้อผิดพลาดระหว่างแปลงโค้ด: " + (err && err.message ? err.message : err) };
       }
+
+      if (res.error) {
+        showImportStatus("❌ แปลงโค้ดไม่สำเร็จ: " + res.error, true);
+        return;
+      }
+
+      FORMS_DATA[res.formNum] = res.questions;
+      saveImportedForms();
+
+      activeForm = res.formNum;
+      buildFormSelector();
+      renderFormQuiz(res.formNum);
+      textarea.value = "";
+      const formNote = res.formDetected ? "" : " (ตรวจไม่พบเลขชุดในโค้ด จึงบันทึกลงชุดที่กำลังเลือกอยู่)";
+      showImportStatus(`✅ แปลงและนำเข้าข้อสอบ "ชุดที่ ${res.formNum}" สำเร็จจำนวน ${res.questions.length} ข้อ!${formNote}`, false);
     }
 
     function triggerHtmlImport() {
@@ -1169,13 +1191,36 @@
       return inner;
     }
 
+    // ถอดรหัส Base64 ให้รองรับอักขระ UTF-8 (ภาษาไทย/สัญลักษณ์พิเศษ)
+    function decodeBase64Utf8(b64) {
+      const bin = atob(b64);
+      try {
+        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+        return new TextDecoder("utf-8").decode(bytes);
+      } catch (e) {
+        return bin;
+      }
+    }
+
+    function findQuestionSteps(doc) {
+      let steps = Array.from(doc.querySelectorAll("form.ays-quiz-form > .step[data-question-id]:not(.ays_question_result)"));
+      if (steps.length === 0) {
+        steps = Array.from(doc.querySelectorAll(".step[data-question-id]:not(.ays_question_result)"));
+      }
+      if (steps.length === 0) {
+        // สำรอง: element ใดก็ได้ที่มี data-question-id และมีกล่องโจทย์อยู่ข้างใน
+        steps = Array.from(doc.querySelectorAll("[data-question-id]"))
+          .filter(el => el.querySelector(".ays_quiz_question, .ays-modern-dark-question"));
+      }
+      return steps;
+    }
+
     function parseAceLangVoxHtml(rawText, fileName) {
       let htmlSource = rawText;
-
       let doc = new DOMParser().parseFromString(htmlSource, "text/html");
 
-      // ถ้าไม่พบข้อสอบในครั้งแรก อาจเป็นเพราะเป็นหน้า view-source ที่ครอบด้วยตาราง td.line-content หรือ pre tag
-      if (doc.querySelectorAll(".step[data-question-id]").length === 0) {
+      // กรณีเป็นหน้า view-source ที่บันทึกเป็นไฟล์ (โค้ดอยู่ใน td.line-content หรือ <pre>)
+      if (findQuestionSteps(doc).length === 0) {
         const lineCells = doc.querySelectorAll("td.line-content, .line-content");
         if (lineCells.length > 0) {
           const extractedText = Array.from(lineCells).map(td => td.textContent).join("\n");
@@ -1183,7 +1228,7 @@
           htmlSource = extractedText;
         } else {
           const preEl = doc.querySelector("pre");
-          if (preEl && (preEl.textContent.includes("ays-quiz-form") || preEl.textContent.includes("step"))) {
+          if (preEl && /ays[-_]quiz|data-question-id/i.test(preEl.textContent)) {
             doc = new DOMParser().parseFromString(preEl.textContent, "text/html");
             htmlSource = preEl.textContent;
           }
@@ -1195,16 +1240,19 @@
       const candidateTitles = [
         doc.querySelector(".ays-fs-title")?.textContent || "",
         doc.querySelector("title")?.textContent || "",
-        doc.querySelector("h1")?.textContent || ""
+        doc.querySelector("h1")?.textContent || "",
+        doc.querySelector('meta[property="og:title"]')?.getAttribute("content") || "",
+        doc.querySelector('link[rel="canonical"]')?.getAttribute("href") || "",
+        doc.querySelector('meta[property="og:url"]')?.getAttribute("content") || ""
       ];
       for (const t of candidateTitles) {
-        const m = t.match(/Form\s*(\d{1,3})/i);
+        const m = t.match(/Form[\s\-_]*(\d{1,3})/i);
         if (m) {
           detectedForm = Number(m[1]);
           break;
         }
       }
-      if (!detectedForm && fileName) {
+      if (!detectedForm && fileName && fileName !== "pasted-code") {
         const cleanedName = fileName.replace(/elementor-page-\d+/gi, "").replace(/\.(html?|txt)$/i, "");
         const mFile = cleanedName.match(/(\d{1,3})/);
         if (mFile) {
@@ -1218,7 +1266,7 @@
       let match;
       while ((match = optRegex.exec(htmlSource)) !== null) {
         try {
-          const decoded = JSON.parse(atob(match[2]));
+          const decoded = JSON.parse(decodeBase64Utf8(match[2]));
           if (decoded && decoded.question_answer) {
             ansLookup[match[1]] = decoded.question_answer;
           }
@@ -1226,15 +1274,18 @@
       }
 
       // 3. สกัดโจทย์ เสียง ตัวเลือก และคำอธิบายแต่ละข้อ
-      let steps = Array.from(doc.querySelectorAll("form.ays-quiz-form > .step[data-question-id]:not(.ays_question_result)"));
+      const steps = findQuestionSteps(doc);
       if (steps.length === 0) {
-        steps = Array.from(doc.querySelectorAll(".step[data-question-id]:not(.ays_question_result)"));
-      }
-      if (steps.length === 0) {
-        return { error: `ไม่พบข้อมูลข้อสอบในไฟล์ "${fileName}" (กรุณาตรวจสอบว่าเลือกคัดลอกครอบคลุมโค้ดที่มีแท็ก class="step" หรือ "ays_quiz_question" ครบถ้วน)` };
+        const hasQuizPlugin = /ays[-_]quiz/i.test(htmlSource);
+        return {
+          error: hasQuizPlugin
+            ? `พบโค้ดระบบ Quiz ใน "${fileName}" แต่ไม่มีตัวโจทย์อยู่ในโค้ด (หน้าเว็บน่าจะโหลดข้อสอบภายหลังด้วย JavaScript) — ให้เปิดหน้าข้อสอบ กด F12 > Elements > คลิกขวาที่ <html> > Copy > Copy outerHTML แล้ววางใหม่แทนการใช้ view-source`
+            : `ไม่พบโค้ดข้อสอบใน "${fileName}" เลย — อาจคัดลอกไม่ครบ หรือคัดลอกมาผิดหน้า (ต้องเป็นหน้าที่มีชุดข้อสอบอยู่)`
+        };
       }
 
       const parsedQuestions = [];
+      let answersFound = 0;
       steps.forEach(step => {
         const qid = step.getAttribute("data-question-id") || "";
         const qDiv = step.querySelector(".ays_quiz_question, .ays-modern-dark-question");
@@ -1244,11 +1295,11 @@
         const sourceEl = qDiv.querySelector("audio source[src], audio[src]");
         if (sourceEl) {
           audioSrc = (sourceEl.getAttribute("src") || "").split("?")[0].trim();
-          audioSrc = audioSrc.replace("https://acelangvox.com/wp-content/uploads/", "");
+          audioSrc = audioSrc.replace(UPLOADS_BASE, "");
         }
 
         const qClone = qDiv.cloneNode(true);
-        qClone.querySelectorAll("audio, .wp-audio-shortcode, .mejs-container, .mejs__container, .lvq-transcript-toggle, script, style").forEach(el => el.remove());
+        qClone.querySelectorAll("audio, .wp-audio-shortcode, .mejs-container, .mejs__container, .lvq-transcript-toggle, script, style, button").forEach(el => el.remove());
 
         const hasHtml = Boolean(qClone.querySelector("strong, b, em, i"));
         const pNodes = Array.from(qClone.querySelectorAll("p"));
@@ -1265,11 +1316,11 @@
             rawLine = bClone.textContent || "";
           }
           const cleanedSublines = rawLine
-            .replace(/\uFEFF/g, "")
-            .replace(/\u00A0/g, " ")
+            .replace(/﻿/g, "")
+            .replace(/ /g, " ")
             .split("\n")
             .map(s => s.replace(/[ \t]+/g, " ").trim())
-            .filter(s => s && s !== "&nbsp;");
+            .filter(s => s && s !== "&nbsp;" && s !== "&amp;nbsp;");
           if (cleanedSublines.length > 0) {
             lines.push(cleanedSublines.join("\n"));
           }
@@ -1279,9 +1330,9 @@
 
         const fields = Array.from(step.querySelectorAll(".ays-quiz-answers .ays-field"));
         const qAnsMap = ansLookup[qid] || {};
-        let correctIdx = 0;
+        let correctIdx = -1;
         const choices = fields.map((field, cIdx) => {
-          const radio = field.querySelector('input[type="radio"]');
+          const radio = field.querySelector('input[type="radio"], input[type="checkbox"]');
           const hiddenCorr = field.querySelector('input[name="ays_answer_correct[]"]');
           if (radio && String(qAnsMap[radio.value]) === "1") {
             correctIdx = cIdx;
@@ -1291,23 +1342,24 @@
           const lbl = field.querySelector("label.ays-quiz-keyboard-label") || field.querySelector("label:not(.ays_answer_image)");
           const rawChoice = lbl ? lbl.textContent : field.textContent;
           return rawChoice
-            .replace(/\uFEFF/g, "")
-            .replace(/\u00A0/g, " ")
-            .replace(/[ \t]+/g, " ")
+            .replace(/﻿/g, "")
+            .replace(/ /g, " ")
+            .replace(/[ \t\r\n]+/g, " ")
             .trim()
             .replace(/^(?:[a-d]\.\s*|\.\s*)/i, "")
             .trim();
         });
 
         if (choices.length === 0) return;
+        if (correctIdx >= 0) answersFound++;
 
         let expText = "";
-        const expDiv = step.querySelector(".ays_questtion_explanation");
+        const expDiv = step.querySelector(".ays_questtion_explanation, .ays_question_explanation");
         if (expDiv) {
           const expClone = expDiv.cloneNode(true);
           expClone.querySelectorAll("br").forEach(br => br.replaceWith("\n"));
           expClone.querySelectorAll("p").forEach(p => p.append("\n"));
-          const rawExp = (expClone.textContent || "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ");
+          const rawExp = (expClone.textContent || "").replace(/﻿/g, "").replace(/ /g, " ");
           const expLines = rawExp.split("\n").map(s => s.replace(/[ \t]+/g, " ").trim()).filter(Boolean);
           if (expLines.length > 0) {
             const joined = expLines.join(" ");
@@ -1320,17 +1372,22 @@
         if (audioSrc) qObj.audio = audioSrc;
         if (hasHtml) qObj.h = true;
         qObj.choices = choices;
-        qObj.ans = correctIdx;
+        qObj.ans = correctIdx >= 0 ? correctIdx : 0;
         if (expText) qObj.exp = expText;
         parsedQuestions.push(qObj);
       });
 
       if (parsedQuestions.length === 0) {
-        return { error: `ไม่สามารถแยกโจทย์จากไฟล์ "${fileName}" ได้` };
+        return { error: `พบกล่องข้อสอบ ${steps.length} ข้อใน "${fileName}" แต่แยกโจทย์/ตัวเลือกไม่ได้ (โครงสร้างหน้าเว็บอาจเปลี่ยนไป)` };
+      }
+
+      if (answersFound === 0) {
+        return { error: `อ่านโจทย์ได้ ${parsedQuestions.length} ข้อ แต่ไม่พบเฉลยในโค้ด (ไม่มี window.quizOptions) — กรุณาคัดลอกโค้ดทั้งหน้าให้ครบ รวมส่วน <script> ท้ายหน้า` };
       }
 
       return {
         formNum: detectedForm || activeForm,
+        formDetected: Boolean(detectedForm),
         questions: parsedQuestions
       };
     }
@@ -1358,16 +1415,7 @@
 
       if (importedForms.length > 0) {
         importedForms.sort((a, b) => a.formNum - b.formNum);
-        // บันทึกลง localStorage แบบ best-effort
-        try {
-          const toSave = {};
-          getLoadedFormNumbers().forEach(f => {
-            if (f !== 81 && f !== 82) {
-              toSave[f] = FORMS_DATA[f];
-            }
-          });
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-        } catch (e) {}
+        saveImportedForms();
 
         const firstImported = importedForms[0].formNum;
         activeForm = firstImported;
@@ -1384,6 +1432,10 @@
 
     function exportMergedHtml() {
       const loadedForms = getLoadedFormNumbers();
+      if (loadedForms.length === 0) {
+        showImportStatus("❌ ยังไม่มีข้อสอบให้บันทึก", true);
+        return;
+      }
       const exportData = {};
       loadedForms.forEach(f => {
         exportData[f] = FORMS_DATA[f];
@@ -1398,6 +1450,13 @@
           if (id === "import-status") el.className = "import-status";
           if (id === "realtime-scoreboard") el.removeAttribute("style");
         }
+      });
+      const ta = docClone.querySelector("#paste-html-textarea");
+      if (ta) ta.textContent = "";
+
+      // ลบสคริปต์อื่นที่อาจถูกแทรกเข้ามา (เช่น จากส่วนขยายเบราว์เซอร์) ให้เหลือเฉพาะสคริปต์หลักชุดเดียว
+      docClone.querySelectorAll("script").forEach(s => {
+        if (s.id !== "main-app-script") s.remove();
       });
 
       const scriptEl = docClone.querySelector("#main-app-script");
@@ -1428,27 +1487,27 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
 
       showImportStatus(
-        `💾 สร้างไฟล์รวมข้อสอบครบ ${loadedForms.length} ชุด (ชุดที่ ${loadedForms.join(", ")}) แล้ว! หากกดในหน้าพรีวิวนี้แล้วยังไม่ดาวน์โหลด ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันบนเบราว์เซอร์ปกติก่อนครับ`,
+        `💾 สร้างไฟล์รวมข้อสอบครบ ${loadedForms.length} ชุด (ชุดที่ ${loadedForms.join(", ")}) แล้ว! หากกดในหน้าพรีวิวแล้วยังไม่ดาวน์โหลด ให้เปิดไฟล์นี้บนเบราว์เซอร์ปกติก่อนครับ`,
         false
       );
     }
 
-    function selectForm(formNum) {
-      // หยุดเสียงที่กำลังเล่นอยู่ก่อนเปลี่ยนชุด
+    function stopAllAudio() {
       document.querySelectorAll("audio").forEach(a => {
         a.pause();
         a.currentTime = 0;
       });
+    }
+
+    function selectForm(formNum) {
+      stopAllAudio();
       activeForm = formNum;
       buildFormSelector();
       renderFormQuiz(formNum);
     }
 
     function resetCurrentForm() {
-      document.querySelectorAll("audio").forEach(a => {
-        a.pause();
-        a.currentTime = 0;
-      });
+      stopAllAudio();
       renderFormQuiz(activeForm);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -1462,6 +1521,12 @@
       scoreBoard.style.display = "block";
       scoreBoard.innerHTML = `⭐ คะแนน: <span class="score-num">${currentScore}</span> / ${totalQuestions}` +
         `<span class="answered-sub">ทำแล้ว ${answeredQuestions} ข้อ</span>`;
+    }
+
+    function resolveAudioUrl(audio) {
+      if (audio.startsWith("http")) return audio;
+      if (audio.includes("/")) return UPLOADS_BASE + audio;
+      return AUDIO_BASE + audio;
     }
 
     function renderFormQuiz(formNum) {
@@ -1491,7 +1556,8 @@
             <div class="empty-state-icon">📂</div>
             <h3 class="empty-state-title">ยังไม่มีข้อสอบในชุดที่ ${formNum}</h3>
             <p class="empty-state-desc">
-              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • คุณสามารถกดปุ่มด้านล่างเพื่อเลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ ${formNum} (หรือเลือกชุด 83–100 พร้อมกันทีเดียวทุกไฟล์) เพื่อดึงโจทย์ เสียง และเฉลยเข้าสู่ระบบอัตโนมัติได้ทันที
+              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • นำเข้าชุดที่ ${formNum} ได้โดยเลือกไฟล์ <code>.html</code>
+              หรือวางโค้ดหน้าเว็บข้อสอบในกล่องด้านบน (ถ้าโค้ดไม่มีเลขชุด ระบบจะบันทึกลงชุดที่ ${formNum} นี้)
             </p>
             <div class="empty-state-actions">
               <button type="button" class="btn-import" onclick="triggerHtmlImport()">📂 เลือกไฟล์ .html นำเข้าข้อสอบ</button>
@@ -1503,8 +1569,8 @@
       }
 
       const listeningCount = questions.filter(item => Boolean(item.audio)).length;
-      const academicCount = questions.length - listeningCount; // general fallback
-      metaEl.textContent = `Listening ${listeningCount} ข้อ • Reading ${academicCount} ข้อ • รวม ${questions.length} ข้อ (สลับช้อยส์อัตโนมัติตั้งแต่ข้อ 14 เป็นต้นไป)`;
+      const readingCount = questions.length - listeningCount;
+      metaEl.textContent = `Listening ${listeningCount} ข้อ • Reading ${readingCount} ข้อ • รวม ${questions.length} ข้อ (สลับช้อยส์อัตโนมัติตั้งแต่ข้อ 14 เป็นต้นไป)`;
       resetBtn.style.display = "inline-block";
       doneArea.style.display = "block";
 
@@ -1538,7 +1604,6 @@
         card.dataset.isAnswered = "false";
         card.dataset.questionNumber = String(questionNumber);
 
-        // ส่วนหัวข้อสอบ
         const qHeader = document.createElement("div");
         qHeader.className = "question-header";
         qHeader.innerHTML = `
@@ -1547,20 +1612,20 @@
         `;
         card.appendChild(qHeader);
 
-        // กล่องโจทย์ / เครื่องเล่นเสียง
         const promptBox = document.createElement("div");
         promptBox.className = "prompt-box";
+
+        const p = document.createElement("p");
+        p.className = "prompt-text";
+        if (item.h) {
+          p.innerHTML = item.q;
+        } else {
+          p.textContent = item.q;
+        }
 
         if (isListening) {
           const transcriptDiv = document.createElement("div");
           transcriptDiv.className = "transcript-box";
-          const p = document.createElement("p");
-          p.className = "prompt-text";
-          if (item.h) {
-            p.innerHTML = item.q;
-          } else {
-            p.textContent = item.q;
-          }
           transcriptDiv.appendChild(p);
 
           const audioWrap = document.createElement("div");
@@ -1568,12 +1633,7 @@
           const audioEl = document.createElement("audio");
           audioEl.controls = true;
           audioEl.preload = "none";
-          audioEl.src = item.audio.startsWith("http")
-            ? item.audio
-            : (item.audio.includes("/")
-              ? "https://acelangvox.com/wp-content/uploads/" + item.audio
-              : AUDIO_BASE + item.audio);
-          // หยุดเล่นไฟล์เสียงข้ออื่นเมื่อกดเล่นข้อปัจจุบัน
+          audioEl.src = resolveAudioUrl(item.audio);
           audioEl.addEventListener("play", () => {
             document.querySelectorAll("audio").forEach(other => {
               if (other !== audioEl && !other.paused) {
@@ -1598,29 +1658,20 @@
           promptBox.appendChild(audioWrap);
           promptBox.appendChild(toggleBtn);
         } else {
-          const p = document.createElement("p");
-          p.className = "prompt-text";
-          if (item.h) {
-            p.innerHTML = item.q;
-          } else {
-            p.textContent = item.q;
-          }
           promptBox.appendChild(p);
         }
 
         card.appendChild(promptBox);
 
-        // ตัวเลือกคำตอบ (.choices-container & .choice-item)
         const choicesContainer = document.createElement("div");
         choicesContainer.className = "choices-container";
 
-        // เตรียมข้อมูลช้อยส์พร้อมระบุข้อถูก
         const preparedChoices = item.choices.map((text, cIdx) => ({
           text: text,
           isCorrect: cIdx === item.ans
         }));
 
-        // สลับช้อยส์อัตโนมัติ (ยกเว้นข้อ 1–13 ตามเงื่อนไข)
+        // สลับช้อยส์อัตโนมัติ (ยกเว้นข้อ 1–13)
         if (questionNumber > 13) {
           for (let i = preparedChoices.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1653,7 +1704,6 @@
           iconSpan.className = "correct-icon";
           iconSpan.textContent = choiceObj.isCorrect ? "✓ เฉลย" : "✕";
 
-          // คลิกพื้นที่กรอบช้อยส์เพื่อเลือกปุ่ม Radio ได้สะดวกทั้งมือถือและคอมพิวเตอร์
           choiceEl.addEventListener("click", (ev) => {
             if (card.dataset.isAnswered === "true") return;
             if (ev.target !== radio && ev.target !== label) {
@@ -1669,7 +1719,6 @@
 
         card.appendChild(choicesContainer);
 
-        // กล่องคำอธิบาย (ถ้ามีในข้อสอบต้นฉบับ)
         let expBox = null;
         if (item.exp) {
           expBox = document.createElement("div");
@@ -1678,7 +1727,6 @@
           card.appendChild(expBox);
         }
 
-        // Event Delegation ดักจับการตอบแต่ละข้อ
         choicesContainer.addEventListener("change", function (e) {
           if (e.target.type !== "radio") return;
           if (card.dataset.isAnswered === "true") return;
@@ -1686,8 +1734,7 @@
           card.dataset.isAnswered = "true";
           choicesContainer.style.setProperty("pointer-events", "none", "important");
 
-          const selectedRadio = e.target;
-          const selectedChoiceElement = selectedRadio.closest(".choice-item");
+          const selectedChoiceElement = e.target.closest(".choice-item");
           const correctChoiceElement = card.querySelector('.choice-item[data-is-correct="true"]');
 
           if (correctChoiceElement) {
@@ -1798,9 +1845,22 @@
       showFinalResult();
     }
 
+    // เปิดให้ปุ่มใน HTML (onclick="...") เรียกใช้ฟังก์ชันได้
+    Object.assign(window, {
+      triggerHtmlImport,
+      handleHtmlFilesImport,
+      handlePastedHtmlImport,
+      exportMergedHtml,
+      selectForm,
+      resetCurrentForm,
+      checkScore,
+      jumpToQuestion
+    });
+
     // เริ่มต้นโหลดหน้าเว็บที่ชุดที่ 81
     buildFormSelector();
     renderFormQuiz(81);
+  })();
   </script>
 </body>
 </html>
