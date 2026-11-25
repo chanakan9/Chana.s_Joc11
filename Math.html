@@ -409,10 +409,10 @@
       }
     }
 
-    /* Exact A4 Print Styles (Full-Page Density, Strictly 2 A4 Sheets) */
+    /* Exact A4 Print Styles: exactly 2 sheets, each a fixed-height full A4 page */
     @page {
-      size: A4 portrait;
-      margin: 6mm 8mm;
+      size: 210mm 297mm;
+      margin: 0;
     }
 
     @media print {
@@ -420,8 +420,11 @@
         background: #ffffff !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 210mm !important;
         min-height: 0 !important;
         height: auto !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
       .control-bar-wrap,
@@ -433,49 +436,67 @@
         margin: 0 !important;
         padding: 0 !important;
         max-width: none !important;
+        width: 210mm !important;
         gap: 0 !important;
         display: block !important;
       }
 
+      /* Each sheet is a fixed 297mm box = one A4 page. Never taller, so it can never spill to a 3rd/4th page. */
       .worksheet-page {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
         box-shadow: none !important;
         border-radius: 0 !important;
         margin: 0 !important;
-        padding: 0 2px 16px !important;
-        width: 100% !important;
+        padding: 7mm 8mm 9mm !important;
+        width: 210mm !important;
         max-width: none !important;
+        height: 296mm !important;
         min-height: 0 !important;
-        height: auto !important;
-        max-height: none !important;
+        max-height: 296mm !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
-        page-break-inside: avoid !important;
         break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        break-before: auto !important;
+        break-after: auto !important;
       }
 
       .worksheet-page.page-break-after {
-        page-break-after: always !important;
         break-after: page !important;
+        page-break-after: always !important;
       }
 
       .worksheet-page:last-child {
+        break-after: auto !important;
         page-break-after: auto !important;
-        break-after: avoid !important;
       }
 
+      /* Frame fills the whole sheet; content is spread evenly top-to-bottom */
       .sheet-dashed-frame {
-        min-height: 246mm !important;
-        padding: 10px 16px 16px !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        padding: 6mm 7mm 8mm !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+      }
+
+      .sheet-dashed-frame > div:first-child {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 0;
       }
 
       .section-banner-row {
-        margin-bottom: 7px !important;
+        margin-bottom: 3mm !important;
       }
 
       .section-banner {
-        font-size: 13.5px !important;
-        padding: 2px 14px !important;
+        font-size: 14px !important;
+        padding: 3px 16px !important;
       }
 
       .star-deco {
@@ -484,21 +505,21 @@
       }
 
       .short-problems-list {
-        gap: 7px !important;
-        margin-bottom: 9px !important;
+        gap: 3.2mm !important;
+        margin-bottom: 4mm !important;
       }
 
       .short-problem-item {
-        gap: 3px !important;
+        gap: 2mm !important;
       }
 
       .problem-question {
-        font-size: 13px !important;
-        line-height: 1.32 !important;
+        font-size: 13.5px !important;
+        line-height: 1.35 !important;
       }
 
       .short-answer-line {
-        font-size: 13px !important;
+        font-size: 13.5px !important;
         line-height: 1.3 !important;
         flex-wrap: nowrap !important;
         white-space: nowrap !important;
@@ -516,45 +537,46 @@
       }
 
       .sheet1-long-problems {
-        gap: 11px !important;
+        gap: 6mm !important;
       }
 
       .equation-row,
       .method-label,
       .final-ans-row {
-        font-size: 13px !important;
+        font-size: 13.5px !important;
         line-height: 1.3 !important;
       }
 
       .long-problem-block,
       .long-problem-left {
-        gap: 4px !important;
+        gap: 2mm !important;
       }
 
       .line-art-box {
-        width: 58px !important;
+        width: 62px !important;
       }
 
       .work-lines {
-        gap: 16px !important;
-        margin-top: 3px !important;
-        margin-bottom: 4px !important;
+        gap: 7.5mm !important;
+        margin-top: 2mm !important;
+        margin-bottom: 2mm !important;
       }
 
       .work-line {
         height: 4px !important;
       }
 
+      /* Sheet 2: 4 problems spread over the full page */
       .page2-problems {
-        gap: 15px !important;
+        gap: 9mm !important;
       }
 
       .page2-problems .work-lines {
-        gap: 18px !important;
+        gap: 9mm !important;
       }
 
       .coloring-footer {
-        margin-top: 6px !important;
+        margin-top: 4mm !important;
       }
 
       .coloring-footer svg:first-child {
@@ -565,6 +587,10 @@
       .coloring-footer svg:last-child {
         width: 145px !important;
         height: 64px !important;
+      }
+
+      .page-number-badge {
+        bottom: 2mm !important;
       }
     }
   </style>
@@ -1010,6 +1036,25 @@
           generateWorksheet();
           pages.forEach(p => p.classList.remove('refreshing'));
         }, 120);
+      });
+
+      // Safety net: if fonts render taller than expected, shrink content slightly so each sheet stays on ONE A4 page
+      function fitSheetsForPrint() {
+        document.querySelectorAll('.sheet-dashed-frame').forEach(frame => {
+          const inner = frame.firstElementChild;
+          inner.style.zoom = '';
+          let z = 1;
+          let guard = 0;
+          while (frame.scrollHeight > frame.clientHeight + 1 && z > 0.7 && guard < 25) {
+            z -= 0.02;
+            inner.style.zoom = z.toFixed(2);
+            guard++;
+          }
+        });
+      }
+      window.addEventListener('beforeprint', fitSheetsForPrint);
+      window.addEventListener('afterprint', () => {
+        document.querySelectorAll('.sheet-dashed-frame > div:first-child').forEach(d => d.style.zoom = '');
       });
 
       btnPrint.addEventListener('click', () => {
