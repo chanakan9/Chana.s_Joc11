@@ -1038,25 +1038,6 @@
         }, 120);
       });
 
-      // Safety net: if fonts render taller than expected, shrink content slightly so each sheet stays on ONE A4 page
-      function fitSheetsForPrint() {
-        document.querySelectorAll('.sheet-dashed-frame').forEach(frame => {
-          const inner = frame.firstElementChild;
-          inner.style.zoom = '';
-          let z = 1;
-          let guard = 0;
-          while (frame.scrollHeight > frame.clientHeight + 1 && z > 0.7 && guard < 25) {
-            z -= 0.02;
-            inner.style.zoom = z.toFixed(2);
-            guard++;
-          }
-        });
-      }
-      window.addEventListener('beforeprint', fitSheetsForPrint);
-      window.addEventListener('afterprint', () => {
-        document.querySelectorAll('.sheet-dashed-frame > div:first-child').forEach(d => d.style.zoom = '');
-      });
-
       btnPrint.addEventListener('click', () => {
         // Show helpful standalone instruction in case iframe sandbox blocks window.print()
         let isSandboxed = false;
