@@ -1172,16 +1172,23 @@
     function parseAceLangVoxHtml(rawText, fileName) {
       let htmlSource = rawText;
 
-      // รองรับกรณีผู้ใช้กด Ctrl+S จากหน้า view-source แบบ Webpage, Complete
-      if (htmlSource.includes('class="line-content"') && !htmlSource.includes("ays-quiz-form")) {
-        const wrapperDoc = new DOMParser().parseFromString(htmlSource, "text/html");
-        const lineCells = wrapperDoc.querySelectorAll("td.line-content");
+      let doc = new DOMParser().parseFromString(htmlSource, "text/html");
+
+      // ถ้าไม่พบข้อสอบในครั้งแรก อาจเป็นเพราะเป็นหน้า view-source ที่ครอบด้วยตาราง td.line-content หรือ pre tag
+      if (doc.querySelectorAll(".step[data-question-id]").length === 0) {
+        const lineCells = doc.querySelectorAll("td.line-content, .line-content");
         if (lineCells.length > 0) {
-          htmlSource = Array.from(lineCells).map(td => td.textContent).join("\n");
+          const extractedText = Array.from(lineCells).map(td => td.textContent).join("\n");
+          doc = new DOMParser().parseFromString(extractedText, "text/html");
+          htmlSource = extractedText;
+        } else {
+          const preEl = doc.querySelector("pre");
+          if (preEl && (preEl.textContent.includes("ays-quiz-form") || preEl.textContent.includes("step"))) {
+            doc = new DOMParser().parseFromString(preEl.textContent, "text/html");
+            htmlSource = preEl.textContent;
+          }
         }
       }
-
-      const doc = new DOMParser().parseFromString(htmlSource, "text/html");
 
       // 1. ค้นหาหมายเลขชุดข้อสอบ (Form Number)
       let detectedForm = null;
@@ -1207,7 +1214,7 @@
 
       // 2. ถอดรหัสเฉลย Base64 จาก window.quizOptions_XX
       const ansLookup = {};
-      const optRegex = /window\.quizOptions_\d+\[['"](\d+)['"]\]\s*=\s*['"]([^'"]+)['"]/g;
+      const optRegex = /window\.quizOptions_\d+\[['"]?(\d+)['"]?\]\s*=\s*['"]([^'"]+)['"]/g;
       let match;
       while ((match = optRegex.exec(htmlSource)) !== null) {
         try {
@@ -1224,7 +1231,7 @@
         steps = Array.from(doc.querySelectorAll(".step[data-question-id]:not(.ays_question_result)"));
       }
       if (steps.length === 0) {
-        return { error: `ไม่พบข้อมูลข้อสอบในไฟล์ "${fileName}"` };
+        return { error: `ไม่พบข้อมูลข้อสอบในไฟล์ "${fileName}" (กรุณาตรวจสอบว่าเลือกคัดลอกครอบคลุมโค้ดที่มีแท็ก class="step" หรือ "ays_quiz_question" ครบถ้วน)` };
       }
 
       const parsedQuestions = [];
