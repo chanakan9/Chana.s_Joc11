@@ -1803,4 +1803,1809 @@
     renderFormQuiz(81);
   </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALCPT Practice Center — ชุดที่ 81–100</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --border: #dce4ee;
+      --border-strong: #cbd5e1;
+      --ink: #0f172a;
+      --navy: #092b4c;
+      --muted: #64748b;
+      --brand: #2563eb;
+      --brand-hover: #1d4ed8;
+      --brand-soft: #eff6ff;
+      --brand-border: #bfdbfe;
+      --success: #10b981;
+      --success-bg: #d1fae5;
+      --success-ink: #065f46;
+      --danger: #ef4444;
+      --danger-bg: #fee2e2;
+      --danger-ink: #991b1b;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.04);
+      --font: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 0 110px 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-header {
+      background: linear-gradient(180deg, #e8f1fa 0%, var(--bg) 100%);
+      padding: 32px 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border: 1px solid var(--brand-border);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      margin: 0 auto 22px;
+      max-width: 620px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .form-selector-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 8px;
+    }
+
+    .form-pill {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 6px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--navy);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .form-pill:hover {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .form-pill:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .form-pill.is-active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .form-pill.is-empty:not(.is-active) {
+      color: var(--muted);
+      background: #f8fafc;
+      border-style: dashed;
+    }
+
+    /* Import & Export Bar */
+    .import-bar {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-strong);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .import-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .btn-import {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--navy);
+      background: var(--navy);
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-import:hover {
+      background: #143d66;
+    }
+
+    .btn-import:focus-visible,
+    .btn-save-html:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .btn-save-html {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brand-border);
+      background: var(--brand-soft);
+      color: var(--brand);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-save-html:hover {
+      background: #dbeafe;
+      border-color: var(--brand);
+    }
+
+    /* Paste Area Styles */
+    .paste-area-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 680px;
+      margin-top: 8px;
+    }
+
+    .paste-textarea {
+      width: 100%;
+      height: 120px;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background-color: var(--surface-soft);
+      resize: vertical;
+    }
+
+    .paste-submit-btn {
+      appearance: none;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background-color: var(--brand);
+      color: #ffffff;
+      cursor: pointer;
+      align-self: flex-end;
+      transition: background-color 0.15s ease;
+    }
+
+    .paste-submit-btn:hover {
+      background-color: var(--brand-hover);
+    }
+
+    .import-hint {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+      max-width: 680px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .import-status {
+      display: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      max-width: 680px;
+      width: 100%;
+      line-height: 1.5;
+    }
+
+    .import-status.is-ok {
+      display: block;
+      background: #ecfdf5;
+      color: var(--success-ink);
+      border: 1px solid #a7f3d0;
+    }
+
+    .import-status.is-err {
+      display: block;
+      background: #fef2f2;
+      color: var(--danger-ink);
+      border: 1px solid #fecaca;
+    }
+
+    .empty-state-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Active Form Toolbar */
+    .quiz-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0 18px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-toolbar-info h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .quiz-toolbar-meta {
+      margin: 2px 0 0;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+
+    .btn-reset {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--navy);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reset:hover {
+      background: var(--surface-soft);
+      border-color: var(--navy);
+    }
+
+    .btn-reset:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    /* Section Divider */
+    .section-banner {
+      margin: 24px 0 14px;
+      padding: 10px 16px;
+      background: #e8f0f8;
+      border-left: 4px solid var(--navy);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.01em;
+    }
+
+    /* Question Card */
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .question-card {
+      background-color: var(--surface);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      scroll-margin-top: 20px;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .question-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--brand);
+      background: var(--brand-soft);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .question-type-tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .prompt-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .prompt-text {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .transcript-box {
+      display: none;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-strong);
+    }
+
+    .transcript-box.is-open {
+      display: block;
+    }
+
+    .audio-wrap {
+      width: 100%;
+    }
+
+    .audio-wrap audio {
+      width: 100%;
+      height: 42px;
+      display: block;
+    }
+
+    .btn-transcript {
+      appearance: none;
+      margin-top: 10px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--brand);
+      background: var(--surface);
+      border: 1px solid var(--brand-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-transcript:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand);
+    }
+
+    /* Choices */
+    .choices-container {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .choice-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background-color: var(--surface);
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      position: relative;
+    }
+
+    .choice-item:hover {
+      background-color: #f8fbff;
+      border-color: #93c5fd;
+    }
+
+    .choice-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .choice-item input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: var(--brand);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .choice-item label {
+      font-size: 15.2px;
+      font-weight: 500;
+      color: var(--navy);
+      cursor: pointer;
+      flex: 1;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .correct-icon {
+      display: none;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .explanation-box {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #0c4a6e;
+      line-height: 1.55;
+    }
+
+    .explanation-box.is-visible {
+      display: block;
+    }
+
+    /* Done Check Score Button */
+    .done-action-wrap {
+      text-align: center;
+      margin: 44px 0 20px;
+    }
+
+    .btn-check-score {
+      appearance: none;
+      font: inherit;
+      padding: 18px 40px;
+      font-size: 19px;
+      font-weight: 700;
+      background-color: var(--brand);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 18px -3px rgba(37, 99, 235, 0.35);
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn-check-score:hover {
+      background-color: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-check-score:active {
+      transform: translateY(0);
+    }
+
+    .btn-check-score:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 3px;
+    }
+
+    /* Score Summary Card */
+    .result-summary-card {
+      background-color: #f8fafc;
+      border: 2px solid var(--border-strong);
+      padding: 28px 24px;
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      margin: 28px auto;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-summary-title {
+      margin: 0 0 12px;
+      color: #1e293b;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .result-summary-score {
+      font-size: 32px;
+      color: var(--brand);
+      margin: 12px 0 6px;
+      font-weight: 600;
+    }
+
+    .result-summary-percent {
+      font-size: 17px;
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+
+    .wrong-list-box {
+      text-align: left;
+      background-color: #ffffff;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #fca5a5;
+    }
+
+    .wrong-list-title {
+      display: block;
+      color: var(--danger);
+      font-weight: 700;
+      font-size: 15.5px;
+      margin-bottom: 10px;
+    }
+
+    .wrong-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .wrong-chip {
+      appearance: none;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: var(--danger-ink);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .wrong-chip:hover {
+      background: #fee2e2;
+    }
+
+    /* Empty State for Forms 82–100 */
+    .empty-state-card {
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 48px 24px;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .empty-state-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .empty-state-desc {
+      margin: 0 auto 20px;
+      max-width: 480px;
+      font-size: 14.5px;
+      color: var(--muted);
+    }
+
+    .btn-back-81 {
+      appearance: none;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--brand);
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .btn-back-81:hover {
+      background: var(--brand-hover);
+    }
+
+    /* Floating Real-time Scoreboard */
+    #realtime-scoreboard {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35);
+      font-family: var(--font);
+      font-size: 17px;
+      font-weight: 700;
+      z-index: 9999;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      line-height: 1.35;
+    }
+
+    #realtime-scoreboard .score-num {
+      color: #34d399;
+      font-size: 23px;
+    }
+
+    #realtime-scoreboard .answered-sub {
+      display: block;
+      font-size: 13px;
+      font-weight: 400;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 640px) {
+      .app-header {
+        padding: 20px 12px 16px;
+      }
+      .container {
+        padding: 0 12px;
+      }
+      .hero-card {
+        padding: 20px 16px;
+      }
+      .form-grid {
+        grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+        gap: 6px;
+      }
+      .form-pill {
+        font-size: 12.5px;
+        padding: 8px 4px;
+      }
+      .question-card {
+        padding: 16px 14px;
+      }
+      .choice-item {
+        padding: 12px;
+      }
+      .btn-check-score {
+        width: 100%;
+        padding: 16px 24px;
+        font-size: 17px;
+      }
+      #realtime-scoreboard {
+        bottom: 12px;
+        right: 12px;
+        padding: 10px 16px;
+        font-size: 15px;
+      }
+      #realtime-scoreboard .score-num {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="container">
+      <div class="hero-card">
+        <span class="hero-eyebrow">ALCPT Practice Hub</span>
+        <h1 class="hero-title">คลังข้อสอบ ALCPT ชุดที่ 81 – 100</h1>
+        <p class="hero-subtitle">เลือกชุดข้อสอบที่ต้องการฝึกซ้อม ตรวจคำตอบทันทีรายข้อ พร้อมสรุปคะแนนแบบเรียลไทม์</p>
+        <span class="form-selector-label">เลือกชุดข้อสอบ (Form 81 – Form 100)</span>
+        <div class="form-grid" id="form-selector-grid" role="tablist" aria-label="เลือกชุดข้อสอบ ALCPT"></div>
+
+        <div class="import-bar">
+          <input type="file" id="html-file-input" accept=".html,.htm" multiple hidden onchange="handleHtmlFilesImport(this.files)">
+          <div class="import-actions">
+            <button type="button" class="btn-import" onclick="triggerHtmlImport()">
+              📂 นำเข้าไฟล์ข้อสอบ (.html) หลายชุดพร้อมกัน
+            </button>
+            <button type="button" class="btn-save-html" onclick="exportMergedHtml()">
+              💾 บันทึกไฟล์เว็บฉบับรวมทุกชุด (.html)
+            </button>
+          </div>
+          
+          <!-- Paste Area UI -->
+          <div class="paste-area-container">
+            <textarea id="paste-html-textarea" class="paste-textarea" placeholder="หรือ คัดลอกโค้ดทั้งหมด (Ctrl+A -> Ctrl+C) จากหน้า view-source แล้วกดวาง (Ctrl+V) ที่นี่เพื่อแปลงข้อสอบแทนการอัปโหลดไฟล์..."></textarea>
+            <button type="button" class="paste-submit-btn" onclick="handlePastedHtmlImport()">⚡ แปลงและนำเข้าข้อสอบจากโค้ดที่วาง</button>
+          </div>
+
+          <p class="import-hint">
+            เลือกไฟล์ซอร์สโค้ด <code>.html</code> หรือวางโค้ดทั้งหมดจากหน้า <code>view-source</code> ของชุดข้อสอบที่ต้องการแปลงเข้าสู่ระบบ • หากต้องการกดบันทึกเป็นไฟล์รวมถาวร ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันไฟล์บนเบราว์เซอร์ปกติก่อน
+          </p>
+          <div id="import-status" class="import-status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="quiz-toolbar" class="quiz-toolbar">
+      <div class="quiz-toolbar-info">
+        <h2 id="active-form-title">ALCPT Form 81</h2>
+        <p id="active-form-meta" class="quiz-toolbar-meta">Listening (ข้อ 1–66) + Reading (ข้อ 67–100) • รวม 100 ข้อ</p>
+      </div>
+      <button type="button" id="btn-reset-quiz" class="btn-reset" onclick="resetCurrentForm()">เริ่มทำชุดนี้ใหม่ ↻</button>
+    </div>
+
+    <div id="quiz-main-area"></div>
+
+    <div id="done-button-area" class="done-action-wrap">
+      <button type="button" class="btn-check-score" onclick="checkScore()">
+        Done! คลิกเพื่อตรวจคะแนน 📊
+      </button>
+    </div>
+
+    <div id="score-result"></div>
+  </main>
+
+  <div id="realtime-scoreboard" aria-live="polite"></div>
+
+  <script id="main-app-script">
+    const AUDIO_BASE = "https://acelangvox.com/wp-content/uploads/2024/10/";
+
+    // ข้อมูลข้อสอบ ALCPT แยกตามเลขชุด (81 - 100)
+    // ชุดที่ 81 ดึงข้อมูลครบทั้ง 100 ข้อจากไฟล์ต้นฉบับ
+    /* __FORMS_DATA_START__ */
+    const FORMS_DATA = {
+      81: [
+        { q: "1. Henry wants to know the height of the building.\nWhat does Henry want to know?", audio: "New-Recording-86.m4a", choices: ["how tall it is", "how much it cost", "where it is located", "why it was built"], ans: 0 },
+        { q: "2. Mr. Johnson uses a barometer in his work.\nWhat does he do?", audio: "New-Recording-2-21.m4a", choices: ["He sells groceries.", "He cuts down trees.", "He takes pictures.", "He studies the weather."], ans: 3 },
+        { q: "3. What did dinner consist of?", audio: "New-Recording-3-21.m4a", choices: ["officers and men", "meat and vegetables", "five dollars bill", "one hour"], ans: 1 },
+        { q: "4. Mr. Kim was making a deposit.\nWhere was he?", audio: "New-Recording-4-21.m4a", choices: ["in a gas station", "in a bank", "at a storage tank", "at a bench"], ans: 1 },
+        { q: "5. The Smiths manufacture rugs.", audio: "New-Recording-5-21.m4a", choices: ["They buy rugs.", "They clean rugs.", "They make rugs.", "They repair rugs."], ans: 2 },
+        { q: "6. Susan has finished her letter.", audio: "New-Recording-6-21.m4a", choices: ["She has been writing.", "She has been talking.", "She has been eating.", "She has been bathing."], ans: 0 },
+        { q: "7. Jackson Street's the Main Street.", audio: "New-Recording-7-21.m4a", choices: ["It's the prettiest street.", "It's the principal street.", "It's the oldest street.", "its the next street."], ans: 1 },
+        { q: "8. The strong coffee kept Angela awake all night. She couldn't ____________.", audio: "New-Recording-8-21.m4a", choices: ["drive", "sleep", "study", "eat"], ans: 1 },
+        { q: "9. Lieutenant Barnhill was the security officer for his unit. He was responsible for the __________.", audio: "New-Recording-9-21.m4a", choices: ["condition of the building", "health of the men", "safety of the organization", "payment of the men"], ans: 2 },
+        { q: "10. Rodney said Let's stop at a motel. Rodney is probably ____________.", audio: "New-Recording-10-22.m4a", choices: ["tall", "tired", "angry", "ugly"], ans: 1 },
+        { q: "11. Colonel Manning can't take the quiz.", audio: "New-Recording-11-21.m4a", choices: ["mail", "test", "book", "call"], ans: 1 },
+        { q: "12. Which of these is made of steel?", audio: "New-Recording-12-21.m4a", choices: ["a cigarette", "candy", "a book", "a car"], ans: 3 },
+        { q: "13. There are many caution signs along the highway.\nWhat do these signs mean?", audio: "New-Recording-13-21.m4a", choices: ["to drive dangerously", "to turn around", "to drive carefully", "to stop at once"], ans: 2 },
+        { q: "14. The student asked, Where can I catch the bus?\nThe instructor said, The bus stop is across the street.", audio: "New-Recording-14-21.m4a", choices: ["The bus will stop at the next street.", "The bus will stop on the other side of the street.", "The bus will stop at the next corner.", "The bus will stop right here."], ans: 1 },
+        { q: "15. The movie is absolutely free.", audio: "New-Recording-15-21.m4a", choices: ["The tax has to be paid.", "It is very cheap.", "Nobody has to pay.", "It can't be free."], ans: 2 },
+        { q: "16. He found a mistake in the letter.", audio: "New-Recording-16-21.m4a", choices: ["The letter had an error.", "He found the letter closed.", "He found a stamp inside the letter.", "The letter was perfect."], ans: 0 },
+        { q: "17. That idea is very important.", audio: "New-Recording-17-21.m4a", choices: ["It is known by many people.", "It is difficult to understand.", "It has great value.", "It has a long history."], ans: 2 },
+        { q: "18. He had bad luck yesterday morning.", audio: "New-Recording-18-21.m4a", choices: ["He lost his wallet.", "He was given a pay raise.", "He received a gift.", "He ate breakfast."], ans: 0 },
+        { q: "19. Mr. Kelly doesn't know those students.\nMr. Watkins doesn't either.", audio: "New-Recording-19-21.m4a", choices: ["Kelly and Watkins don't know the students.", "Mr. Kelly knows those students.", "Mr. Watkins knows chose students.", "One knows the students and the other doesn't."], ans: 0 },
+        { q: "20. He was afraid of it.", audio: "New-Recording-20-22.m4a", choices: ["He liked it.", "He added to it.", "It made him comfortable.", "It frightened him."], ans: 3 },
+        { q: "21. The boy covered his head because it was so cold.", audio: "New-Recording-21-22.m4a", choices: ["He put on a hat.", "He put on boots.", "He put on gloves.", "He put on a sweater."], ans: 0 },
+        { q: "22. A watch repairman at the shop checked Joe's watch and said, I can't guarantee to make it run.", audio: "New-Recording-22-22.m4a", choices: ["The repairman cannot promise to fix the watch.", "This repairman is not at the shop.", "Joe repaired his watch.", "The repairman promised to have the watch fixed."], ans: 0 },
+        { q: "23. I go to school because it is compulsory.", audio: "New-Recording-23-22.m4a", choices: ["Boys and girls go together.", "It is interesting.", "It is required.", "It is free for me."], ans: 2 },
+        { q: "24. Miss Jones is an efficient secretary.", audio: "New-Recording-24-22.m4a", choices: ["Miss Jones doesn't like her work.", "Miss Jones does good, fast work.", "Miss Jones does very sloppy work.", "Miss Jones doesn't finish her work."], ans: 1 },
+        { q: "25. Henry compared the two books.", audio: "New-Recording-25-22.m4a", choices: ["He bought them together.", "He returned them together.", "He found them together.", "He examined them together."], ans: 3 },
+        { q: "26. Sylvia is mentally ill.", audio: "New-Recording-26-22.m4a", choices: ["Her heart is weak.", "Her leg is broken.", "Her mind is disturbed.", "Her fever is elevated."], ans: 2 },
+        { q: "27. We discovered a new method.", audio: "New-Recording-27-22.m4a", choices: ["We lost the new method.", "We found a new method.", "We forgot the new method.", "We are looking for a new method."], ans: 1 },
+        { q: "28. Joe was looking for a way to simplify his job.", audio: "New-Recording-28-22.m4a", choices: ["He wanted to complicate his job.", "He wanted to make his job easier.", "He wanted to abolish his job.", "He wanted to make his job optional."], ans: 1 },
+        { q: "29. The social director said the entire group of people attended the concert.\nAccording to the director, how many attended?", audio: "New-Recording-29-22.m4a", choices: ["half of them", "none of them", "all of them", "the majority"], ans: 2 },
+        { q: "30. The student left during the teacher's lecture.\nWhen did the student leave?", audio: "New-Recording-30-24.m4a", choices: ["as soon as the lecture was over", "in the middle of the lecture", "just before the lecture began", "long after the lecture had ended"], ans: 1 },
+        { q: "31. Marilyn is as old as Philip.", audio: "New-Recording-31-22.m4a", choices: ["Marilyn is younger Chan Phillip.", "Marilyn and Phillip are the same age.", "Marilyn is older Than Phillip.", "Marilyn is taller than Philip."], ans: 1 },
+        { q: "32. The student speaks English fluently.", audio: "New-Recording-32-22.m4a", choices: ["he speaks English fairly well.", "He speaks a little English.", "He speaks English poorly.", "He speaks English very well."], ans: 3 },
+        { q: "33. The package was delivered without damage.", audio: "New-Recording-33-22.m4a", choices: ["It was completely paid", "It never reached its destination.", "it was delivered to the wrong person.", "It was received in good condition."], ans: 3 },
+        { q: "34. The Browns expect to arrive at the airport before the plane's departure.", audio: "New-Recording-34-22.m4a", choices: ["They have already arrived at the airport.", "They plan to arrive before its departure.", "They won't arrive before its departure.", "They don't want to arrive before the departure."], ans: 1 },
+        { q: "35. I wasn't invited to go to the lecture.", audio: "New-Recording-35-22.m4a", choices: ["I have no pen or notebook.", "No one will go with me.", "I have nothing to wear.", "No one has asked me to go."], ans: 3 },
+        { q: "36. The airplane vanished from sight.", audio: "New-Recording-36-21.m4a", choices: ["It disappeared.", "It was closed.", "It was started.", "It took off."], ans: 0 },
+        { q: "37. Those chairs are bolted to the floor.", audio: "New-Recording-37-21.m4a", choices: ["The chairs cannot be moved.", "The stairs lead to the door", "The chairs need to be cleaned.", "The floor should not be covered."], ans: 0 },
+        { q: "38. Bill refused to do his work.", audio: "New-Recording-38-21.m4a", choices: ["Bill did not do his work.", "Bill forgot his work.", "Bill took over his work again.", "Bill perfected his work."], ans: 0 },
+        { q: "39. He violated a safety rule.", audio: "New-Recording-39-21.m4a", choices: ["He didn't follow safety regulations.", "He studied safety regulations.", "He observed safety regulations.", "He followed safety regulations."], ans: 0 },
+        { q: "40. Darlene made a decision.", audio: "New-Recording-40-21.m4a", choices: ["Darlene made a speech.", "Darlene chose what to do.", "Darlene built something.", "Darlene asked what to do."], ans: 1 },
+        { q: "41. I substituted for my brother while he was ill.", audio: "New-Recording-41-22.m4a", choices: ["I looked after him.", "I bought medicine for him.", "I did his work.", "I wrote to him."], ans: 2 },
+        { q: "42. The troops could not advance.", audio: "New-Recording-42-22.m4a", choices: ["They could not stop to rest.", "They could not move forward.", "They could not retreat.", "They could not communicate."], ans: 1 },
+        { q: "43. Jack said he was through with his homework.", audio: "New-Recording-43-22.m4a", choices: ["He was nearly finished.", "He was just beginning.", "He was finished.", "He was halfway finished."], ans: 2 },
+        { q: "44. The mechanic found the ruptured oil line.", audio: "New-Recording-44-22.m4a", choices: ["It was straining.", "It was loosening.", "It was bending.", "It was leaking."], ans: 3 },
+        { q: "45. Thomas was burned up when he heard the news.", audio: "New-Recording-45-22.m4a", choices: ["The news was old.", "The news made Thomas cold.", "The news was controlled.", "The news made Thomas angry."], ans: 3 },
+        { q: "46. The mechanic detected a small crack in the blade.", audio: "New-Recording-46-22.m4a", choices: ["He made a crack.", "He fixed a crack.", "He noticed a crack.", "He reported a crack."], ans: 2 },
+        { q: "47. Today it's calm outside.", audio: "New-Recording-47-22.m4a", choices: ["The wind is blowing.", "It is cloudy today.", "It is raining outside.", "The air is still."], ans: 3 },
+        { q: "48. The two pieces of wood are bonded together with glue.", audio: "New-Recording-48-22.m4a", choices: ["They are printed together.", "They are stuck together.", "They are sold together.", "They are collected together."], ans: 1 },
+        { q: "49. Don't give up now.", audio: "New-Recording-49-22.m4a", choices: ["Don't interfere now.", "Don't claim victory now.", "Don't contribute now.", "Don't quit now."], ans: 3 },
+        { q: "50. George brought up the subject.", audio: "New-Recording-50-23.m4a", choices: ["He forgot the subject.", "He didn't know about the subject.", "He wrote about the subject.", "He introduced the subject."], ans: 3 },
+        { q: "51. Captain Smith seems to be in a big rush this morning.", audio: "New-Recording-51-21.m4a", choices: ["He looks very tired.", "He is in a great hurry", "He needs a rest.", "He uses a big brush."], ans: 1 },
+        { q: "52. I'm running short of cash this week.", audio: "New-Recording-52-21.m4a", choices: ["I'm getting lots of money.", "I'm running to the bank.", "I'm looking for a lost check.", "I'm getting low on money."], ans: 3 },
+        { q: "53. Bill is a careful driver, but he had a close shave today.", audio: "New-Recording-53-21.m4a", choices: ["He had an accident today.", "He almost had an accident today.", "He had a pleasant experience today.", "He had a haircut today."], ans: 1 },
+        { q: "54. Plutonium has a short life expectancy. Plutonium ____________.", audio: "New-Recording-54-21.m4a", choices: ["doesn't last long", "is in short supply", "Plutonium was discovered recently", "doesn't cost much"], ans: 0 },
+        { q: "55. The band preceded the floats in the parade.", audio: "New-Recording-55-21.m4a", choices: ["The band wasn'c included.", "The floats came before the band.", "The band led the parade.", "The floats were on the river."], ans: 2 },
+        { q: "56. Sue's eyes are puffy. They are___________.", audio: "New-Recording-56-21.m4a", choices: ["red", "swollen", "black", "sore"], ans: 1 },
+        { q: "57. WOMAN: You are very healthy and strong. MAN: Thanks. I run at least 10 miles a day.\nWhat do we know about the man?", audio: "New-Recording-57-21.m4a", choices: ["has a fast car.", "He is fat and lazy.", "He is physically out of shape", "He has good physical endurance"], ans: 3 },
+        { q: "58. WOMAN: Where did you put your money? MAN: It's in my pocket.\nThe money is in his____________.", audio: "New-Recording-58-21.m4a", choices: ["house", "bank", "desk", "pants"], ans: 3 },
+        { q: "59. MAN: What have you been doing? WOMAN: Packing. I'm going overseas.\nWhat is the woman going to do?", audio: "New-Recording-59-21.m4a", choices: ["She is going across the ocean", "She is going to another inland city.", "She is going to take a trip on the bus.", "She is going to a neighboring city."], ans: 0 },
+        { q: "60. woman: What did you do about your garage? man: I expanded it.\nWhat did the man do about his garage?", audio: "New-Recording-60-22.m4a", choices: ["The man repaired his garage.", "The man made his garage bigger.", "The man cleaned his garage out.", "The man painted his garage."], ans: 1 },
+        { q: "61. man: Why do these items have a red tag on them? woman: They're on sale\nWhat did the woman say?", audio: "New-Recording-61-21.m4a", choices: ["We're selling them for less than normal.", "We're marking them with higher prices.", "We're sending them back to the factory.", "We're taking them out of stock."], ans: 0 },
+        { q: "62. <strong>man</strong>: What do you think of Mr. James? <strong>woman</strong>: I think he is a very dependable person.\nWhat does the woman think of Mr. James?", audio: "New-Recording-62-21.m4a", h: true, choices: ["He is reliable.", "He can't be trusted.", "He is never on time.", "He is selfish."], ans: 0 },
+        { q: "63. <strong>woman</strong>: Where shall I meet you? <strong>man</strong>: At the intersection.", audio: "New-Recording-63-21.m4a", h: true, choices: ["in the station", "where the stores are", "inside the bank", "where two streets cross"], ans: 3 },
+        { q: "64. <strong>man</strong>: Where did the accident happen? <strong>woman</strong>: At the first curve in the road.\nWhat kind of road was it?", audio: "New-Recording-64-21.m4a", h: true, choices: ["not lighted", "not straight", "not paved", "not marked"], ans: 1 },
+        { q: "65. There is a car with its lights on in the parking lot.\nIt is a blue Mercury Cougar with Georgia license plates. The car __________.", audio: "New-Recording-65-21.m4a", choices: ["has its lights on", "was stolen in Georgia", "is illegally parked", "is stalled at a light"], ans: 0 },
+        { q: "66. <strong>man</strong>: Did you hear about Bill? <strong>woman</strong>: Yes. I heard that he was feeling much better.\n<strong>man</strong>: He was, but today he was rushed to the hospital again. Bill had___________.", audio: "New-Recording-66-21.m4a", h: true, choices: ["an appointment", "a recital", "money", "a relapse"], ans: 3 },
+        { q: "67. Judy is ______________ at typing than June.", choices: ["most accurate", "accurate", "as accurate", "more accurate"], ans: 3 },
+        { q: "68. I ___________sleeping at midnight.", choices: ["could", "did", "had", "was"], ans: 3 },
+        { q: "69. Select the correct sentence.", choices: ["The warehouse old in two minutes burned down.", "The burned down old warehouse in two minutes.", "The old warehouse burned down in two minutes.", "The warehouse burned down in two minutes old."], ans: 2 },
+        { q: "70. Mr. Duffy is holding a book. He has a book in his ______________.", choices: ["pocket", "hand", "desk", "car"], ans: 1 },
+        { q: "71. Artificial light is ______________.", choices: ["light from the sun", "man-made light", "daylight", "light from the moon"], ans: 1 },
+        { q: "72. Did you <em><strong>notify</strong></em> the doctor?", h: true, choices: ["see", "return to", "find", "inform"], ans: 3 },
+        { q: "73. People have known about magnets for many <em><strong>centuries</strong></em>.", h: true, choices: ["countries that produce them", "uses in military", "uses in science", "hundreds of years"], ans: 3 },
+        { q: "74. The pilot will __________ maintain flying speed or the plane will crash.", choices: ["would", "have to", "may", "ought to"], ans: 1 },
+        { q: "75. He came here in 1965 and he_____________ here since then.", choices: ["works", "is working", "has been working", "worked"], ans: 2 },
+        { q: "76. Harry likes the idea of ___________at lunchtime.", choices: ["will leave", "leaving", "leaves", "be leaving"], ans: 1 },
+        { q: "77. When a a natural disaster occurs,______________ can cause serious problems for residents.", choices: ["they", "one", "where", "it"], ans: 3 },
+        { q: "78. Henry enjoys fishing very much. Henry___________ fish .", choices: ["likes", "likes to", "enjoys eating", "likes to prepare"], ans: 1 },
+        { q: "79. <strong>Camouflage</strong> is used in the air force to ____________.", h: true, choices: ["talk to the tower", "tire at other planes", "hide airplanes", "repair the engines"], ans: 2 },
+        { q: "80. The air in the tires helps to <strong>absorb shock.</strong>", h: true, choices: ["make the ride smoother", "make them larger", "save fuel", "increase the speed"], ans: 0, exp: "The air in the tires absorbs shock to make the ride smoother." },
+        { q: "81. Many Americans are interested in the weather. They read, listen to, and talk about the weather forecasts. if the weather forecaster announces the prospect of a clear weekend ,millions will prepare for enjoyable outdoor trips , if the forecaster predicts un favorable weather ,outdoor activities are reduced. What is the main subject of this reading selection?", choices: ["outdoor trips", "clear weekends", "outdoor activities", "weather predictions"], ans: 3 },
+        { q: "82. The new bank building has several floors.", choices: ["elevators", "windows", "businesses", "stories"], ans: 3 },
+        { q: "83. <em><strong>An overpass</strong></em> was built for the troops at Lack land Air Force Base.", h: true, choices: ["A bridge", "A dormitory", "A fire escape", "A parade stand"], ans: 0 },
+        { q: "84. His ______________ statement caught everyone's attention.", choices: ["opening", "opened", "open", "to open"], ans: 0, exp: "The correct phrase is 'opening statement', which means the first or introductory statement. The other choices (opened, open, to open) are grammatically incorrect in this context." },
+        { q: "85. I want to buy that property ._____________it's too expensive.", choices: ["or", "still", "where", "unless"], ans: 3 },
+        { q: "86. It is best to protect your tools___________ moisture and dust.", choices: ["with", "toward", "on", "against"], ans: 3, exp: "The phrase 'protect … against' is the correct collocation in English. We use 'against' when talking about protection from harm or danger." },
+        { q: "87. _______________ of the cartoons will be aired Saturday.", choices: ["Nobody", "any", "Something", "none"], ans: 3, exp: "The sentence means zero cartoons will be aired. The word 'none' = not any." },
+        { q: "88. He told the waitress to keep the change as a ____________.", choices: ["Coin", "tip", "bill", "roll"], ans: 1 },
+        { q: "89. The commander thought that the proposed plan was <em><strong>impractical</strong></em>.", h: true, choices: ["important", "unusable", "impressive", "feasible"], ans: 1 },
+        { q: "90. the commandant was not able <em><strong>to get his point across.</strong></em>", h: true, choices: ["explain", "research", "finish", "wrote"], ans: 0 },
+        { q: "91. Robin has an unusual <strong>outlook</strong>.", h: true, choices: ["automobile", "viewpoint", "occupation", "heritage"], ans: 1, exp: "'Outlook' here means point of view / way of thinking. The correct meaning is viewpoint." },
+        { q: "92. Ed entertained us with <em><strong>fictional</strong></em> stories.", h: true, choices: ["true", "interesting", "invented", "funny"], ans: 2 },
+        { q: "93. The office of the state senator is <em><strong>vacant</strong></em> right now.", h: true, choices: ["pays well", "is filled", "was eliminated", "has no one in it"], ans: 3 },
+        { q: "94. They___________ not be able to go to the party.", choices: ["cạn", "might", "have to", "are allowed to"], ans: 1 },
+        { q: "95. If you stop at the BX,________ me some cigarettes.", choices: ["buy", "would buy", "should have bought", "will buy"], ans: 0, exp: "First Conditional (If + Present Simple → Imperative). 'If you stop at the BX' is the condition, and 'buy me some cigarettes' is a direct request." },
+        { q: "96. ___________ opening the book, Mrs. Gerstel found an error on page.", choices: ["Between", "Despite", "Within", "Upon"], ans: 3 },
+        { q: "97. Scientists recognize that air ions affect living matter. For example, increasing the negative ions in the atmosphere reduces the incidence of respiratory illness. Negative ion therapy relieves pain in severe burn victims. Chronic ion deprivation, common with modern ventilating equipment, causes lassitude and loss of mental and physical efficiency. According to the paragraph___________.", choices: ["negative ions can be beneficial", "the government has established air ion standards", "negative ions are extremely rare", "air ions cause loss of mental efficiency"], ans: 0 },
+        { q: "98. The man needed a shopping ___________ to put his groceries in.", choices: ["vehicle", "cart", "line", "truck"], ans: 1 },
+        { q: "99. In the 17ch and 18ch centuries, France's possessions on the Atlantic coast of North America were known collectively as Acadia. The settlements fluctuated between French and English rule until 1763 when England took final possession. In 1755, many Acadians were deported for refusing to take an oath of loyalty to England. Most of these deportees ended up in southern Louisiana, where they still maintain a separate identity as \"Cajuns,\" with their own language and customs. \" main topic of this paragraph is______________.", choices: ["French possessions in North America", "the origins of the Cajun people", "the French and English wars", "British rule in Acadia"], ans: 1 },
+        { q: "100. His ideas were very <em><strong>orthodox</strong></em>.", h: true, choices: ["conventional", "liberal", "bizarre", "admirable"], ans: 0 }
+      ],
+      82: [
+        { q: "1) Willy want us to call him in an emergency.\nWhen does Willy want us to call him ?", audio: "2024/11/New-Recording.m4a", choices: ["whenever we're having a party", "whenever we get some money", "whenever we decide to leave", "whenever we're in serious trouble"], ans: 3 },
+        { q: "2) She relaxes and watches television on Sunday.", audio: "2024/11/New-Recording-2.m4a", choices: ["She takes it easy on Sunday.", "She goes to church on Sunday.", "She usually works on Sunday.", "She washes her car on Sunday."], ans: 0 },
+        { q: "3) Private Barns is going to speak.", audio: "2024/11/New-Recording-3.m4a", choices: ["He is going to learn something.", "He is going to sing something.", "He is going to write something.", "He is going to say something."], ans: 3 },
+        { q: "4) It costs a lot to educate children.", audio: "2024/11/New-Recording-4.m4a", choices: ["Schooling is expensive.", "Toys are expensive.", "Houses are expensive.", "Clothing is expensive."], ans: 0 },
+        { q: "5) Sergeant Kenney is very happy with his grade. Sergeant Kinney is _____________.", audio: "2024/11/New-Recording-5.m4a", choices: ["angry", "sick", "pleased", "confused"], ans: 2 },
+        { q: "6) The student will trying to locate a particular town. They were using a ___________.", audio: "2024/11/New-Recording-6.m4a", choices: ["map", "tablet", "card", "magazine"], ans: 0 },
+        { q: "7) The man wanted to know the mileage between New York and California.\nHe wanted to know the _____________.", audio: "2024/11/New-Recording-7.m4a", choices: ["route", "weather", "distance", "population"], ans: 2 },
+        { q: "8) My sister is not married - She is ____________.", audio: "2024/11/New-Recording-8.m4a", choices: ["dead", "educated", "charming", "single"], ans: 3 },
+        { q: "9) Burbak's son is very musical. - He likes to___________.", audio: "2024/11/New-Recording-9.m4a", choices: ["play the piano", "play football", "collect rocks", "collect stamps"], ans: 0 },
+        { q: "10) Did you find your key?\nYes,_______________.", audio: "2024/11/New-Recording-10.m4a", choices: ["here it is", "I know him", "help yourself", "hold the line"], ans: 0 },
+        { q: "11) Where are you going?", audio: "2024/11/New-Recording-11.m4a", choices: ["by plane", "about two months", "to England", "because of my job"], ans: 2 },
+        { q: "12) The instructor told Dick to contact Mr. Brown -\nWhat Dick has to do?", audio: "2024/11/New-Recording-12.m4a", choices: ["talk to Mr. Brown", "sign a contract", "ignore Mr. Brown", "erase Mr. Brown's name"], ans: 0 },
+        { q: "13) The bank cashier asked Jack if he want large or small bills -\nWhat did the cashier want to know?", audio: "2024/11/New-Recording-13.m4a", choices: ["if he wanted his money in large or small bills", "if Bill was large or small", "if he owed large or small bills", "if Jack's money bag was large"], ans: 0 },
+        { q: "14) Children usually imitate their parents -\nWhat children usually do?", audio: "2024/11/New-Recording-14.m4a", choices: ["help their parents", "act like their parents", "admire their parents", "live with their parents"], ans: 1 },
+        { q: "15) When we travel we should carry some identification with us -\nWhat should we carry ?", audio: "2024/11/New-Recording-15.m4a", choices: ["papers showing who we are", "some suitcases", "papers showing where we are", "we're going medical supplies"], ans: 0 },
+        { q: "16) Frank listens closely to the message -\nHow did he listen?", audio: "2024/11/New-Recording-16.m4a", choices: ["with difficulty", "with attention", "with anger", "with pleasure"], ans: 1 },
+        { q: "17) The sergeant talked to each man individually. -\nHow did he talk to the men?", audio: "2024/11/New-Recording-17.m4a", choices: ["as a unit", "all together", "one at a time", "in a group"], ans: 2 },
+        { q: "18) They plan to include me in the group.", audio: "2024/11/New-Recording-18.m4a", choices: ["They are going to ask me to go with them.", "I am going without them.", "They are going by themselves.", "We are going in different groups."], ans: 0 },
+        { q: "19) Make sure that your equipment function properly before you use it.", audio: "2024/11/New-Recording-19.m4a", choices: ["Make sure the equipment is installed properly.", "Make sure the equipment is cleaned properly.", "Make sure the equipment is plugged in properly.", "Make sure the equipment is working properly."], ans: 3 },
+        { q: "20) He had a bad ear infection", audio: "2024/11/New-Recording-20.m4a", choices: ["He couldn't t write well.", "He couldn't talk well.", "He couldn't see well.", "He couldn't hear well"], ans: 3 },
+        { q: "21) At 20:00 the gate to the base will closed.", audio: "2024/11/New-Recording-21.m4a", choices: ["People couldn't come in.", "The heat couldn't come in.", "The night air couldn't come in.", "Insects couldn't come in."], ans: 0 },
+        { q: "22) The paper cup with coffee and it had a leak.", audio: "2024/11/New-Recording-22.m4a", choices: ["The coffee was sweet.", "The cup was expensive.", "The coffee was escaping.", "The cup was covered."], ans: 2 },
+        { q: "23) The workers are using a new procedure.", audio: "2024/11/New-Recording-23.m4a", choices: ["They are working by a new system.", "They are working in a new company.", "They are working at a new location.", "They are working for a new salary."], ans: 0 },
+        { q: "24) The doctor checked Mr. Browns circulation.", audio: "2024/11/New-Recording-24.m4a", choices: ["His stomach was checked.", "His temperature checked.", "His vision was checked.", "His blood press checked."], ans: 3 },
+        { q: "25) The student handles the machine efficiently.", audio: "2024/11/New-Recording-25.m4a", choices: ["He handles it very well.", "He makes many mistakes.", "He handles it roughly.", "He is learning to work on it."], ans: 0 },
+        { q: "26) The situation requires prompt action.", audio: "2024/11/New-Recording-26.m4a", choices: ["The government required prompt action.", "The regulation required prompt action.", "The circumstances required prompt action.", "The officer in charge required prompt action."], ans: 2 },
+        { q: "27) Juan had a serious illness.", audio: "2024/11/New-Recording-27.m4a", choices: ["Her illness was rare.", "Her illness was minor", "Her illness was common.", "Her illness was severe."], ans: 3 },
+        { q: "28) He solved the problem in an instant.", audio: "2024/11/New-Recording-28.m4a", choices: ["He solved it in his car.", "He solved it after a while.", "He solved it very quickly.", "He solved it in his head."], ans: 2 },
+        { q: "29) What you were doing when I called you?", audio: "2024/11/New-Recording-29.m4a", choices: ["I was in the barracks.", "I was studying.", "Fine, thank you.", "I was there for a long time."], ans: 1 },
+        { q: "30) Tom is leaving next month.\nWhen is he leaving?", audio: "2024/11/New-Recording-30.m4a", choices: ["the other month", "later this month", "two months from now", "the month following this one"], ans: 3 },
+        { q: "31) He wanted to know the value of my watch. -\nWhat did he want to know?", audio: "2024/11/New-Recording-31.m4a", choices: ["its shape", "its worth", "its color", "its age"], ans: 1 },
+        { q: "32) Why did Sargent Flowers take such precautions.", audio: "2024/11/New-Recording-32.m4a", choices: ["He doesn't emphasize prevention.", "He doesn't want any accidents.", "He doesn't want any promotions", "He doesn't stress safety."], ans: 1 },
+        { q: "33) What's in your mind Pad?- asked Bob\nWhat did Bob want to know?", audio: "2024/11/New-Recording-33.m4a", choices: ["which hat she is wearing", "what she is thinking", "what she is doing", "what she is cooking"], ans: 1 },
+        { q: "34) Mark was on the fight with a boy next door -\nWhat happen to Mark?", audio: "2024/11/New-Recording-34.m4a", choices: ["He avoided a fight.", "He observed a fight next door.", "He arranged the fight", "He was involved in a fight."], ans: 3 },
+        { q: "35) The top of the table was rough.", audio: "2024/11/New-Recording-35.m4a", choices: ["The top was not smooth.", "The top was shiny.", "The top was dirty.", "The top wasn't hard."], ans: 0 },
+        { q: "36) John divided the candy.", audio: "2024/11/New-Recording-36.m4a", choices: ["He threw it away.", "He gathered it together.", "He ate it all quickly", "He separated it into portions."], ans: 3 },
+        { q: "37) I guess Mr. Lee will return to his country next week.", audio: "2024/11/New-Recording-37.m4a", choices: ["He won't go back to his country next week", "He regrets he will return to his country", "I hope to go to his country soon.", "I suppose he will go back next week."], ans: 3 },
+        { q: "38) Bill advertise his house.", audio: "2024/11/New-Recording-38.m4a", choices: ["He wanted to paint it.", "He wanted to clean it.", "He wanted to hide it.", "He wanted to sell it."], ans: 3 },
+        { q: "39) He doesn't take long to prepare some meals.", audio: "2024/11/New-Recording-39.m4a", choices: ["All cooks work hard.", "Some food can be fixed in a short time.", "Some of the food here is wonderful.", "Cooking always takes a lot of time."], ans: 1 },
+        { q: "40) The captain said: we were approaching New York.", audio: "2024/11/New-Recording-40.m4a", choices: ["We were flying over New York.", "We were leaving New York.", "We were getting close to New York.", "We were going around New York."], ans: 2 },
+        { q: "41) The pilot ejected from the plane.", audio: "2024/11/New-Recording-41.m4a", choices: ["The pilot was thrown out of the plane.", "The pilot was attached to the plane.", "The plane remained under the pilot's control.", "The pilot was left in the plane."], ans: 0 },
+        { q: "42) The pieces of wire will splice together.", audio: "2024/11/New-Recording-42.m4a", choices: ["They were splashed.", "They were joined.", "They were separated.", "They were sprayed."], ans: 1 },
+        { q: "43) John cultivates vegetables.", audio: "2024/11/New-Recording-43.m4a", choices: ["He cooks vegetables.", "He grows vegetables.", "He eats vegetables.", "He likes vegetables."], ans: 1 },
+        { q: "44) She is absolutely certain that she locked the door.", audio: "2024/11/New-Recording-44.m4a", choices: ["She complained that it was locked.", "She knew that it was locked.", "She imagined that it was locked.", "She discovered that it was locked."], ans: 1 },
+        { q: "45) Jack's hand come in contact with the sharp edge of the saw.", audio: "2024/11/New-Recording-45.m4a", choices: ["The saw touched the sharp edge.", "The sharp edge came in contact with the saw.", "His hand touched the cutting edge of the saw.", "Jack never touched the saw."], ans: 2 },
+        { q: "46) General Adams took over yesterday. -\nWhat did he do?", audio: "2024/11/New-Recording-46.m4a", choices: ["He went over the books.", "He assumed command.", "He inspected the base.", "He flew the new jet."], ans: 1 },
+        { q: "47) Miss's Paul told his student that they had missed the point.", audio: "2024/11/New-Recording-47.m4a", choices: ["They knew what she said.", "They couldn't hear well.", "They didn't understand.", "They lost something."], ans: 2 },
+        { q: "48) Barnies is supposed to be a very swanky restaurant. isn't it?\nYes, it's__________.", audio: "2024/11/New-Recording-48.m4a", choices: ["unclean", "dismal", "cheap", "elegant"], ans: 3 },
+        { q: "49) You know : I think Robert has a screw loose.\nHe is_____________.", audio: "2024/11/New-Recording-49.m4a", choices: ["quite serious", "rather comical", "always eager", "somewhat crazy"], ans: 3 },
+        { q: "50) The doctor had to extract the splinter from my finger.\nHe had to take it ______________.", audio: "2024/11/New-Recording-50.m4a", choices: ["over", "back", "out", "off"], ans: 2 },
+        { q: "51) Cheetah are <strong>characterize</strong> by their speed.\nThey are ____________.", audio: "2024/11/New-Recording-51.m4a", h: true, choices: ["killed by", "lacking in", "known for", "afraid of"], ans: 2 },
+        { q: "52) The police put the man under surveillance.\nThe police ___________the man.", audio: "2024/11/New-Recording-52.m4a", choices: ["arrested", "released", "cautioned", "watched"], ans: 3 },
+        { q: "53) What do you going to use that trailer for?", audio: "2024/11/New-Recording-53.m4a", choices: ["to spray paint", "to haul freight", "to drain the field", "to pump water"], ans: 1 },
+        { q: "54) Tom had a solar water heater in his house.\nIt uses ____________ to operate.", audio: "2024/11/New-Recording-54.m4a", choices: ["sunlight", "batteries", "gas", "electricity"], ans: 0 },
+        { q: "55) The bank has agree to underwrite the new building.\nThe bank will ____________ it.", audio: "2024/11/New-Recording-55.m4a", choices: ["design", "paint", "inspect", "finance"], ans: 3 },
+        { q: "56) Mike was amazed\nMike was_________.", audio: "2024/11/New-Recording-56.m4a", choices: ["furious", "excited", "tired", "surprised"], ans: 3 },
+        { q: "57. man: I don't think I would like to live in this area. woman: I know , The noise from the airport is really bad.\nThe__________ bother her", audio: "2024/11/New-Recording-57.m4a", choices: ["trains", "cars", "ships", "planes"], ans: 3 },
+        { q: "58. woman: What happened to your car? man: I forgot I only had plain water in the radiator last night.\nHe should have put __________ in the car.", audio: "2024/11/New-Recording-58.m4a", choices: ["gasoline", "brake fluid", "antifreeze", "oil"], ans: 2 },
+        { q: "59. man: What is that noise? woman: It must be the person next door.\nWhat is making the noise?", audio: "2024/11/New-Recording-59.m4a", choices: ["a car", "a dog", "a man", "the door"], ans: 2 },
+        { q: "60. man: What did you see on your vacation? woman: I saw all kinds of beautiful marine life.\nShe vacationed______________.", audio: "2024/11/New-Recording-60.m4a", choices: ["in the mountains", "in the desert", "near the ocean", "on a ranch"], ans: 2 },
+        { q: "61 . woman: I've been unpacking all day and I'm tired. man: Why don't you take a rest?\nThe woman needs to____________.", audio: "2024/11/New-Recording-61.m4a", choices: ["go out", "lie down", "exercise", "shower"], ans: 1 },
+        { q: "62. woman :Did the major get your message? man: Yes, but I had to clarify it.\nWhat did the man do to the message?", audio: "2024/11/New-Recording-62.m4a", choices: ["made sure the major could hear it", "made it easier to understand", "repeated it over and over", "wrote it down several times"], ans: 1 },
+        { q: "63. man : Did you study your lessons last night? woman: Yes, I studied them thoroughly.", audio: "2024/11/New-Recording-63.m4a", choices: ["She didn't study them at all.", "She studied them in detail.", "She studied a few pages.", "She glanced at the lessons."], ans: 1 },
+        { q: "64. man: Where is Al? woman: He's already at the hotel.\nman: Where will he meet us? woman: He said he'll wait by the front desk.\nAl will be in_______________.", audio: "2024/11/New-Recording-64.m4a", choices: ["his room", "the lobby", "the bar", "his car"], ans: 1 },
+        { q: "65. woman: How are you doing in math, Joe? man: I'm in way over my head math class.\nThe man is ___________.", audio: "2024/11/New-Recording-65.m4a", choices: ["not taking math now", "the best in the class", "unable to go to class", "unable to keep up"], ans: 3 },
+        { q: "66.woman : Rip is really in trouble. He lost his workbook. man: You're kidding. What's he going to do about it?\nRip lost his _______________.", audio: "2024/11/New-Recording-66.m4a", choices: ["dictionary", "test booklet", "library book", "homework book"], ans: 3 },
+        { q: "67. Where did <em><strong>the children</strong></em> go?", h: true, choices: ["she", "he", "they", "them"], ans: 2 },
+        { q: "68.I ___________ my brother's car yesterday.", choices: ["drove", "will drive", "drive", "am driving"], ans: 0 },
+        { q: "69. Select the correct sentence.", choices: ["A year twice we are examined by the", "We are examined by the doctor twice", "Twice a year by the doctor we are examined.", "By the doctor we are examined twice"], ans: 1 },
+        { q: "70. A lubrication system is an essential part of most machines.\nThis part is____________.", choices: ["removed", "necessary", "extra", "complex"], ans: 1 },
+        { q: "71. On Saturdays the traffic is heavy downtown.", choices: ["There are many cars on the street.", "Many people are walking on Saturdays.", "There are many people downtown.", "There are many lights on the street."], ans: 0 },
+        { q: "72. The radio transmission was <strong>garbled</strong>.", h: true, choices: ["clear", "late", "unclear", "early"], ans: 2, exp: "The word garbled means confused or hard to understand, so the correct synonym is unclear." },
+        { q: "73. Everyone thought that the food was <em><strong>delicious</strong></em>.", h: true, choices: ["good", "salty", "sweet", "awful"], ans: 0 },
+        { q: "74. This is the _____________machine I've ever used.", choices: ["most efficient", "efficiently", "more efficient", "efficient"], ans: 0 },
+        { q: "75. He ____________ stop the car because it had no brakes.", choices: ["won't", "couldn't", "doesn't have to", "mustn't."], ans: 1 },
+        { q: "76. Susan never leaves the office unless she ____________ finished an assignment.", choices: ["can", "be", "has", "is"], ans: 2 },
+        { q: "77. The water is murky,_________ let's forego the dive.", choices: ["so", "and", "but", "or"], ans: 0 },
+        { q: "78. After driving her friend downtown, Linda took her to a show.", choices: ["Linda took her friend to a movie.", "Linda's friend drove to town.", "Linda's friend took her to a movie.", "Linda did not have to drive downtown."], ans: 0 },
+        { q: "79. The commander could not ensure promotions for his men.", choices: ["arrange", "justify", "guarantee", "falsify"], ans: 2 },
+        { q: "80. We can't drive much farther because we are almost____________ gas.", choices: ["out on", "out for", "out to", "out of"], ans: 3 },
+        { q: "81. A soldier should never talk back to his commander.", choices: ["speak disrespectfully", "tell his troubles", "offer suggestions", "carry tales"], ans: 0 },
+        { q: "82. He isn't used to this food. It is_____________ .", choices: ["his favorite", "not new to him", "strange to him", "his native food"], ans: 2, exp: "“He isn’t used to this food” means the food feels unfamiliar or unusual to him." },
+        { q: "83. When the weather becomes warmer, the mercury in a thermometer expands, and the amount of expansion is noted on the scale of the stem as an increase in temperature. Of course the glass expands too, but this change is minimal in comparison with the expansion of the mercury.\nAccording to this paragraph____________.", choices: ["mercury thermometers are one of the least common forms of thermometer", "the scale on the mercury thermometer registers the change in temperature", "all parts of the thermometer are filled with mercury", "in warm weather the glass expands as much as the mercury"], ans: 1, exp: "The paragraph explains how mercury expands and the thermometer scale shows this expansion as a rise in temperature." },
+        { q: "84. If i _____________you, I would finish the report by tonight.", choices: ["was", "were", "am", "be"], ans: 1 },
+        { q: "85. Marge watched over her child____________ the night.", choices: ["regarding", "throughout", "beyond", "except"], ans: 1 },
+        { q: "86. He seemed______________ happier than before.", choices: ["been", "being", "to be", "be"], ans: 2 },
+        { q: "87. They finished______________ the house yesterday.", choices: ["built", "building", "to build", "build"], ans: 1 },
+        { q: "88. He bought a new truck because his old one was no longer______________.", choices: ["broken", "repaired", "refueled", "serviceable"], ans: 3 },
+        { q: "89. I can't imagine what's holding up the movie.", choices: ["supporting", "raising", "delaying", "robbing"], ans: 2 },
+        { q: "90. Yurts had their origin in Mongolia where the people used them for shelter. The yurt, made of light pieces of wood covered with thick cloth, was a portable structure which the Mongolians carried with them in their search for grazing land for their animals.\nAccording to this paragraph, the yurt is_________________.", choices: ["suitable land for animals", "a kind of warm cloth", "no longer used in Mongolia", "a kind of portable house"], ans: 3 },
+        { q: "91. The deer______________ the fence to get into the vegetable garden.", choices: ["arranged to", "stood up", "leaped over", "climbed into"], ans: 2 },
+        { q: "92. The <em><strong>elderly</strong> </em>person ran a red light.", h: true, choices: ["drunk", "tired", "tall", "old"], ans: 3 },
+        { q: "93. That professor never says exactly what he means.\nYou have to figure it out by ______________.", choices: ["inference", "inferior", "inferential", "inferiority"], ans: 0, exp: "Inference means drawing a conclusion based on indirect evidence or hints. Since the professor doesn’t speak directly, you understand by making inferences." },
+        { q: "94. This is the gentleman for___________ I've been waiting.", choices: ["what", "who", "whom", "whose"], ans: 2 },
+        { q: "95. Students _____________late will miss part of the test.", choices: ["are arriving", "to arrive", "arriving", "have arrived"], ans: 2 },
+        { q: "96. The mood of the times __________ reflected in his poetry.", choices: ["has.", "were", "are", "was"], ans: 3 },
+        { q: "97. The moon goes around the earth in_____________.", choices: ["an orbit", "an equator", "a circumference", "a belt"], ans: 0 },
+        { q: "98. Would you check my calculation?", choices: ["computation", "calculator", "condition", "computer"], ans: 0 },
+        { q: "99. Craig's statue was <em><strong>unveiled</strong> </em>last night.", h: true, choices: ["stolen", "revealed", "appraised", "sold"], ans: 1 },
+        { q: "100. Lawrence scared me<em><strong> to death</strong></em> when he came in.", h: true, choices: ["a little", "on purpose", "a lot", "unintentionally"], ans: 2 }
+      ]
+    };
+    /* __FORMS_DATA_END__ */
+
+    const STORAGE_KEY = "alcpt_imported_forms_v1";
+
+    // โหลดข้อมูลชุดข้อสอบที่เคยนำเข้าไว้ในเบราว์เซอร์ (ถ้ามี)
+    try {
+      const savedJson = localStorage.getItem(STORAGE_KEY);
+      if (savedJson) {
+        const parsedSaved = JSON.parse(savedJson);
+        if (parsedSaved && typeof parsedSaved === "object") {
+          Object.keys(parsedSaved).forEach(k => {
+            const num = Number(k);
+            if (Number.isInteger(num) && Array.isArray(parsedSaved[k]) && parsedSaved[k].length > 0) {
+              FORMS_DATA[num] = parsedSaved[k];
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
+    // สร้างช่องข้อมูลชุดที่ 81 ถึง 100 ไว้รองรับการเพิ่มข้อสอบ
+    for (let f = 81; f <= 100; f++) {
+      if (!FORMS_DATA[f]) {
+        FORMS_DATA[f] = [];
+      }
+    }
+
+    let activeForm = 81;
+    let currentScore = 0;
+    let answeredQuestions = 0;
+    let totalQuestions = 0;
+
+    function getSortedFormNumbers() {
+      const nums = new Set();
+      for (let f = 81; f <= 100; f++) nums.add(f);
+      Object.keys(FORMS_DATA).forEach(k => {
+        const n = Number(k);
+        if (Number.isInteger(n) && n > 0) nums.add(n);
+      });
+      return Array.from(nums).sort((a, b) => a - b);
+    }
+
+    function getLoadedFormNumbers() {
+      return getSortedFormNumbers().filter(f => Array.isArray(FORMS_DATA[f]) && FORMS_DATA[f].length > 0);
+    }
+
+    function buildFormSelector() {
+      const grid = document.getElementById("form-selector-grid");
+      grid.innerHTML = "";
+      getSortedFormNumbers().forEach(f => {
+        const hasData = FORMS_DATA[f] && FORMS_DATA[f].length > 0;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.role = "tab";
+        btn.ariaSelected = f === activeForm ? "true" : "false";
+        btn.className = "form-pill" + (f === activeForm ? " is-active" : "") + (!hasData ? " is-empty" : "");
+        btn.textContent = "ชุดที่ " + f;
+        btn.title = hasData ? `ชุดที่ ${f} (${FORMS_DATA[f].length} ข้อ)` : `ชุดที่ ${f} (ยังไม่มีข้อสอบ)`;
+        btn.onclick = () => selectForm(f);
+        grid.appendChild(btn);
+      });
+    }
+
+    function showImportStatus(message, isError) {
+      const statusEl = document.getElementById("import-status");
+      if (!statusEl) return;
+      statusEl.textContent = message;
+      statusEl.className = "import-status " + (isError ? "is-err" : "is-ok");
+    }
+
+    // ฟังก์ชันช่วยนำเข้าข้อมูลจากการคัดลอกวางโค้ดโดยตรง
+    function handlePastedHtmlImport() {
+      const textarea = document.getElementById("paste-html-textarea");
+      if (!textarea) return;
+      const val = textarea.value.trim();
+      if (!val) {
+        showImportStatus("❌ กรุณาวางซอร์สโค้ด HTML ก่อนกดปุ่มแปลง", true);
+        return;
+      }
+      
+      const res = parseAceLangVoxHtml(val, "pasted-code");
+      if (res.error) {
+        showImportStatus("❌ แปลงโค้ดไม่สำเร็จ: " + res.error + " (กรุณาตรวจสอบว่าคัดลอกโค้ดทั้งหมด (Ctrl+A) จากหน้า view-source ของชุดข้อสอบแล้ว)", true);
+      } else {
+        FORMS_DATA[res.formNum] = res.questions;
+        
+        // บันทึกลง localStorage แบบ best-effort
+        try {
+          const toSave = {};
+          getLoadedFormNumbers().forEach(f => {
+            if (f !== 81 && f !== 82) {
+              toSave[f] = FORMS_DATA[f];
+            }
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        } catch (e) {}
+
+        activeForm = res.formNum;
+        buildFormSelector();
+        renderFormQuiz(res.formNum);
+        textarea.value = ""; // ล้างค่ากล่องข้อความหลังแปลงสำเร็จ
+        showImportStatus(`✅ แปลงและนำเข้าข้อสอบ "ชุดที่ ${res.formNum}" สำเร็จเรียบร้อยแล้วจำนวน ${res.questions.length} ข้อ!`, false);
+      }
+    }
+
+    function triggerHtmlImport() {
+      const input = document.getElementById("html-file-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      }
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function serializeCleanInline(node) {
+      if (node.nodeType === 3) {
+        return escapeHtml(node.nodeValue || "");
+      }
+      if (node.nodeType !== 1) return "";
+      const tag = node.tagName.toLowerCase();
+      if (tag === "br") return "\n";
+      const inner = Array.from(node.childNodes).map(serializeCleanInline).join("");
+      if (tag === "strong" || tag === "b" || tag === "em" || tag === "i") {
+        return `<${tag}>${inner}</${tag}>`;
+      }
+      return inner;
+    }
+
+    function parseAceLangVoxHtml(rawText, fileName) {
+      let htmlSource = rawText;
+
+      let doc = new DOMParser().parseFromString(htmlSource, "text/html");
+
+      // ถ้าไม่พบข้อสอบในครั้งแรก อาจเป็นเพราะเป็นหน้า view-source ที่ครอบด้วยตาราง td.line-content หรือ pre tag
+      if (doc.querySelectorAll(".step[data-question-id]").length === 0) {
+        const lineCells = doc.querySelectorAll("td.line-content, .line-content");
+        if (lineCells.length > 0) {
+          const extractedText = Array.from(lineCells).map(td => td.textContent).join("\n");
+          doc = new DOMParser().parseFromString(extractedText, "text/html");
+          htmlSource = extractedText;
+        } else {
+          const preEl = doc.querySelector("pre");
+          if (preEl && (preEl.textContent.includes("ays-quiz-form") || preEl.textContent.includes("step"))) {
+            doc = new DOMParser().parseFromString(preEl.textContent, "text/html");
+            htmlSource = preEl.textContent;
+          }
+        }
+      }
+
+      // 1. ค้นหาหมายเลขชุดข้อสอบ (Form Number)
+      let detectedForm = null;
+      const candidateTitles = [
+        doc.querySelector(".ays-fs-title")?.textContent || "",
+        doc.querySelector("title")?.textContent || "",
+        doc.querySelector("h1")?.textContent || ""
+      ];
+      for (const t of candidateTitles) {
+        const m = t.match(/Form\s*(\d{1,3})/i);
+        if (m) {
+          detectedForm = Number(m[1]);
+          break;
+        }
+      }
+      if (!detectedForm && fileName) {
+        const cleanedName = fileName.replace(/elementor-page-\d+/gi, "").replace(/\.(html?|txt)$/i, "");
+        const mFile = cleanedName.match(/(\d{1,3})/);
+        if (mFile) {
+          detectedForm = Number(mFile[1]);
+        }
+      }
+
+      // 2. ถอดรหัสเฉลย Base64 จาก window.quizOptions_XX
+      const ansLookup = {};
+      const optRegex = /window\.quizOptions_\d+\[['"]?(\d+)['"]?\]\s*=\s*['"]([^'"]+)['"]/g;
+      let match;
+      while ((match = optRegex.exec(htmlSource)) !== null) {
+        try {
+          const decoded = JSON.parse(atob(match[2]));
+          if (decoded && decoded.question_answer) {
+            ansLookup[match[1]] = decoded.question_answer;
+          }
+        } catch (err) {}
+      }
+
+      // 3. สกัดโจทย์ เสียง ตัวเลือก และคำอธิบายแต่ละข้อ
+      let steps = Array.from(doc.querySelectorAll("form.ays-quiz-form > .step[data-question-id]:not(.ays_question_result)"));
+      if (steps.length === 0) {
+        steps = Array.from(doc.querySelectorAll(".step[data-question-id]:not(.ays_question_result)"));
+      }
+      if (steps.length === 0) {
+        return { error: `ไม่พบข้อมูลข้อสอบในไฟล์ "${fileName}" (กรุณาตรวจสอบว่าเลือกคัดลอกครอบคลุมโค้ดที่มีแท็ก class="step" หรือ "ays_quiz_question" ครบถ้วน)` };
+      }
+
+      const parsedQuestions = [];
+      steps.forEach(step => {
+        const qid = step.getAttribute("data-question-id") || "";
+        const qDiv = step.querySelector(".ays_quiz_question, .ays-modern-dark-question");
+        if (!qDiv) return;
+
+        let audioSrc = "";
+        const sourceEl = qDiv.querySelector("audio source[src], audio[src]");
+        if (sourceEl) {
+          audioSrc = (sourceEl.getAttribute("src") || "").split("?")[0].trim();
+          audioSrc = audioSrc.replace("https://acelangvox.com/wp-content/uploads/", "");
+        }
+
+        const qClone = qDiv.cloneNode(true);
+        qClone.querySelectorAll("audio, .wp-audio-shortcode, .mejs-container, .mejs__container, .lvq-transcript-toggle, script, style").forEach(el => el.remove());
+
+        const hasHtml = Boolean(qClone.querySelector("strong, b, em, i"));
+        const pNodes = Array.from(qClone.querySelectorAll("p"));
+        const targetBlocks = pNodes.length > 0 ? pNodes : [qClone];
+        const lines = [];
+
+        targetBlocks.forEach(block => {
+          let rawLine = "";
+          if (hasHtml) {
+            rawLine = serializeCleanInline(block);
+          } else {
+            const bClone = block.cloneNode(true);
+            bClone.querySelectorAll("br").forEach(br => br.replaceWith("\n"));
+            rawLine = bClone.textContent || "";
+          }
+          const cleanedSublines = rawLine
+            .replace(/\uFEFF/g, "")
+            .replace(/\u00A0/g, " ")
+            .split("\n")
+            .map(s => s.replace(/[ \t]+/g, " ").trim())
+            .filter(s => s && s !== "&nbsp;");
+          if (cleanedSublines.length > 0) {
+            lines.push(cleanedSublines.join("\n"));
+          }
+        });
+
+        const qText = lines.join("\n");
+
+        const fields = Array.from(step.querySelectorAll(".ays-quiz-answers .ays-field"));
+        const qAnsMap = ansLookup[qid] || {};
+        let correctIdx = 0;
+        const choices = fields.map((field, cIdx) => {
+          const radio = field.querySelector('input[type="radio"]');
+          const hiddenCorr = field.querySelector('input[name="ays_answer_correct[]"]');
+          if (radio && String(qAnsMap[radio.value]) === "1") {
+            correctIdx = cIdx;
+          } else if (hiddenCorr && String(hiddenCorr.value) === "1") {
+            correctIdx = cIdx;
+          }
+          const lbl = field.querySelector("label.ays-quiz-keyboard-label") || field.querySelector("label:not(.ays_answer_image)");
+          const rawChoice = lbl ? lbl.textContent : field.textContent;
+          return rawChoice
+            .replace(/\uFEFF/g, "")
+            .replace(/\u00A0/g, " ")
+            .replace(/[ \t]+/g, " ")
+            .trim()
+            .replace(/^(?:[a-d]\.\s*|\.\s*)/i, "")
+            .trim();
+        });
+
+        if (choices.length === 0) return;
+
+        let expText = "";
+        const expDiv = step.querySelector(".ays_questtion_explanation");
+        if (expDiv) {
+          const expClone = expDiv.cloneNode(true);
+          expClone.querySelectorAll("br").forEach(br => br.replaceWith("\n"));
+          expClone.querySelectorAll("p").forEach(p => p.append("\n"));
+          const rawExp = (expClone.textContent || "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ");
+          const expLines = rawExp.split("\n").map(s => s.replace(/[ \t]+/g, " ").trim()).filter(Boolean);
+          if (expLines.length > 0) {
+            const joined = expLines.join(" ");
+            const mEx = joined.match(/Explanation:\s*(.+)/i);
+            expText = mEx ? mEx[1].trim() : joined;
+          }
+        }
+
+        const qObj = { q: qText };
+        if (audioSrc) qObj.audio = audioSrc;
+        if (hasHtml) qObj.h = true;
+        qObj.choices = choices;
+        qObj.ans = correctIdx;
+        if (expText) qObj.exp = expText;
+        parsedQuestions.push(qObj);
+      });
+
+      if (parsedQuestions.length === 0) {
+        return { error: `ไม่สามารถแยกโจทย์จากไฟล์ "${fileName}" ได้` };
+      }
+
+      return {
+        formNum: detectedForm || activeForm,
+        questions: parsedQuestions
+      };
+    }
+
+    async function handleHtmlFilesImport(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      const files = Array.from(fileList);
+      const importedForms = [];
+      const errors = [];
+
+      for (const file of files) {
+        try {
+          const text = await file.text();
+          const res = parseAceLangVoxHtml(text, file.name);
+          if (res.error) {
+            errors.push(res.error);
+          } else {
+            FORMS_DATA[res.formNum] = res.questions;
+            importedForms.push({ formNum: res.formNum, count: res.questions.length });
+          }
+        } catch (err) {
+          errors.push(`อ่านไฟล์ "${file.name}" ไม่สำเร็จ`);
+        }
+      }
+
+      if (importedForms.length > 0) {
+        importedForms.sort((a, b) => a.formNum - b.formNum);
+        // บันทึกลง localStorage แบบ best-effort
+        try {
+          const toSave = {};
+          getLoadedFormNumbers().forEach(f => {
+            if (f !== 81 && f !== 82) {
+              toSave[f] = FORMS_DATA[f];
+            }
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        } catch (e) {}
+
+        const firstImported = importedForms[0].formNum;
+        activeForm = firstImported;
+        buildFormSelector();
+        renderFormQuiz(firstImported);
+
+        const summaryList = importedForms.map(x => `ชุดที่ ${x.formNum} (${x.count} ข้อ)`).join(", ");
+        const errSuffix = errors.length > 0 ? ` • พบปัญหา ${errors.length} ไฟล์: ${errors.join("; ")}` : "";
+        showImportStatus(`✅ นำเข้าข้อสอบสำเร็จ ${importedForms.length} ชุด: ${summaryList}${errSuffix}`, false);
+      } else if (errors.length > 0) {
+        showImportStatus(`❌ ${errors.join(" | ")}`, true);
+      }
+    }
+
+    function exportMergedHtml() {
+      const loadedForms = getLoadedFormNumbers();
+      const exportData = {};
+      loadedForms.forEach(f => {
+        exportData[f] = FORMS_DATA[f];
+      });
+
+      const docClone = document.documentElement.cloneNode(true);
+      const clearIds = ["form-selector-grid", "quiz-main-area", "score-result", "realtime-scoreboard", "import-status"];
+      clearIds.forEach(id => {
+        const el = docClone.querySelector("#" + id);
+        if (el) {
+          el.innerHTML = "";
+          if (id === "import-status") el.className = "import-status";
+          if (id === "realtime-scoreboard") el.removeAttribute("style");
+        }
+      });
+
+      const scriptEl = docClone.querySelector("#main-app-script");
+      const startMarker = "/* __FORMS_DATA_START__ */";
+      const endMarker = "/* __FORMS_DATA_END__ */";
+      if (!scriptEl) return;
+
+      const src = scriptEl.textContent;
+      const sIdx = src.indexOf(startMarker);
+      const eIdx = src.indexOf(endMarker);
+      if (sIdx === -1 || eIdx === -1) return;
+
+      const serializedData = JSON.stringify(exportData, null, 2).replace(/<\//g, "<\\/");
+      scriptEl.textContent =
+        src.slice(0, sIdx + startMarker.length) +
+        "\n    const FORMS_DATA = " + serializedData + ";\n    " +
+        src.slice(eIdx);
+
+      const finalHtml = "<!DOCTYPE html>\n" + docClone.outerHTML;
+      const blob = new Blob([finalHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ALCPT-Practice-All-Forms-${loadedForms[0]}-${loadedForms[loadedForms.length - 1]}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      showImportStatus(
+        `💾 สร้างไฟล์รวมข้อสอบครบ ${loadedForms.length} ชุด (ชุดที่ ${loadedForms.join(", ")}) แล้ว! หากกดในหน้าพรีวิวนี้แล้วยังไม่ดาวน์โหลด ให้กดไอคอน Download บนแถบมุมขวาบนเพื่อรันบนเบราว์เซอร์ปกติก่อนครับ`,
+        false
+      );
+    }
+
+    function selectForm(formNum) {
+      // หยุดเสียงที่กำลังเล่นอยู่ก่อนเปลี่ยนชุด
+      document.querySelectorAll("audio").forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+      });
+      activeForm = formNum;
+      buildFormSelector();
+      renderFormQuiz(formNum);
+    }
+
+    function resetCurrentForm() {
+      document.querySelectorAll("audio").forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+      });
+      renderFormQuiz(activeForm);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateScoreDisplay() {
+      const scoreBoard = document.getElementById("realtime-scoreboard");
+      if (totalQuestions === 0) {
+        scoreBoard.style.display = "none";
+        return;
+      }
+      scoreBoard.style.display = "block";
+      scoreBoard.innerHTML = `⭐ คะแนน: <span class="score-num">${currentScore}</span> / ${totalQuestions}` +
+        `<span class="answered-sub">ทำแล้ว ${answeredQuestions} ข้อ</span>`;
+    }
+
+    function renderFormQuiz(formNum) {
+      const questions = FORMS_DATA[formNum] || [];
+      const mainArea = document.getElementById("quiz-main-area");
+      const doneArea = document.getElementById("done-button-area");
+      const resultDiv = document.getElementById("score-result");
+      const titleEl = document.getElementById("active-form-title");
+      const metaEl = document.getElementById("active-form-meta");
+      const resetBtn = document.getElementById("btn-reset-quiz");
+
+      titleEl.textContent = `ALCPT Form ${formNum} (ชุดที่ ${formNum})`;
+      resultDiv.innerHTML = "";
+
+      currentScore = 0;
+      answeredQuestions = 0;
+      totalQuestions = questions.length;
+      updateScoreDisplay();
+
+      if (questions.length === 0) {
+        const loadedList = getLoadedFormNumbers().join(", ");
+        metaEl.textContent = "ยังไม่มีข้อมูลข้อสอบในชุดนี้";
+        resetBtn.style.display = "none";
+        doneArea.style.display = "none";
+        mainArea.innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">📂</div>
+            <h3 class="empty-state-title">ยังไม่มีข้อสอบในชุดที่ ${formNum}</h3>
+            <p class="empty-state-desc">
+              ขณะนี้มีข้อสอบพร้อมใช้งานใน <strong>ชุดที่ ${loadedList}</strong> แล้ว • คุณสามารถกดปุ่มด้านล่างเพื่อเลือกไฟล์ซอร์สโค้ด <code>.html</code> ของชุดที่ ${formNum} (หรือเลือกชุด 83–100 พร้อมกันทีเดียวทุกไฟล์) เพื่อดึงโจทย์ เสียง และเฉลยเข้าสู่ระบบอัตโนมัติได้ทันที
+            </p>
+            <div class="empty-state-actions">
+              <button type="button" class="btn-import" onclick="triggerHtmlImport()">📂 เลือกไฟล์ .html นำเข้าข้อสอบ</button>
+              <button type="button" class="btn-back-81" onclick="selectForm(81)">กลับไปทำชุดที่ 81</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const listeningCount = questions.filter(item => Boolean(item.audio)).length;
+      const readingCount = questions.length - listeningCount;
+      metaEl.textContent = `Listening ${listeningCount} ข้อ • Reading ${readingCount} ข้อ • รวม ${questions.length} ข้อ (สลับช้อยส์อัตโนมัติตั้งแต่ข้อ 14 เป็นต้นไป)`;
+      resetBtn.style.display = "inline-block";
+      doneArea.style.display = "block";
+
+      const listContainer = document.createElement("div");
+      listContainer.className = "questions-list";
+
+      let addedListeningBanner = false;
+      let addedReadingBanner = false;
+
+      questions.forEach((item, index) => {
+        const questionNumber = index + 1;
+        const isListening = Boolean(item.audio);
+
+        if (isListening && !addedListeningBanner) {
+          addedListeningBanner = true;
+          const banner = document.createElement("div");
+          banner.className = "section-banner";
+          banner.textContent = "🎧 Part I: Listening (ข้อ 1 – " + listeningCount + ")";
+          listContainer.appendChild(banner);
+        } else if (!isListening && !addedReadingBanner) {
+          addedReadingBanner = true;
+          const banner = document.createElement("div");
+          banner.className = "section-banner";
+          banner.textContent = "📖 Part II: Reading (ข้อ " + questionNumber + " – " + questions.length + ")";
+          listContainer.appendChild(banner);
+        }
+
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.id = `question-card-${questionNumber}`;
+        card.dataset.isAnswered = "false";
+        card.dataset.questionNumber = String(questionNumber);
+
+        // ส่วนหัวข้อสอบ
+        const qHeader = document.createElement("div");
+        qHeader.className = "question-header";
+        qHeader.innerHTML = `
+          <span class="question-badge">ข้อที่ ${questionNumber}</span>
+          <span class="question-type-tag">${isListening ? "Listening" : "Reading"}</span>
+        `;
+        card.appendChild(qHeader);
+
+        // กล่องโจทย์ / เครื่องเล่นเสียง
+        const promptBox = document.createElement("div");
+        promptBox.className = "prompt-box";
+
+        if (isListening) {
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript-box";
+          const p = document.createElement("p");
+          p.className = "prompt-text";
+          if (item.h) {
+            p.innerHTML = item.q;
+          } else {
+            p.textContent = item.q;
+          }
+          transcriptDiv.appendChild(p);
+
+          const audioWrap = document.createElement("div");
+          audioWrap.className = "audio-wrap";
+          const audioEl = document.createElement("audio");
+          audioEl.controls = true;
+          audioEl.preload = "none";
+          audioEl.src = item.audio.startsWith("http")
+            ? item.audio
+            : (item.audio.includes("/")
+              ? "https://acelangvox.com/wp-content/uploads/" + item.audio
+              : AUDIO_BASE + item.audio);
+          // หยุดเล่นไฟล์เสียงข้ออื่นเมื่อกดเล่นข้อปัจจุบัน
+          audioEl.addEventListener("play", () => {
+            document.querySelectorAll("audio").forEach(other => {
+              if (other !== audioEl && !other.paused) {
+                other.pause();
+              }
+            });
+          });
+          audioWrap.appendChild(audioEl);
+
+          const toggleBtn = document.createElement("button");
+          toggleBtn.type = "button";
+          toggleBtn.className = "btn-transcript";
+          toggleBtn.textContent = "Show Transcript";
+          toggleBtn.setAttribute("aria-expanded", "false");
+          toggleBtn.onclick = () => {
+            const open = transcriptDiv.classList.toggle("is-open");
+            toggleBtn.textContent = open ? "Hide Transcript" : "Show Transcript";
+            toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+          };
+
+          promptBox.appendChild(transcriptDiv);
+          promptBox.appendChild(audioWrap);
+          promptBox.appendChild(toggleBtn);
+        } else {
+          const p = document.createElement("p");
+          p.className = "prompt-text";
+          if (item.h) {
+            p.innerHTML = item.q;
+          } else {
+            p.textContent = item.q;
+          }
+          promptBox.appendChild(p);
+        }
+
+        card.appendChild(promptBox);
+
+        // ตัวเลือกคำตอบ (.choices-container & .choice-item)
+        const choicesContainer = document.createElement("div");
+        choicesContainer.className = "choices-container";
+
+        // เตรียมข้อมูลช้อยส์พร้อมระบุข้อถูก
+        const preparedChoices = item.choices.map((text, cIdx) => ({
+          text: text,
+          isCorrect: cIdx === item.ans
+        }));
+
+        // สลับช้อยส์อัตโนมัติ (ยกเว้นข้อ 1–13 ตามเงื่อนไข)
+        if (questionNumber > 13) {
+          for (let i = preparedChoices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [preparedChoices[i], preparedChoices[j]] = [preparedChoices[j], preparedChoices[i]];
+          }
+        }
+
+        preparedChoices.forEach((choiceObj, radioIndex) => {
+          const choiceEl = document.createElement("div");
+          choiceEl.className = "choice-item";
+          choiceEl.dataset.isCorrect = choiceObj.isCorrect ? "true" : "false";
+
+          const radioId = `f${formNum}_q_${index}_choice_${radioIndex}`;
+          const leftWrap = document.createElement("div");
+          leftWrap.className = "choice-left";
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `f${formNum}_question_group_${index}`;
+          radio.id = radioId;
+
+          const label = document.createElement("label");
+          label.setAttribute("for", radioId);
+          label.textContent = choiceObj.text;
+
+          leftWrap.appendChild(radio);
+          leftWrap.appendChild(label);
+
+          const iconSpan = document.createElement("span");
+          iconSpan.className = "correct-icon";
+          iconSpan.textContent = choiceObj.isCorrect ? "✓ เฉลย" : "✕";
+
+          // คลิกพื้นที่กรอบช้อยส์เพื่อเลือกปุ่ม Radio ได้สะดวกทั้งมือถือและคอมพิวเตอร์
+          choiceEl.addEventListener("click", (ev) => {
+            if (card.dataset.isAnswered === "true") return;
+            if (ev.target !== radio && ev.target !== label) {
+              radio.checked = true;
+              radio.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          });
+
+          choiceEl.appendChild(leftWrap);
+          choiceEl.appendChild(iconSpan);
+          choicesContainer.appendChild(choiceEl);
+        });
+
+        card.appendChild(choicesContainer);
+
+        // กล่องคำอธิบาย (ถ้ามีในข้อสอบต้นฉบับ)
+        let expBox = null;
+        if (item.exp) {
+          expBox = document.createElement("div");
+          expBox.className = "explanation-box";
+          expBox.textContent = "💡 " + item.exp;
+          card.appendChild(expBox);
+        }
+
+        // Event Delegation ดักจับการตอบแต่ละข้อ
+        choicesContainer.addEventListener("change", function (e) {
+          if (e.target.type !== "radio") return;
+          if (card.dataset.isAnswered === "true") return;
+
+          card.dataset.isAnswered = "true";
+          choicesContainer.style.setProperty("pointer-events", "none", "important");
+
+          const selectedRadio = e.target;
+          const selectedChoiceElement = selectedRadio.closest(".choice-item");
+          const correctChoiceElement = card.querySelector('.choice-item[data-is-correct="true"]');
+
+          if (correctChoiceElement) {
+            correctChoiceElement.style.setProperty("background-color", "#d1fae5", "important");
+            correctChoiceElement.style.setProperty("color", "#065f46", "important");
+            correctChoiceElement.style.setProperty("border-left", "4px solid #10b981", "important");
+            const lbl = correctChoiceElement.querySelector("label");
+            if (lbl) lbl.style.setProperty("color", "#065f46", "important");
+            const icon = correctChoiceElement.querySelector(".correct-icon");
+            if (icon) {
+              icon.style.setProperty("display", "inline", "important");
+              icon.style.setProperty("color", "#065f46", "important");
+            }
+          }
+
+          if (selectedChoiceElement === correctChoiceElement) {
+            currentScore++;
+            card.style.setProperty("border", "2px solid #10b981", "important");
+          } else {
+            if (selectedChoiceElement) {
+              selectedChoiceElement.style.setProperty("background-color", "#fee2e2", "important");
+              selectedChoiceElement.style.setProperty("color", "#991b1b", "important");
+              selectedChoiceElement.style.setProperty("border-left", "4px solid #ef4444", "important");
+              const lbl = selectedChoiceElement.querySelector("label");
+              if (lbl) lbl.style.setProperty("color", "#991b1b", "important");
+              const wrongIcon = selectedChoiceElement.querySelector(".correct-icon");
+              if (wrongIcon) {
+                wrongIcon.style.setProperty("display", "inline", "important");
+                wrongIcon.style.setProperty("color", "#991b1b", "important");
+              }
+            }
+            card.style.setProperty("border", "2px solid #ef4444", "important");
+          }
+
+          if (expBox) {
+            expBox.classList.add("is-visible");
+          }
+
+          answeredQuestions++;
+          updateScoreDisplay();
+
+          if (answeredQuestions === totalQuestions) {
+            showFinalResult();
+          }
+        });
+
+        listContainer.appendChild(card);
+      });
+
+      mainArea.innerHTML = "";
+      mainArea.appendChild(listContainer);
+    }
+
+    function jumpToQuestion(qNum) {
+      const target = document.getElementById(`question-card-${qNum}`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function showFinalResult() {
+      if (totalQuestions === 0) return;
+
+      const resultDiv = document.getElementById("score-result");
+      const allCards = document.querySelectorAll(".question-card");
+      const wrongQuestions = [];
+
+      allCards.forEach((card, index) => {
+        const selectedRadio = card.querySelector('input[type="radio"]:checked');
+        const correctChoiceElement = card.querySelector('.choice-item[data-is-correct="true"]');
+        if (!selectedRadio || selectedRadio.closest(".choice-item") !== correctChoiceElement) {
+          wrongQuestions.push(index + 1);
+        }
+      });
+
+      const percent = Math.round((currentScore / totalQuestions) * 100);
+      const unansweredCount = totalQuestions - answeredQuestions;
+
+      const chipsHtml = wrongQuestions
+        .map(num => `<button type="button" class="wrong-chip" onclick="jumpToQuestion(${num})" title="คลิกเพื่อเลื่อนไปดูข้อที่ ${num}">ข้อ ${num}</button>`)
+        .join("");
+
+      resultDiv.innerHTML = `
+        <div class="result-summary-card">
+          <h2 class="result-summary-title">📊 สรุปผลการทำข้อสอบ ALCPT ชุดที่ ${activeForm}</h2>
+          <p class="result-summary-score">ได้คะแนนรวม: <strong>${currentScore}</strong> / ${totalQuestions} ข้อ</p>
+          <p class="result-summary-percent">
+            คิดเป็นเปอร์เซ็นต์: <strong>${percent}%</strong>
+            ${unansweredCount > 0 ? ` • (ยังไม่ได้ตอบ ${unansweredCount} ข้อ)` : ""}
+          </p>
+          ${wrongQuestions.length > 0 ? `
+            <div class="wrong-list-box">
+              <span class="wrong-list-title">❌ ข้อที่ทำผิด / ยังไม่ได้ตอบ (${wrongQuestions.length} ข้อ) — คลิกเลขข้อเพื่อย้อนกลับไปดู:</span>
+              <div class="wrong-chips">${chipsHtml}</div>
+            </div>
+          ` : `
+            <p style="color: #10b981; font-size: 20px; font-weight: 700; margin: 0;">🎉 ยินดีด้วยครับ! คุณทำถูกหมดทุกข้อเลย!</p>
+          `}
+        </div>
+      `;
+
+      setTimeout(() => {
+        resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 200);
+    }
+
+    function checkScore() {
+      showFinalResult();
+    }
+
+    // เริ่มต้นโหลดหน้าเว็บที่ชุดที่ 81
+    buildFormSelector();
+    renderFormQuiz(81);
+  </script>
+</body>
 </html>
