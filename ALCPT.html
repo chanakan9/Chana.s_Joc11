@@ -480,6 +480,74 @@
       line-height: 1;
     }
 
+    /* Chunk (ทีละ 10 ข้อ) navigation */
+    .chunk-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .chunk-pills {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+      gap: 6px;
+    }
+
+    .chunk-pill {
+      appearance: none;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--navy);
+      cursor: pointer;
+      font-variant-numeric: tabular-nums;
+      transition: all 0.15s ease;
+    }
+
+    .chunk-pill:hover:not(:disabled) {
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    .chunk-pill.is-passed {
+      background: var(--success-bg);
+      border-color: #6ee7b7;
+      color: var(--success-ink);
+    }
+
+    .chunk-pill.is-current {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .chunk-pill.is-locked {
+      background: var(--surface-soft);
+      border-style: dashed;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .chunk-next-btn {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chunk-next-btn .kbd {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+    }
+
     .question-card.is-current {
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3), var(--shadow-sm);
     }
@@ -1716,9 +1784,10 @@
     const PROGRESS_KEY = "alcpt_progress_v1";
     const BOX_INTERVAL_DAYS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 14 };
     const MASTERED_BOX = 4;
-    const MODE_LABELS = { all: "ทั้งชุด", wrong: "เฉพาะข้อที่ผิด", review: "ทวนวันนี้" };
+    const MODE_LABELS = { all: "ทั้งชุด", chunk: "ทีละ 10 ข้อ", wrong: "เฉพาะข้อที่ผิด", review: "ทวนวันนี้" };
     let currentMode = "all";
     let currentCard = null;
+    let chunkEvaluated = false;
     let progress = {};
     try {
       progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}") || {};
@@ -1776,6 +1845,9 @@
       const questions = FORMS_DATA[formNum] || [];
       const today = todayNum();
       const all = questions.map((_, i) => i);
+      if (mode === "chunk") {
+        return getChunkIndices(formNum);
+      }
       if (mode === "wrong") {
         return all.filter(i => {
           const r = getRecord(formNum, i);
@@ -1791,6 +1863,145 @@
       return all;
     }
 
+    // ===== โหมดทีละ 10 ข้อ (ด่าน) =====
+    // ต้องตอบถูกครบทุกข้อในด่าน (ข้อที่ผิดจะให้ทำซ้ำจนถูก) จึงจะปลดล็อกด่านถัดไป
+    const CHUNK_SIZE = 10;
+    const CHUNK_KEY = "alcpt_chunk_v1";
+    let chunkStore = {};
+    try {
+      chunkStore = JSON.parse(localStorage.getItem(CHUNK_KEY) || "{}") || {};
+    } catch (e) {
+      chunkStore = {};
+    }
+
+    function saveChunkStore() {
+      try {
+        localStorage.setItem(CHUNK_KEY, JSON.stringify(chunkStore));
+      } catch (e) {}
+    }
+
+    function getChunkCount(formNum) {
+      return Math.ceil((FORMS_DATA[formNum] || []).length / CHUNK_SIZE);
+    }
+
+    function chunkRange(formNum, k) {
+      const len = (FORMS_DATA[formNum] || []).length;
+      const start = k * CHUNK_SIZE;
+      return [start, Math.min(len, start + CHUNK_SIZE)];
+    }
+
+    // unlocked = จำนวนด่านที่ผ่านแล้ว (ด่านที่ index <= unlocked เข้าได้), current = ด่านที่กำลังทำ
+    function getChunkState(formNum) {
+      const count = getChunkCount(formNum);
+      let st = chunkStore[formNum];
+      if (!st || typeof st !== "object") st = { unlocked: 0, current: 0, pending: null };
+      st.unlocked = Math.max(0, Math.min(st.unlocked | 0, count));
+      st.current = Math.max(0, Math.min(st.current | 0, Math.max(0, count - 1), st.unlocked));
+      chunkStore[formNum] = st;
+      return st;
+    }
+
+    function getChunkIndices(formNum) {
+      const st = getChunkState(formNum);
+      const [s, e] = chunkRange(formNum, st.current);
+      if (Array.isArray(st.pending) && st.pending.length > 0) {
+        const valid = st.pending.filter(i => i >= s && i < e);
+        if (valid.length > 0) return valid;
+      }
+      const all = [];
+      for (let i = s; i < e; i++) all.push(i);
+      return all;
+    }
+
+    function scrollToToolbar() {
+      const toolbar = document.getElementById("quiz-toolbar");
+      if (toolbar) toolbar.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function selectChunk(k) {
+      const st = getChunkState(activeForm);
+      if (k < 0 || k > st.unlocked || k >= getChunkCount(activeForm)) return;
+      st.current = k;
+      st.pending = null;
+      saveChunkStore();
+      stopAllAudio();
+      renderFormQuiz(activeForm);
+      scrollToToolbar();
+    }
+
+    function continueChunk() {
+      stopAllAudio();
+      renderFormQuiz(activeForm);
+      scrollToToolbar();
+    }
+
+    function restartChunks() {
+      if (!confirm(`เริ่มด่านทีละ ${CHUNK_SIZE} ข้อของชุดที่ ${activeForm} ใหม่ตั้งแต่ด่านแรก และล็อกด่านอื่นทั้งหมดใช่ไหม?`)) return;
+      chunkStore[activeForm] = { unlocked: 0, current: 0, pending: null };
+      saveChunkStore();
+      continueChunk();
+    }
+
+    function showChunkResult(wrongQuestions) {
+      const resultDiv = document.getElementById("score-result");
+      const st = getChunkState(activeForm);
+      const count = getChunkCount(activeForm);
+      const level = st.current;
+      const [s, e] = chunkRange(activeForm, level);
+      chunkEvaluated = true;
+      let html;
+
+      if (wrongQuestions.length > 0) {
+        st.pending = wrongQuestions.map(n => n - 1);
+        saveChunkStore();
+        const chipsHtml = wrongQuestions
+          .map(num => `<button type="button" class="wrong-chip" onclick="jumpToQuestion(${num})">ข้อ ${num}</button>`)
+          .join("");
+        html = `
+          <div class="result-summary-card">
+            <h2 class="result-summary-title">🔁 ด่าน ${level + 1} (ข้อ ${s + 1}–${e}) ยังไม่ผ่าน</h2>
+            <p class="result-summary-score">รอบนี้ถูก <strong>${currentScore}</strong> / ${totalQuestions} ข้อ</p>
+            <p class="result-summary-percent">ต้องตอบถูกครบทุกข้อจึงจะปลดล็อกด่านถัดไป — ดูเฉลยข้อที่ผิดก่อน แล้วทำใหม่เฉพาะข้อเหล่านี้</p>
+            <div class="wrong-list-box">
+              <span class="wrong-list-title">❌ ข้อที่ต้องทำใหม่ (${wrongQuestions.length} ข้อ):</span>
+              <div class="wrong-chips">${chipsHtml}</div>
+            </div>
+            <button type="button" class="btn-back-81 chunk-next-btn" onclick="continueChunk()">🔁 ทำข้อที่ผิดอีกครั้ง (${wrongQuestions.length} ข้อ) <span class="kbd">Enter</span></button>
+          </div>`;
+      } else {
+        if (st.unlocked <= level) st.unlocked = level + 1;
+        st.pending = null;
+        const hasNext = level + 1 < count;
+        if (hasNext) st.current = level + 1;
+        saveChunkStore();
+        renderModeBar(activeForm);
+        if (hasNext) {
+          const [ns, ne] = chunkRange(activeForm, level + 1);
+          html = `
+            <div class="result-summary-card">
+              <h2 class="result-summary-title">🎉 ผ่านด่าน ${level + 1} (ข้อ ${s + 1}–${e}) แล้ว!</h2>
+              <p class="result-summary-percent">ผ่านแล้ว ${st.unlocked} / ${count} ด่าน</p>
+              <button type="button" class="btn-back-81 chunk-next-btn" onclick="continueChunk()">➡️ ไปด่าน ${level + 2} (ข้อ ${ns + 1}–${ne}) <span class="kbd">Enter</span></button>
+            </div>`;
+        } else {
+          html = `
+            <div class="result-summary-card">
+              <h2 class="result-summary-title">🏆 ผ่านครบทุกด่านของชุดที่ ${activeForm} แล้ว!</h2>
+              <p class="result-summary-percent">ตอบถูกครบทั้ง ${(FORMS_DATA[activeForm] || []).length} ข้อ — ลองทำทั้งชุดรวดเดียวเพื่อวัดผล หรือใช้ "ทวนวันนี้" เพื่อไม่ให้ลืม</p>
+              <div class="empty-state-actions">
+                <button type="button" class="btn-back-81" onclick="setMode('all')">📚 ทำทั้งชุดรวดเดียว</button>
+                <button type="button" class="btn-reset" onclick="restartChunks()">เริ่มด่านใหม่ทั้งหมด ↻</button>
+              </div>
+            </div>`;
+        }
+      }
+
+      resultDiv.innerHTML = html;
+      setTimeout(() => {
+        resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 200);
+    }
+
     function renderModeBar(formNum) {
       const bar = document.getElementById("mode-bar");
       if (!bar) return;
@@ -1802,14 +2013,42 @@
       bar.style.display = "";
       const s = getFormStats(formNum);
       const pct = s.total ? Math.round((s.mastered / s.total) * 100) : 0;
+      const chunkCount = getChunkCount(formNum);
+      const chunkSt = getChunkState(formNum);
+      const chunkPassed = Math.min(chunkSt.unlocked, chunkCount);
+      let chunkNav = "";
+      if (currentMode === "chunk") {
+        const pills = [];
+        for (let k = 0; k < chunkCount; k++) {
+          const [cs, ce] = chunkRange(formNum, k);
+          const passed = k < chunkSt.unlocked;
+          const locked = k > chunkSt.unlocked;
+          const cur = k === chunkSt.current;
+          const tip = locked ? "ต้องผ่านด่านก่อนหน้าก่อน" : passed ? "ผ่านแล้ว — กดเพื่อฝึกซ้ำ" : "ด่านที่กำลังทำ";
+          pills.push(
+            `<button type="button" class="chunk-pill${passed ? " is-passed" : ""}${locked ? " is-locked" : ""}${cur ? " is-current" : ""}"` +
+            `${locked ? " disabled" : ""} title="${tip}" onclick="selectChunk(${k})">${passed ? "✓ " : locked ? "🔒 " : ""}${cs + 1}–${ce}</button>`
+          );
+        }
+        chunkNav = `
+          <div class="chunk-nav">
+            <div class="mastery-text">
+              <span>ด่านทีละ ${CHUNK_SIZE} ข้อ: ผ่านแล้ว <strong>${chunkPassed}</strong> / ${chunkCount} ด่าน • ต้องตอบถูกครบทุกข้อจึงจะปลดล็อกด่านถัดไป</span>
+              <button type="button" class="link-btn" onclick="restartChunks()">เริ่มด่านใหม่ทั้งหมด</button>
+            </div>
+            <div class="chunk-pills">${pills.join("")}</div>
+          </div>`;
+      }
       const btn = (mode, label, count, hint) =>
         `<button type="button" class="mode-btn${currentMode === mode ? " is-active" : ""}" title="${hint}" onclick="setMode('${mode}')">${label} <span class="mode-count">${count}</span></button>`;
       bar.innerHTML = `
         <div class="mode-buttons" role="group" aria-label="โหมดการฝึก">
           ${btn("all", "📚 ทั้งชุด", s.total, "ทำทุกข้อในชุดนี้")}
+          ${btn("chunk", "🔟 ทีละ 10 ข้อ", `${chunkPassed}/${chunkCount}`, "ทำทีละ 10 ข้อ ตอบถูกครบจึงไปด่านถัดไป")}
           ${btn("wrong", "❌ เฉพาะข้อที่ผิด", s.wrong, "ข้อที่ตอบผิดในครั้งล่าสุด — ทำจนเหลือ 0")}
           ${btn("review", "🔁 ทวนวันนี้", s.due, "ข้อที่ถึงรอบทวนตามระยะเวลา (ผิด = วันนี้, ถูกติดกันจะเว้นห่างขึ้น 1/3/7/14 วัน)")}
         </div>
+        ${chunkNav}
         <div>
           <div class="mastery-text">
             <span>จำได้แล้ว <strong>${s.mastered}</strong> / ${s.total} ข้อ (${pct}%) • เคยทำแล้ว ${s.seen} ข้อ</span>
@@ -1835,6 +2074,8 @@
       if (!confirm(`ล้างสถิติการทำข้อสอบชุดที่ ${activeForm} ทั้งหมดใช่ไหม? (ย้อนกลับไม่ได้)`)) return;
       delete progress[activeForm];
       saveProgress();
+      delete chunkStore[activeForm];
+      saveChunkStore();
       currentMode = "all";
       buildFormSelector();
       renderFormQuiz(activeForm);
@@ -1904,6 +2145,11 @@
         return;
       }
 
+      if (key === "enter" && currentMode === "chunk" && chunkEvaluated) {
+        e.preventDefault();
+        if (document.querySelector("#score-result .chunk-next-btn")) continueChunk();
+        return;
+      }
       if (key === "enter" || key === "n") {
         e.preventDefault();
         moveCurrent(1);
@@ -1947,8 +2193,15 @@
       const resetBtn = document.getElementById("btn-reset-quiz");
 
       currentCard = null;
+      chunkEvaluated = false;
       const indices = getQuestionIndices(formNum, currentMode);
-      const modeSuffix = currentMode !== "all" && questions.length > 0 ? ` — ${MODE_LABELS[currentMode]}` : "";
+      let modeSuffix = currentMode !== "all" && questions.length > 0 ? ` — ${MODE_LABELS[currentMode]}` : "";
+      if (currentMode === "chunk" && questions.length > 0) {
+        const cst = getChunkState(formNum);
+        const [cs, ce] = chunkRange(formNum, cst.current);
+        const isRetry = indices.length < ce - cs;
+        modeSuffix = ` — ด่าน ${cst.current + 1}/${getChunkCount(formNum)} (ข้อ ${cs + 1}–${ce})${isRetry ? " • ทำข้อที่ผิดใหม่" : ""}`;
+      }
       titleEl.textContent = `ALCPT Form ${formNum} (ชุดที่ ${formNum})${modeSuffix}`;
       resultDiv.innerHTML = "";
       renderModeBar(formNum);
@@ -2271,6 +2524,12 @@
         }
       });
 
+      if (currentMode === "chunk") {
+        if (!chunkEvaluated) showChunkResult(wrongQuestions);
+        else resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
       const percent = Math.round((currentScore / totalQuestions) * 100);
       const unansweredCount = totalQuestions - answeredQuestions;
       const modeTitle = currentMode === "all" ? "" : ` (${MODE_LABELS[currentMode]})`;
@@ -2324,7 +2583,10 @@
       checkScore,
       jumpToQuestion,
       setMode,
-      resetFormProgress
+      resetFormProgress,
+      selectChunk,
+      continueChunk,
+      restartChunks
     });
 
     // เริ่มต้นโหลดหน้าเว็บที่ชุดที่ 81
