@@ -349,6 +349,172 @@
       outline-offset: 2px;
     }
 
+    /* Practice Mode Bar (ทั้งชุด / ข้อที่ผิด / ทวนวันนี้) */
+    .mode-bar {
+      margin: -6px 0 18px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mode-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      appearance: none;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-soft);
+      color: var(--navy);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    .mode-btn:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .mode-btn.is-active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #ffffff;
+    }
+
+    .mode-count {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mode-btn.is-active .mode-count {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .mastery-text {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 10px;
+    }
+
+    .mastery-text strong {
+      color: var(--success-ink);
+    }
+
+    .mastery-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .mastery-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .link-btn {
+      appearance: none;
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: auto;
+      font: inherit;
+      font-size: 12.5px;
+      color: var(--danger-ink);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .shortcut-hint {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 5px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border: 1px solid var(--border-strong);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .question-card.is-current {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3), var(--shadow-sm);
+    }
+
+    .question-header-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--danger-ink);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .pill-due {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--danger);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
     /* Section Divider */
     .section-banner {
       margin: 24px 0 14px;
@@ -760,6 +926,10 @@
       #realtime-scoreboard .score-num {
         font-size: 19px;
       }
+      .shortcut-hint,
+      .choice-left .kbd {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -809,6 +979,8 @@
       </div>
       <button type="button" id="btn-reset-quiz" class="btn-reset" onclick="resetCurrentForm()">เริ่มทำชุดนี้ใหม่ ↻</button>
     </div>
+
+    <div id="mode-bar" class="mode-bar"></div>
 
     <div id="quiz-main-area"></div>
 
@@ -1116,6 +1288,16 @@
         btn.className = "form-pill" + (f === activeForm ? " is-active" : "") + (!hasData ? " is-empty" : "");
         btn.textContent = "ชุดที่ " + f;
         btn.title = hasData ? `ชุดที่ ${f} (${FORMS_DATA[f].length} ข้อ)` : `ชุดที่ ${f} (ยังไม่มีข้อสอบ)`;
+        if (hasData) {
+          const due = getFormStats(f).due;
+          if (due > 0) {
+            const badge = document.createElement("span");
+            badge.className = "pill-due";
+            badge.textContent = String(due);
+            btn.appendChild(badge);
+            btn.title += ` • ถึงรอบทวนวันนี้ ${due} ข้อ`;
+          }
+        }
         btn.onclick = () => selectForm(f);
         grid.appendChild(btn);
       });
@@ -1442,7 +1624,7 @@
       });
 
       const docClone = document.documentElement.cloneNode(true);
-      const clearIds = ["form-selector-grid", "quiz-main-area", "score-result", "realtime-scoreboard", "import-status"];
+      const clearIds = ["form-selector-grid", "mode-bar", "quiz-main-area", "score-result", "realtime-scoreboard", "import-status"];
       clearIds.forEach(id => {
         const el = docClone.querySelector("#" + id);
         if (el) {
@@ -1529,6 +1711,232 @@
       return AUDIO_BASE + audio;
     }
 
+    // ===== ความคืบหน้า + ทวนตามรอบเวลา (กล่อง Leitner) =====
+    // ตอบถูก → เลื่อนขึ้นกล่อง (สูงสุด 5) • ตอบผิด → กลับกล่อง 1 และต้องทวนวันนี้
+    const PROGRESS_KEY = "alcpt_progress_v1";
+    const BOX_INTERVAL_DAYS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 14 };
+    const MASTERED_BOX = 4;
+    const MODE_LABELS = { all: "ทั้งชุด", wrong: "เฉพาะข้อที่ผิด", review: "ทวนวันนี้" };
+    let currentMode = "all";
+    let currentCard = null;
+    let progress = {};
+    try {
+      progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}") || {};
+    } catch (e) {
+      progress = {};
+    }
+
+    function todayNum() {
+      const d = new Date();
+      return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000);
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+      } catch (e) {}
+    }
+
+    function getRecord(formNum, idx) {
+      return (progress[formNum] && progress[formNum][idx]) || null;
+    }
+
+    function recordAnswer(formNum, idx, isCorrect) {
+      if (!progress[formNum]) progress[formNum] = {};
+      const rec = progress[formNum][idx] || { box: 1, due: 0, right: 0, wrong: 0 };
+      if (isCorrect) {
+        rec.box = Math.min(5, (rec.box || 1) + 1);
+        rec.right = (rec.right || 0) + 1;
+      } else {
+        rec.box = 1;
+        rec.wrong = (rec.wrong || 0) + 1;
+      }
+      rec.lastCorrect = isCorrect;
+      rec.due = todayNum() + BOX_INTERVAL_DAYS[rec.box];
+      progress[formNum][idx] = rec;
+      saveProgress();
+    }
+
+    function getFormStats(formNum) {
+      const questions = FORMS_DATA[formNum] || [];
+      const today = todayNum();
+      let wrong = 0, due = 0, mastered = 0, seen = 0;
+      questions.forEach((_, idx) => {
+        const rec = getRecord(formNum, idx);
+        if (!rec) return;
+        seen++;
+        if (rec.lastCorrect === false) wrong++;
+        if (rec.due <= today) due++;
+        if (rec.box >= MASTERED_BOX) mastered++;
+      });
+      return { total: questions.length, wrong, due, mastered, seen };
+    }
+
+    function getQuestionIndices(formNum, mode) {
+      const questions = FORMS_DATA[formNum] || [];
+      const today = todayNum();
+      const all = questions.map((_, i) => i);
+      if (mode === "wrong") {
+        return all.filter(i => {
+          const r = getRecord(formNum, i);
+          return r && r.lastCorrect === false;
+        });
+      }
+      if (mode === "review") {
+        return all.filter(i => {
+          const r = getRecord(formNum, i);
+          return r && r.due <= today;
+        });
+      }
+      return all;
+    }
+
+    function renderModeBar(formNum) {
+      const bar = document.getElementById("mode-bar");
+      if (!bar) return;
+      const questions = FORMS_DATA[formNum] || [];
+      if (questions.length === 0) {
+        bar.style.display = "none";
+        return;
+      }
+      bar.style.display = "";
+      const s = getFormStats(formNum);
+      const pct = s.total ? Math.round((s.mastered / s.total) * 100) : 0;
+      const btn = (mode, label, count, hint) =>
+        `<button type="button" class="mode-btn${currentMode === mode ? " is-active" : ""}" title="${hint}" onclick="setMode('${mode}')">${label} <span class="mode-count">${count}</span></button>`;
+      bar.innerHTML = `
+        <div class="mode-buttons" role="group" aria-label="โหมดการฝึก">
+          ${btn("all", "📚 ทั้งชุด", s.total, "ทำทุกข้อในชุดนี้")}
+          ${btn("wrong", "❌ เฉพาะข้อที่ผิด", s.wrong, "ข้อที่ตอบผิดในครั้งล่าสุด — ทำจนเหลือ 0")}
+          ${btn("review", "🔁 ทวนวันนี้", s.due, "ข้อที่ถึงรอบทวนตามระยะเวลา (ผิด = วันนี้, ถูกติดกันจะเว้นห่างขึ้น 1/3/7/14 วัน)")}
+        </div>
+        <div>
+          <div class="mastery-text">
+            <span>จำได้แล้ว <strong>${s.mastered}</strong> / ${s.total} ข้อ (${pct}%) • เคยทำแล้ว ${s.seen} ข้อ</span>
+            <button type="button" class="link-btn" onclick="resetFormProgress()">ล้างสถิติชุดนี้</button>
+          </div>
+          <div class="mastery-track" title="จำได้ = ตอบถูกติดกันอย่างน้อย 3 ครั้ง"><div class="mastery-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="shortcut-hint">⌨️ คีย์ลัด: <span class="kbd">1</span>–<span class="kbd">4</span> เลือกคำตอบ •
+          <span class="kbd">Space</span> เล่น/หยุดเสียง • <span class="kbd">R</span> ฟังซ้ำ • <span class="kbd">T</span> Transcript •
+          <span class="kbd">Enter</span>/<span class="kbd">N</span> ข้อถัดไป • <span class="kbd">P</span> ข้อก่อนหน้า</div>
+      `;
+    }
+
+    function setMode(mode) {
+      currentMode = MODE_LABELS[mode] ? mode : "all";
+      stopAllAudio();
+      renderFormQuiz(activeForm);
+      const toolbar = document.getElementById("quiz-toolbar");
+      if (toolbar) toolbar.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetFormProgress() {
+      if (!confirm(`ล้างสถิติการทำข้อสอบชุดที่ ${activeForm} ทั้งหมดใช่ไหม? (ย้อนกลับไม่ได้)`)) return;
+      delete progress[activeForm];
+      saveProgress();
+      currentMode = "all";
+      buildFormSelector();
+      renderFormQuiz(activeForm);
+    }
+
+    // ===== คีย์ลัดคีย์บอร์ด =====
+    function getCards() {
+      return Array.from(document.querySelectorAll("#quiz-main-area .question-card"));
+    }
+
+    function setCurrentCard(card, scroll) {
+      if (currentCard !== card) {
+        if (currentCard) currentCard.classList.remove("is-current");
+        currentCard = card;
+        if (card) card.classList.add("is-current");
+      }
+      if (card && scroll) card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function moveCurrent(step) {
+      const cards = getCards();
+      if (cards.length === 0) return;
+      let i = cards.indexOf(currentCard);
+      i = Math.max(0, Math.min(cards.length - 1, i + step));
+      setCurrentCard(cards[i], true);
+    }
+
+    function findNextUnanswered() {
+      const cards = getCards();
+      const start = cards.indexOf(currentCard);
+      for (let k = start + 1; k < cards.length; k++) {
+        if (cards[k].dataset.isAnswered !== "true") return cards[k];
+      }
+      return null;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target;
+      const tag = t && t.tagName;
+      if (tag === "TEXTAREA" || tag === "SELECT" || (tag === "INPUT" && t.type !== "radio") || (t && t.isContentEditable)) return;
+      const key = (e.key || "").toLowerCase();
+      if (tag === "BUTTON" && (key === "enter" || key === " ")) return;
+
+      if (!currentCard || !document.body.contains(currentCard)) {
+        const cards = getCards();
+        if (cards.length === 0) return;
+        setCurrentCard(cards[0], false);
+      }
+
+      const choiceMap = { "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "a": 0, "b": 1, "c": 2, "d": 3 };
+      if (Object.prototype.hasOwnProperty.call(choiceMap, key)) {
+        e.preventDefault();
+        if (currentCard.dataset.isAnswered === "true") return;
+        const radios = currentCard.querySelectorAll('.choice-item input[type="radio"]');
+        const radio = radios[choiceMap[key]];
+        if (!radio) return;
+        radio.checked = true;
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+        const answeredCard = currentCard;
+        // เว้นเวลาให้เห็นเฉลยสั้นๆ แล้วเลื่อนไปข้อถัดไปที่ยังไม่ได้ตอบ
+        setTimeout(() => {
+          if (currentCard !== answeredCard) return;
+          const next = findNextUnanswered();
+          if (next) setCurrentCard(next, true);
+        }, 900);
+        return;
+      }
+
+      if (key === "enter" || key === "n") {
+        e.preventDefault();
+        moveCurrent(1);
+        return;
+      }
+      if (key === "p") {
+        e.preventDefault();
+        moveCurrent(-1);
+        return;
+      }
+      if (key === " " || key === "r") {
+        const audio = currentCard.querySelector("audio");
+        if (!audio) return;
+        e.preventDefault();
+        if (key === "r") {
+          audio.currentTime = 0;
+          audio.play();
+        } else if (audio.paused) {
+          audio.play();
+        } else {
+          audio.pause();
+        }
+        return;
+      }
+      if (key === "t") {
+        const tBtn = currentCard.querySelector(".btn-transcript");
+        if (tBtn) {
+          e.preventDefault();
+          tBtn.click();
+        }
+      }
+    });
+
     function renderFormQuiz(formNum) {
       const questions = FORMS_DATA[formNum] || [];
       const mainArea = document.getElementById("quiz-main-area");
@@ -1538,12 +1946,16 @@
       const metaEl = document.getElementById("active-form-meta");
       const resetBtn = document.getElementById("btn-reset-quiz");
 
-      titleEl.textContent = `ALCPT Form ${formNum} (ชุดที่ ${formNum})`;
+      currentCard = null;
+      const indices = getQuestionIndices(formNum, currentMode);
+      const modeSuffix = currentMode !== "all" && questions.length > 0 ? ` — ${MODE_LABELS[currentMode]}` : "";
+      titleEl.textContent = `ALCPT Form ${formNum} (ชุดที่ ${formNum})${modeSuffix}`;
       resultDiv.innerHTML = "";
+      renderModeBar(formNum);
 
       currentScore = 0;
       answeredQuestions = 0;
-      totalQuestions = questions.length;
+      totalQuestions = indices.length;
       updateScoreDisplay();
 
       if (questions.length === 0) {
@@ -1568,9 +1980,31 @@
         return;
       }
 
-      const listeningCount = questions.filter(item => Boolean(item.audio)).length;
-      const readingCount = questions.length - listeningCount;
-      metaEl.textContent = `Listening ${listeningCount} ข้อ • Reading ${readingCount} ข้อ • รวม ${questions.length} ข้อ (สลับช้อยส์อัตโนมัติตั้งแต่ข้อ 14 เป็นต้นไป)`;
+      if (indices.length === 0) {
+        const msg = currentMode === "wrong"
+          ? { icon: "🎉", title: "ไม่มีข้อที่ผิดค้างอยู่ในชุดนี้", desc: "ข้อที่เคยผิดตอบถูกครบแล้ว (หรือยังไม่เคยทำชุดนี้) ลองทำทั้งชุดเพื่อหาจุดที่ยังไม่แม่น" }
+          : { icon: "✅", title: "วันนี้ไม่มีข้อที่ต้องทวนในชุดนี้", desc: "ข้อที่ตอบถูกจะเว้นระยะทวนห่างขึ้นเรื่อยๆ (1 / 3 / 7 / 14 วัน) กลับมาทวนใหม่ตามรอบ หรือลองชุดอื่นที่มีตัวเลขสีแดงบนปุ่มเลือกชุด" };
+        metaEl.textContent = `โหมด: ${MODE_LABELS[currentMode]} • 0 ข้อ`;
+        resetBtn.style.display = "none";
+        doneArea.style.display = "none";
+        mainArea.innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">${msg.icon}</div>
+            <h3 class="empty-state-title">${msg.title}</h3>
+            <p class="empty-state-desc">${msg.desc}</p>
+            <div class="empty-state-actions">
+              <button type="button" class="btn-back-81" onclick="setMode('all')">📚 ทำทั้งชุด</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const shown = indices.map(i => questions[i]);
+      const listeningCount = shown.filter(item => Boolean(item.audio)).length;
+      const readingCount = shown.length - listeningCount;
+      const modeNote = currentMode === "all" ? "" : ` • โหมด: ${MODE_LABELS[currentMode]}`;
+      metaEl.textContent = `Listening ${listeningCount} ข้อ • Reading ${readingCount} ข้อ • รวม ${shown.length} ข้อ${modeNote}`;
       resetBtn.style.display = "inline-block";
       doneArea.style.display = "block";
 
@@ -1580,7 +2014,8 @@
       let addedListeningBanner = false;
       let addedReadingBanner = false;
 
-      questions.forEach((item, index) => {
+      indices.forEach((index) => {
+        const item = questions[index];
         const questionNumber = index + 1;
         const isListening = Boolean(item.audio);
 
@@ -1588,13 +2023,17 @@
           addedListeningBanner = true;
           const banner = document.createElement("div");
           banner.className = "section-banner";
-          banner.textContent = "🎧 Part I: Listening (ข้อ 1 – " + listeningCount + ")";
+          banner.textContent = currentMode === "all"
+            ? "🎧 Part I: Listening (ข้อ 1 – " + listeningCount + ")"
+            : "🎧 Part I: Listening (" + listeningCount + " ข้อ)";
           listContainer.appendChild(banner);
         } else if (!isListening && !addedReadingBanner) {
           addedReadingBanner = true;
           const banner = document.createElement("div");
           banner.className = "section-banner";
-          banner.textContent = "📖 Part II: Reading (ข้อ " + questionNumber + " – " + questions.length + ")";
+          banner.textContent = currentMode === "all"
+            ? "📖 Part II: Reading (ข้อ " + questionNumber + " – " + questions.length + ")"
+            : "📖 Part II: Reading (" + readingCount + " ข้อ)";
           listContainer.appendChild(banner);
         }
 
@@ -1603,12 +2042,18 @@
         card.id = `question-card-${questionNumber}`;
         card.dataset.isAnswered = "false";
         card.dataset.questionNumber = String(questionNumber);
+        card.addEventListener("click", () => setCurrentCard(card, false));
+
+        const rec = getRecord(formNum, index);
+        const historyTag = rec && rec.wrong > 0
+          ? `<span class="history-tag" title="ตอบถูก ${rec.right || 0} ครั้ง">⚠ เคยผิด ${rec.wrong} ครั้ง</span>`
+          : "";
 
         const qHeader = document.createElement("div");
         qHeader.className = "question-header";
         qHeader.innerHTML = `
           <span class="question-badge">ข้อที่ ${questionNumber}</span>
-          <span class="question-type-tag">${isListening ? "Listening" : "Reading"}</span>
+          <span class="question-header-right">${historyTag}<span class="question-type-tag">${isListening ? "Listening" : "Reading"}</span></span>
         `;
         card.appendChild(qHeader);
 
@@ -1635,6 +2080,7 @@
           audioEl.preload = "none";
           audioEl.src = resolveAudioUrl(item.audio);
           audioEl.addEventListener("play", () => {
+            setCurrentCard(card, false);
             document.querySelectorAll("audio").forEach(other => {
               if (other !== audioEl && !other.paused) {
                 other.pause();
@@ -1693,11 +2139,17 @@
           radio.name = `f${formNum}_question_group_${index}`;
           radio.id = radioId;
 
+          const keyHint = document.createElement("span");
+          keyHint.className = "kbd";
+          keyHint.textContent = String(radioIndex + 1);
+          keyHint.setAttribute("aria-hidden", "true");
+
           const label = document.createElement("label");
           label.setAttribute("for", radioId);
           label.textContent = choiceObj.text;
 
           leftWrap.appendChild(radio);
+          leftWrap.appendChild(keyHint);
           leftWrap.appendChild(label);
 
           const iconSpan = document.createElement("span");
@@ -1736,6 +2188,7 @@
 
           const selectedChoiceElement = e.target.closest(".choice-item");
           const correctChoiceElement = card.querySelector('.choice-item[data-is-correct="true"]');
+          const isCorrect = selectedChoiceElement === correctChoiceElement;
 
           if (correctChoiceElement) {
             correctChoiceElement.style.setProperty("background-color", "#d1fae5", "important");
@@ -1750,7 +2203,7 @@
             }
           }
 
-          if (selectedChoiceElement === correctChoiceElement) {
+          if (isCorrect) {
             currentScore++;
             card.style.setProperty("border", "2px solid #10b981", "important");
           } else {
@@ -1773,6 +2226,11 @@
             expBox.classList.add("is-visible");
           }
 
+          // บันทึกผลลงระบบทวน แล้วอัปเดตตัวเลขบนปุ่มโหมด/ปุ่มเลือกชุด
+          recordAnswer(formNum, index, isCorrect);
+          renderModeBar(formNum);
+          buildFormSelector();
+
           answeredQuestions++;
           updateScoreDisplay();
 
@@ -1786,11 +2244,14 @@
 
       mainArea.innerHTML = "";
       mainArea.appendChild(listContainer);
+      const firstCard = listContainer.querySelector(".question-card");
+      if (firstCard) setCurrentCard(firstCard, false);
     }
 
     function jumpToQuestion(qNum) {
       const target = document.getElementById(`question-card-${qNum}`);
       if (target) {
+        setCurrentCard(target, false);
         target.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
@@ -1799,27 +2260,33 @@
       if (totalQuestions === 0) return;
 
       const resultDiv = document.getElementById("score-result");
-      const allCards = document.querySelectorAll(".question-card");
+      const allCards = getCards();
       const wrongQuestions = [];
 
-      allCards.forEach((card, index) => {
+      allCards.forEach((card) => {
         const selectedRadio = card.querySelector('input[type="radio"]:checked');
         const correctChoiceElement = card.querySelector('.choice-item[data-is-correct="true"]');
         if (!selectedRadio || selectedRadio.closest(".choice-item") !== correctChoiceElement) {
-          wrongQuestions.push(index + 1);
+          wrongQuestions.push(Number(card.dataset.questionNumber));
         }
       });
 
       const percent = Math.round((currentScore / totalQuestions) * 100);
       const unansweredCount = totalQuestions - answeredQuestions;
+      const modeTitle = currentMode === "all" ? "" : ` (${MODE_LABELS[currentMode]})`;
+      const stats = getFormStats(activeForm);
 
       const chipsHtml = wrongQuestions
         .map(num => `<button type="button" class="wrong-chip" onclick="jumpToQuestion(${num})" title="คลิกเพื่อเลื่อนไปดูข้อที่ ${num}">ข้อ ${num}</button>`)
         .join("");
 
+      const nextStepBtn = stats.wrong > 0
+        ? `<button type="button" class="btn-back-81" style="margin-top:16px" onclick="setMode('wrong')">❌ ฝึกเฉพาะข้อที่ผิดต่อ (${stats.wrong} ข้อ)</button>`
+        : "";
+
       resultDiv.innerHTML = `
         <div class="result-summary-card">
-          <h2 class="result-summary-title">📊 สรุปผลการทำข้อสอบ ALCPT ชุดที่ ${activeForm}</h2>
+          <h2 class="result-summary-title">📊 สรุปผลการทำข้อสอบ ALCPT ชุดที่ ${activeForm}${modeTitle}</h2>
           <p class="result-summary-score">ได้คะแนนรวม: <strong>${currentScore}</strong> / ${totalQuestions} ข้อ</p>
           <p class="result-summary-percent">
             คิดเป็นเปอร์เซ็นต์: <strong>${percent}%</strong>
@@ -1833,6 +2300,7 @@
           ` : `
             <p style="color: #10b981; font-size: 20px; font-weight: 700; margin: 0;">🎉 ยินดีด้วยครับ! คุณทำถูกหมดทุกข้อเลย!</p>
           `}
+          ${nextStepBtn}
         </div>
       `;
 
@@ -1854,7 +2322,9 @@
       selectForm,
       resetCurrentForm,
       checkScore,
-      jumpToQuestion
+      jumpToQuestion,
+      setMode,
+      resetFormProgress
     });
 
     // เริ่มต้นโหลดหน้าเว็บที่ชุดที่ 81
